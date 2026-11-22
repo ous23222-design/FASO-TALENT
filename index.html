@@ -1,0 +1,1539 @@
+<!DOCTYPE html>
+<html lang="fr" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#0F7A4A" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <title>Fasso Tala — Studio Rap, Beats, Tournois & Musique du Burkina Faso</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'] },
+          colors: {
+            faso: {
+              red: '#D93829',
+              green: '#0F7A4A',
+              greenDark: '#0A5936',
+              gold: '#F59E0B',
+              orange: '#FF6600',
+              darkBg: '#0E0E11',
+              darkCard: '#18181D'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    html, body { font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+    .scroll-area { overflow-y: auto; -webkit-overflow-scrolling: touch; }
+    .no-scrollbar::-webkit-scrollbar { width: 5px; height: 5px; }
+    .no-scrollbar::-webkit-scrollbar-thumb { background: rgba(161, 161, 170, 0.35); border-radius: 9999px; }
+  </style>
+</head>
+<body class="bg-stone-100 dark:bg-faso-darkBg text-stone-900 dark:text-stone-100 min-h-screen flex flex-col">
+
+  <div id="toast-box" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 pointer-events-none flex flex-col items-center gap-2 w-11/12 max-w-md"></div>
+
+  <!-- BANNIÈRE INSTALLATION ANDROID / WEB -->
+  <div id="pwa-banner" class="hidden bg-faso-green text-white px-4 py-2.5 flex items-center justify-between gap-2 text-xs shrink-0 z-40">
+    <div class="flex items-center gap-2 min-w-0">
+      <span class="px-2 py-0.5 rounded bg-black/30 font-black text-[10px] uppercase shrink-0">Android</span>
+      <span class="truncate font-bold">Téléchargez & installez <strong>Fasso Tala</strong> sur votre téléphone.</span>
+    </div>
+    <div class="flex items-center gap-1.5 shrink-0">
+      <button type="button" onclick="installFassoTalaApp()" class="px-3 py-1 rounded-lg bg-faso-gold text-stone-950 font-black text-[11px]">Installer</button>
+      <button type="button" onclick="document.getElementById('pwa-banner').classList.add('hidden')" class="p-1 text-white/80"><i data-lucide="x" class="w-4 h-4"></i></button>
+    </div>
+  </div>
+
+  <!-- EN-TÊTE PRINCIPAL -->
+  <header class="sticky top-0 z-30 bg-white/95 dark:bg-faso-darkCard/95 backdrop-blur-md border-b border-stone-200 dark:border-stone-800 px-4 py-3">
+    <div class="max-w-6xl mx-auto flex items-center justify-between gap-2">
+      <div class="flex items-center gap-2.5">
+        <div id="brand-emblem" class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-faso-red via-faso-gold to-faso-green flex items-center justify-center text-white shadow cursor-pointer select-none">
+          <i data-lucide="mic-2" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <h1 class="app-title font-black text-lg leading-none tracking-tight">Fasso Tala</h1>
+          <span class="text-[10px] font-bold text-faso-gold uppercase tracking-wider">Studio Rap • Beats • Tournois 🇧🇫</span>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button type="button" onclick="installFassoTalaApp()" class="px-3 py-2 rounded-xl bg-stone-200 dark:bg-stone-800 text-xs font-extrabold flex items-center gap-1.5">
+          <i data-lucide="download" class="w-3.5 h-3.5 text-faso-green"></i>
+          <span class="hidden sm:inline">Télécharger l'App</span>
+        </button>
+
+        <div id="guest-auth-actions" class="flex items-center gap-1.5">
+          <button type="button" onclick="openAuthModal('login')" class="px-3 py-2 rounded-xl bg-faso-green text-white text-xs font-extrabold">Connexion</button>
+          <button type="button" onclick="openAuthModal('register')" class="px-3 py-2 rounded-xl bg-faso-red text-white text-xs font-extrabold">Créer compte</button>
+        </div>
+
+        <div id="member-auth-actions" class="hidden flex items-center gap-1.5">
+          <span id="header-artist-badge" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500/15 text-faso-gold text-xs font-extrabold"></span>
+          <button type="button" id="btn-open-admin" onclick="openAdminPanel()" class="hidden px-3 py-2 rounded-xl bg-faso-gold text-stone-950 text-xs font-black">Admin</button>
+          <button type="button" onclick="logoutArtist()" class="p-2 rounded-xl bg-stone-200 dark:bg-stone-800 text-rose-500" title="Déconnexion">
+            <i data-lucide="log-out" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+        <button type="button" onclick="openAdminGate()" aria-label="Administration" class="p-2 rounded-xl text-stone-400 hover:text-faso-gold">
+          <i data-lucide="crown" class="w-4 h-4"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- NAVIGATION ONGLETS -->
+  <nav class="bg-white dark:bg-faso-darkCard border-b border-stone-200 dark:border-stone-800 px-3 py-2 overflow-x-auto no-scrollbar">
+    <div class="max-w-6xl mx-auto flex items-center gap-1.5 min-w-max">
+      <button onclick="switchTab('public')" id="nav-public" class="tab-btn px-4 py-2 rounded-xl text-xs font-black bg-faso-red text-white flex items-center gap-1.5">
+        <i data-lucide="flame" class="w-4 h-4"></i> Espace Public
+      </button>
+      <button onclick="switchTab('studio')" id="nav-studio" class="tab-btn px-4 py-2 rounded-xl text-xs font-bold text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 flex items-center gap-1.5">
+        <i data-lucide="mic" class="w-4 h-4"></i> Studio & Beats
+      </button>
+      <button onclick="switchTab('tournaments')" id="nav-tournaments" class="tab-btn px-4 py-2 rounded-xl text-xs font-bold text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 flex items-center gap-1.5">
+        <i data-lucide="trophy" class="w-4 h-4 text-faso-gold"></i> Tournois (250 F)
+      </button>
+      <button onclick="switchTab('private')" id="nav-private" class="tab-btn px-4 py-2 rounded-xl text-xs font-bold text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 flex items-center gap-1.5">
+        <i data-lucide="lock" class="w-4 h-4 text-faso-green"></i> Mon Espace Privé & Stats
+      </button>
+      <button onclick="switchTab('messages')" id="nav-messages" class="tab-btn px-4 py-2 rounded-xl text-xs font-bold text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 flex items-center gap-1.5">
+        <i data-lucide="message-square" class="w-4 h-4"></i> SMS Privés
+      </button>
+    </div>
+  </nav>
+
+  <!-- CONTENU PRINCIPAL -->
+  <main class="flex-1 max-w-6xl w-full mx-auto p-4 md:p-6 space-y-6">
+
+    <!-- 1. ESPACE PUBLIC (VISIBLE PAR VISITEURS ET ARTISTES) -->
+    <section id="view-public" class="space-y-5">
+      <div class="bg-gradient-to-r from-faso-red via-amber-600 to-faso-green rounded-3xl p-5 md:p-6 text-white shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div class="space-y-1.5">
+          <span class="px-2.5 py-0.5 rounded-full bg-black/30 text-[10px] font-black uppercase">Espace Public • Ouvert à tous</span>
+          <h2 class="text-2xl md:text-3xl font-black tracking-tight">Les sons, clips & freestyles du Burkina</h2>
+          <p class="text-xs text-white/90 max-w-xl">
+            Écoutez les artistes, likez, abonnez-vous à vos rappeurs préférés ou entrez au <strong>Studio</strong> pour poser votre voix gratuitement en privé (publication en public : <strong>500 F CFA</strong>).
+          </p>
+        </div>
+        <div class="flex flex-wrap gap-2 shrink-0">
+          <button onclick="switchTab('studio')" class="px-4 py-3 rounded-2xl bg-stone-950 text-white text-xs font-black flex items-center gap-1.5 shadow">
+            <i data-lucide="mic" class="w-4 h-4 text-faso-gold"></i> Entrer au Studio
+          </button>
+          <button onclick="switchTab('tournaments')" class="px-4 py-3 rounded-2xl bg-white text-faso-red text-xs font-black flex items-center gap-1.5 shadow">
+            <i data-lucide="trophy" class="w-4 h-4"></i> Voir Tournois
+          </button>
+        </div>
+      </div>
+
+      <!-- LISTE DES ARTISTES POPULAIRES -->
+      <div class="space-y-2.5">
+        <h3 class="font-extrabold text-sm flex items-center gap-2">
+          <i data-lucide="users" class="w-4 h-4 text-faso-gold"></i> Artistes & Rappeurs (Cliquez pour voir le profil & s'abonner)
+        </h3>
+        <div id="public-artists-bar" class="flex gap-3 overflow-x-auto no-scrollbar pb-1"></div>
+      </div>
+
+      <!-- FIL DES PUBLICATIONS PUBLIQUES -->
+      <div class="space-y-3">
+        <div class="flex items-center justify-between">
+          <h3 class="font-extrabold text-sm">Publications Publiques (Sons & Vidéos validés)</h3>
+          <span id="public-tracks-count" class="text-xs font-bold text-stone-400">0 titre</span>
+        </div>
+        <div id="public-feed-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+      </div>
+    </section>
+
+    <!-- 2. STUDIO RAP & BEATS (TYPE VOLOCO) -->
+    <section id="view-studio" class="hidden space-y-5">
+      <div class="grid lg:grid-cols-2 gap-5">
+        <!-- CATALOGUE D'INSTRUMENTALES + IMPORT -->
+        <div class="bg-white dark:bg-faso-darkCard rounded-3xl p-5 border border-stone-200 dark:border-stone-800 space-y-4">
+          <div class="flex items-center justify-between gap-2">
+            <div>
+              <h2 class="font-black text-base flex items-center gap-2">
+                <i data-lucide="disc-3" class="w-5 h-5 text-faso-gold"></i> Instrumentales & Beats Rap
+              </h2>
+              <p class="text-xs text-stone-400">Tapez sur un beat pour le lancer, le télécharger ou importer votre propre instru.</p>
+            </div>
+            <label class="px-3 py-2 rounded-xl bg-faso-green text-white text-xs font-extrabold cursor-pointer flex items-center gap-1.5 shrink-0">
+              <i data-lucide="upload" class="w-3.5 h-3.5"></i>
+              <span>Importer Beat</span>
+              <input type="file" id="import-beat-input" accept="audio/*" onchange="handleImportBeat(event)" class="hidden" />
+            </label>
+          </div>
+
+          <div id="beats-catalog-list" class="space-y-2.5 max-h-96 overflow-y-auto no-scrollbar"></div>
+        </div>
+
+        <!-- CONSOLE D'ENREGISTREMENT VOCAL + EFFETS VOIX CHIC -->
+        <div class="bg-white dark:bg-faso-darkCard rounded-3xl p-5 border border-stone-200 dark:border-stone-800 space-y-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <h2 class="font-black text-base flex items-center gap-2">
+                <i data-lucide="sliders" class="w-5 h-5 text-faso-red"></i> Cabine Studio & Effets Voix
+              </h2>
+              <p id="studio-selected-beat-label" class="text-xs text-faso-gold font-bold mt-0.5">Beat sélectionné : Trap Ouaga 808 (140 BPM)</p>
+            </div>
+            <span id="rec-timer-badge" class="px-3 py-1 rounded-full bg-stone-200 dark:bg-stone-800 font-mono text-xs font-black">00:00</span>
+          </div>
+
+          <!-- EFFETS DE VOIX -->
+          <div class="space-y-1.5">
+            <label class="block text-xs font-bold text-stone-400">Effet de voix (Rendre la voix chic) :</label>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+              <button type="button" onclick="selectVoiceEffect('chic')" id="fx-chic" class="fx-btn py-2 px-2.5 rounded-xl bg-faso-red text-white text-xs font-black">✨ Voix Chic</button>
+              <button type="button" onclick="selectVoiceEffect('reverb')" id="fx-reverb" class="fx-btn py-2 px-2.5 rounded-xl bg-stone-100 dark:bg-stone-800 text-xs font-bold">🏛️ Réverb Studio</button>
+              <button type="button" onclick="selectVoiceEffect('echo')" id="fx-echo" class="fx-btn py-2 px-2.5 rounded-xl bg-stone-100 dark:bg-stone-800 text-xs font-bold">🔊 Écho Rap</button>
+              <button type="button" onclick="selectVoiceEffect('natural')" id="fx-natural" class="fx-btn py-2 px-2.5 rounded-xl bg-stone-100 dark:bg-stone-800 text-xs font-bold">🎙️ Voix Pure</button>
+            </div>
+          </div>
+
+          <!-- LECTEUR BEAT IMPORTÉ SI SÉLECTIONNÉ -->
+          <audio id="studio-beat-player" loop class="w-full hidden"></audio>
+
+          <!-- BOUTONS ENREGISTREMENT -->
+          <div class="p-4 rounded-2xl bg-stone-100 dark:bg-stone-900/90 border border-stone-200 dark:border-stone-800 flex flex-col items-center gap-3 text-center">
+            <div class="flex items-center gap-3">
+              <button type="button" id="btn-start-rec" onclick="startVocalRecording()" class="px-5 py-3.5 rounded-2xl bg-faso-red hover:brightness-110 text-white font-black text-xs flex items-center gap-2 shadow-lg">
+                <i data-lucide="mic" class="w-4 h-4"></i> Enregistrer Freestyle / Voix
+              </button>
+              <button type="button" id="btn-stop-rec" onclick="stopVocalRecording()" class="hidden px-5 py-3.5 rounded-2xl bg-amber-500 text-stone-950 font-black text-xs flex items-center gap-2 shadow-lg">
+                <i data-lucide="square" class="w-4 h-4"></i> Terminer la prise
+              </button>
+            </div>
+            <p class="text-[11px] text-stone-400">Le beat tourne automatiquement pendant que vous chantez ou rappez au micro.</p>
+          </div>
+
+          <!-- PRÉVISUALISATION & SAUVEGARDE DANS MON ESPACE PRIVÉ -->
+          <form onsubmit="saveRecordedTrackToPrivate(event)" class="space-y-3 pt-2 border-t border-stone-200 dark:border-stone-800">
+            <div id="recorded-preview-box" class="hidden p-3 rounded-2xl bg-emerald-500/10 border border-faso-green/40 space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-extrabold text-faso-green">Prise vocale prête à écouter !</span>
+                <button type="button" onclick="playRecordedMixWithFx()" class="px-3 py-1 rounded-lg bg-faso-green text-white text-xs font-bold">▶ Écouter avec effet</button>
+              </div>
+              <audio id="recorded-audio-el" controls class="w-full h-9"></audio>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-stone-400 mb-1">Titre de votre chanson / freestyle *</label>
+              <input type="text" id="track-title-input" required placeholder="Ex: Freestyle Bobo City 226" class="w-full px-3.5 py-2.5 rounded-xl bg-stone-100 dark:bg-stone-800 text-sm outline-none" />
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-stone-400 mb-1">Ou importer directement une vidéo / audio prêt (optionnel)</label>
+              <input type="file" id="direct-media-upload" accept="audio/*,video/*" class="w-full text-xs file:mr-2 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-faso-gold/20 file:text-faso-gold" />
+            </div>
+
+            <button type="submit" class="w-full py-3.5 rounded-2xl bg-faso-green hover:bg-faso-greenDark text-white font-black text-xs shadow">
+              Enregistrer dans Mon Espace Privé (Gratuit)
+            </button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. TOURNOIS EN LIGNE & PHYSIQUES (250 F CFA) -->
+    <section id="view-tournaments" class="hidden space-y-5">
+      <div class="bg-gradient-to-r from-stone-900 via-amber-900 to-faso-red rounded-3xl p-5 text-white shadow-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <span class="px-2.5 py-0.5 rounded-full bg-faso-gold text-stone-950 text-[10px] font-black uppercase">Battles & Trophées • 250 F CFA</span>
+          <h2 class="text-2xl font-black mt-1">Tournois Rap En Ligne & Physiques</h2>
+          <p class="text-xs text-white/85 mt-1">
+            Inscrivez-vous pour <strong>250 F CFA</strong> sur le <strong>66 93 11 74</strong>, publiez votre freestyle/vidéo de compétition, récoltez les votes et remportez le trophée !
+          </p>
+        </div>
+      </div>
+
+      <div id="tournaments-list-grid" class="grid grid-cols-1 lg:grid-cols-2 gap-5"></div>
+    </section>
+
+    <!-- 4. MON ESPACE PRIVÉ, STATISTIQUES & PASSAGE EN PUBLIC (500 F CFA) -->
+    <section id="view-private" class="hidden space-y-5">
+      <div id="private-guest-notice" class="bg-white dark:bg-faso-darkCard rounded-3xl p-6 text-center border border-stone-200 dark:border-stone-800 space-y-3">
+        <i data-lucide="lock" class="w-10 h-10 text-faso-gold mx-auto"></i>
+        <h3 class="font-black text-base">Connectez-vous pour ouvrir votre Espace Privé</h3>
+        <p class="text-xs text-stone-400 max-w-md mx-auto">Gardez toutes vos chansons en privé gratuitement, suivez vos abonnés, visiteurs, écoutes et likes, et publiez en public pour 500 F CFA.</p>
+        <div class="flex justify-center gap-2">
+          <button onclick="openAuthModal('login')" class="px-4 py-2.5 rounded-xl bg-faso-green text-white text-xs font-black">Connexion</button>
+          <button onclick="openAuthModal('register')" class="px-4 py-2.5 rounded-xl bg-faso-red text-white text-xs font-black">Créer un compte</button>
+        </div>
+      </div>
+
+      <div id="private-member-dashboard" class="hidden space-y-5">
+        <!-- EN-TÊTE PROFIL ARTISTE -->
+        <div class="bg-white dark:bg-faso-darkCard rounded-3xl p-5 border border-stone-200 dark:border-stone-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div class="flex items-center gap-4">
+            <div id="my-artist-avatar" class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-faso-red to-faso-gold flex items-center justify-center text-white font-black text-xl overflow-hidden shrink-0"></div>
+            <div>
+              <h2 id="my-artist-name" class="text-xl font-black">Nom Artiste</h2>
+              <p id="my-artist-meta" class="text-xs text-stone-400">Ville • Membre Fasso Tala</p>
+              <p id="my-artist-bio" class="text-xs text-stone-300 mt-1"></p>
+            </div>
+          </div>
+          <button onclick="switchTab('studio')" class="px-4 py-2.5 rounded-2xl bg-faso-red text-white text-xs font-black shrink-0">+ Nouveau son au Studio</button>
+        </div>
+
+        <!-- LES 5 COMPTEURS DE STATISTIQUES DEMANDÉS -->
+        <div class="grid grid-cols-2 sm:grid-cols-5 gap-3">
+          <div class="bg-white dark:bg-faso-darkCard rounded-2xl p-3.5 border border-stone-200 dark:border-stone-800 text-center">
+            <span class="text-[10px] font-bold text-stone-400 uppercase block">Visiteurs profil</span>
+            <strong id="stat-profile-views" class="text-xl font-black text-faso-gold mt-1 block">0</strong>
+          </div>
+          <div class="bg-white dark:bg-faso-darkCard rounded-2xl p-3.5 border border-stone-200 dark:border-stone-800 text-center">
+            <span class="text-[10px] font-bold text-stone-400 uppercase block">Abonnés</span>
+            <strong id="stat-subscribers" class="text-xl font-black text-faso-green mt-1 block">0</strong>
+          </div>
+          <div class="bg-white dark:bg-faso-darkCard rounded-2xl p-3.5 border border-stone-200 dark:border-stone-800 text-center">
+            <span class="text-[10px] font-bold text-stone-400 uppercase block">Écoutes totales</span>
+            <strong id="stat-total-plays" class="text-xl font-black text-sky-400 mt-1 block">0</strong>
+          </div>
+          <div class="bg-white dark:bg-faso-darkCard rounded-2xl p-3.5 border border-stone-200 dark:border-stone-800 text-center">
+            <span class="text-[10px] font-bold text-stone-400 uppercase block">Likes reçus</span>
+            <strong id="stat-total-likes" class="text-xl font-black text-faso-red mt-1 block">0</strong>
+          </div>
+          <div class="bg-white dark:bg-faso-darkCard rounded-2xl p-3.5 border border-stone-200 dark:border-stone-800 text-center col-span-2 sm:col-span-1">
+            <span class="text-[10px] font-bold text-stone-400 uppercase block">Privés / Publics</span>
+            <strong id="stat-tracks-split" class="text-lg font-black text-white mt-1 block">0 / 0</strong>
+          </div>
+        </div>
+
+        <!-- LISTE DES CHANSONS DANS MON ESPACE PRIVÉ + BOUTON PUBLIER EN PUBLIC (500 F) -->
+        <div class="bg-white dark:bg-faso-darkCard rounded-3xl p-5 border border-stone-200 dark:border-stone-800 space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <h3 class="font-black text-sm">Mes Chansons & Freestyles (Privé & Public)</h3>
+              <p class="text-[11px] text-stone-400">Vos enregistrements restent gratuits en privé. Pour diffuser en Espace Public : <strong>500 F CFA</strong> sur le <strong>66 93 11 74</strong>.</p>
+            </div>
+          </div>
+          <div id="my-private-tracks-list" class="space-y-3"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. SMS PRIVÉS ENTRE ARTISTES & MEMBRES -->
+    <section id="view-messages" class="hidden">
+      <div class="bg-white dark:bg-faso-darkCard rounded-3xl border border-stone-200 dark:border-stone-800 overflow-hidden grid md:grid-cols-3 min-h-[420px]">
+        <div class="border-b md:border-b-0 md:border-r border-stone-200 dark:border-stone-800 p-4 space-y-2">
+          <h3 class="font-black text-sm">Discussions & SMS Privés</h3>
+          <div id="sms-contacts-list" class="space-y-1.5"></div>
+        </div>
+        <div class="md:col-span-2 flex flex-col justify-between p-4 bg-stone-50 dark:bg-stone-950/60">
+          <div id="sms-thread-header" class="pb-2.5 border-b border-stone-200 dark:border-stone-800 font-extrabold text-xs text-faso-gold">
+            Sélectionnez un artiste ou membre pour écrire un SMS privé
+          </div>
+          <div id="sms-bubbles-box" class="flex-1 scroll-area py-3 space-y-2 max-h-72"></div>
+          <form onsubmit="sendPrivateSms(event)" class="flex gap-2 pt-2">
+            <input type="text" id="sms-input-text" placeholder="Écrire un SMS privé..." class="flex-1 px-3.5 py-2.5 rounded-xl bg-white dark:bg-stone-800 text-xs outline-none" />
+            <button type="submit" class="px-4 py-2.5 rounded-xl bg-faso-green text-white text-xs font-black">Envoyer</button>
+          </form>
+        </div>
+      </div>
+    </section> 
+   <!-- 6. TABLEAU DE BORD ADMINISTRATEUR FASSO TALA -->
+    <section id="view-admin" class="hidden space-y-6">
+      <div class="bg-stone-900 text-white rounded-3xl p-5 border border-stone-800 flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h2 class="font-black text-lg flex items-center gap-2 text-faso-gold">
+            <i data-lucide="crown" class="w-5 h-5"></i> Administration Fasso Tala
+          </h2>
+          <p class="text-xs text-stone-400">Validation des publications publiques (500 F), inscriptions tournois (250 F), création de tournois & catalogue beats.</p>
+        </div>
+        <button onclick="switchTab('public')" class="px-3.5 py-2 rounded-xl bg-white/10 text-xs font-bold">Retour Espace Public</button>
+      </div>
+
+      <!-- KPI RECETTES -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div class="bg-white dark:bg-faso-darkCard p-4 rounded-2xl border border-stone-200 dark:border-stone-800">
+          <span class="text-[10px] font-bold text-stone-400 uppercase">Recettes Validées</span>
+          <strong id="admin-kpi-total-cfa" class="text-xl font-black text-faso-green block mt-1">0 F CFA</strong>
+        </div>
+        <div class="bg-white dark:bg-faso-darkCard p-4 rounded-2xl border border-stone-200 dark:border-stone-800">
+          <span class="text-[10px] font-bold text-stone-400 uppercase">Demandes en attente</span>
+          <strong id="admin-kpi-pending-pay" class="text-xl font-black text-faso-orange block mt-1">0</strong>
+        </div>
+        <div class="bg-white dark:bg-faso-darkCard p-4 rounded-2xl border border-stone-200 dark:border-stone-800">
+          <span class="text-[10px] font-bold text-stone-400 uppercase">Artistes inscrits</span>
+          <strong id="admin-kpi-artists" class="text-xl font-black text-faso-gold block mt-1">0</strong>
+        </div>
+        <div class="bg-white dark:bg-faso-darkCard p-4 rounded-2xl border border-stone-200 dark:border-stone-800">
+          <span class="text-[10px] font-bold text-stone-400 uppercase">Sons Publics</span>
+          <strong id="admin-kpi-public-tracks" class="text-xl font-black text-faso-red block mt-1">0</strong>
+        </div>
+      </div>
+
+      <!-- PAIEMENTS ORANGE MONEY À VALIDER (500 F PUBLIC & 250 F TOURNOIS) -->
+      <div class="bg-white dark:bg-faso-darkCard rounded-3xl p-5 border border-stone-200 dark:border-stone-800 space-y-3">
+        <h3 class="font-black text-sm text-faso-orange">Paiements Orange Money (66 93 11 74) — 500 F Public / 250 F Tournoi</h3>
+        <div id="admin-payments-list" class="space-y-2.5"></div>
+      </div>
+
+      <!-- CRÉER UN NOUVEAU TOURNOI (EN LIGNE OU PHYSIQUE) -->
+      <form onsubmit="adminCreateTournament(event)" class="bg-white dark:bg-faso-darkCard rounded-3xl p-5 border border-stone-200 dark:border-stone-800 space-y-3">
+        <h3 class="font-black text-sm text-faso-gold">Lancer un Nouveau Tournoi (En Ligne ou Physique)</h3>
+        <div class="grid sm:grid-cols-3 gap-3">
+          <input type="text" id="new-tourn-title" required placeholder="Titre (Ex: Clash Rap Bobo Vol.1)" class="px-3.5 py-2.5 rounded-xl bg-stone-100 dark:bg-stone-800 text-xs outline-none" />
+          <select id="new-tourn-mode" class="px-3.5 py-2.5 rounded-xl bg-stone-100 dark:bg-stone-800 text-xs font-bold outline-none">
+            <option value="En ligne">Tournoi En Ligne</option>
+            <option value="Physique + En ligne">Tournoi Physique & En Ligne</option>
+          </select>
+          <input type="text" id="new-tourn-prize" required placeholder="Récompense (Ex: Trophée + 25 000 F)" class="px-3.5 py-2.5 rounded-xl bg-stone-100 dark:bg-stone-800 text-xs outline-none" />
+        </div>
+        <button type="submit" class="px-5 py-2.5 rounded-xl bg-faso-green text-white text-xs font-black">Publier le Tournoi (250 F l'entrée)</button>
+      </form>
+    </section>
+
+  </main>
+
+  <!-- MODAL CONNEXION / INSCRIPTION ARTISTE -->
+  <div id="modal-auth" class="hidden fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-faso-darkCard w-full max-w-md rounded-3xl p-6 space-y-4">
+      <div class="flex items-center justify-between">
+        <h3 id="auth-modal-title" class="font-black text-lg">Compte Artiste Fasso Tala</h3>
+        <button onclick="document.getElementById('modal-auth').classList.add('hidden')" class="p-1.5 rounded-full bg-stone-200 dark:bg-stone-800"><i data-lucide="x" class="w-4 h-4"></i></button>
+      </div>
+      <form onsubmit="submitArtistAuth(event)" class="space-y-3">
+        <input type="hidden" id="auth-mode" value="register" />
+        <div id="auth-register-fields" class="space-y-3">
+          <input type="text" id="auth-stage-name" placeholder="Nom d'artiste / Rappeur *" class="w-full px-3.5 py-2.5 rounded-xl bg-stone-100 dark:bg-stone-800 text-sm outline-none" />
+          <select id="auth-city" class="w-full px-3.5 py-2.5 rounded-xl bg-stone-100 dark:bg-stone-800 text-sm outline-none">
+            <option value="Bobo-Dioulasso">Bobo-Dioulasso</option>
+            <option value="Ouagadougou">Ouagadougou</option>
+            <option value="Koudougou">Koudougou</option>
+            <option value="Banfora">Banfora</option>
+            <option value="Ouahigouya">Ouahigouya</option>
+            <option value="Fada N'Gourma">Fada N'Gourma</option>
+          </select>
+          <input type="text" id="auth-bio" placeholder="Style musical / Bio courte" class="w-full px-3.5 py-2.5 rounded-xl bg-stone-100 dark:bg-stone-800 text-sm outline-none" />
+        </div>
+        <input type="tel" id="auth-phone" required placeholder="Numéro de téléphone *" class="w-full px-3.5 py-2.5 rounded-xl bg-stone-100 dark:bg-stone-800 text-sm outline-none" />
+        <input type="password" id="auth-pin" required placeholder="Code PIN (4 chiffres) *" class="w-full px-3.5 py-2.5 rounded-xl bg-stone-100 dark:bg-stone-800 text-sm outline-none" />
+        <button type="submit" class="w-full py-3 rounded-2xl bg-faso-green text-white font-black text-xs">Continuer</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL PAIEMENT ORANGE MONEY (500 F PUBLIC OU 250 F TOURNOI) -->
+  <div id="modal-payment" class="hidden fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-faso-darkCard w-full max-w-md rounded-3xl p-6 space-y-4">
+      <div class="flex items-center justify-between">
+        <h3 id="pay-modal-title" class="font-black text-base text-faso-orange">Paiement Orange Money</h3>
+        <button onclick="document.getElementById('modal-payment').classList.add('hidden')" class="p-1.5 rounded-full bg-stone-200 dark:bg-stone-800"><i data-lucide="x" class="w-4 h-4"></i></button>
+      </div>
+      <div class="p-3.5 rounded-2xl bg-orange-500/10 border border-faso-orange/40 text-xs space-y-1.5">
+        <p>Envoyez <strong id="pay-modal-amount" class="text-faso-orange text-sm">500 F CFA</strong> sur le numéro Orange Money :</p>
+        <div class="flex items-center justify-between bg-stone-900 text-white px-3 py-2 rounded-xl">
+          <strong class="text-base tracking-wider">66 93 11 74</strong>
+          <button type="button" onclick="copyOm66931174()" class="px-2.5 py-1 rounded bg-faso-orange text-xs font-black">Copier</button>
+        </div>
+        <p id="pay-modal-ussd" class="font-mono text-[11px] text-stone-400">*144*2*1*66931174*500#</p>
+      </div>
+      <form onsubmit="submitOrangeMoneyRequest(event)" class="space-y-3">
+        <input type="hidden" id="pay-purpose" value="public_track" />
+        <input type="hidden" id="pay-target-id" value="" />
+        <div id="pay-tournament-track-box" class="hidden">
+          <label class="block text-xs font-bold text-stone-400 mb-1">Choisir votre morceau pour le tournoi *</label>
+          <select id="pay-tournament-track-select" class="w-full px-3 py-2.5 rounded-xl bg-stone-100 dark:bg-stone-800 text-xs font-bold outline-none"></select>
+        </div>
+        <input type="tel" id="pay-sender-num" required placeholder="Votre numéro Orange Money *" class="w-full px-3.5 py-2.5 rounded-xl bg-stone-100 dark:bg-stone-800 text-sm outline-none" />
+        <input type="text" id="pay-sms-ref" required placeholder="Référence du SMS de transfert *" class="w-full px-3.5 py-2.5 rounded-xl bg-stone-100 dark:bg-stone-800 text-sm outline-none" />
+        <button type="submit" class="w-full py-3 rounded-2xl bg-faso-orange text-white font-black text-xs">Envoyer la preuve de paiement</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL PROFIL PUBLIC D'UN ARTISTE (VISITEURS, ABONNÉS, ÉCOUTES, LIKES, CHANSONS) -->
+  <div id="modal-artist-profile" class="hidden fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-faso-darkCard w-full max-w-lg max-h-[88vh] rounded-3xl overflow-hidden flex flex-col">
+      <div class="p-5 bg-gradient-to-r from-faso-red to-amber-700 text-white flex items-center justify-between">
+        <div>
+          <h3 id="prof-modal-name" class="text-xl font-black">Artiste</h3>
+          <p id="prof-modal-city" class="text-xs text-white/85">Ville</p>
+        </div>
+        <button onclick="document.getElementById('modal-artist-profile').classList.add('hidden')" class="p-2 rounded-full bg-black/30"><i data-lucide="x" class="w-4 h-4"></i></button>
+      </div>
+      <div class="p-5 space-y-4 overflow-y-auto">
+        <div class="grid grid-cols-4 gap-2 text-center bg-stone-100 dark:bg-stone-900 p-3 rounded-2xl text-xs">
+          <div><span class="text-[10px] text-stone-400 block">Visiteurs</span><strong id="prof-modal-views" class="text-faso-gold font-black">0</strong></div>
+          <div><span class="text-[10px] text-stone-400 block">Abonnés</span><strong id="prof-modal-subs" class="text-faso-green font-black">0</strong></div>
+          <div><span class="text-[10px] text-stone-400 block">Écoutes</span><strong id="prof-modal-plays" class="text-sky-400 font-black">0</strong></div>
+          <div><span class="text-[10px] text-stone-400 block">Likes</span><strong id="prof-modal-likes" class="text-faso-red font-black">0</strong></div>
+        </div>
+        <div class="flex gap-2">
+          <button id="prof-modal-sub-btn" type="button" class="flex-1 py-2.5 rounded-xl bg-faso-green text-white text-xs font-black">S'abonner</button>
+          <button id="prof-modal-sms-btn" type="button" class="flex-1 py-2.5 rounded-xl bg-stone-800 text-white text-xs font-black">SMS Privé</button>
+        </div>
+        <div class="space-y-2">
+          <h4 class="text-xs font-black uppercase text-stone-400">Chansons publiées en public</h4>
+          <div id="prof-modal-tracks" class="space-y-2"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL ACCÈS ADMIN -->
+  <div id="modal-admin-gate" class="hidden fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-faso-darkCard w-full max-w-sm rounded-3xl p-6 space-y-4">
+      <h3 class="font-black text-base text-center">Accès Administrateur Fasso Tala</h3>
+      <form onsubmit="verifyAdminLogin(event)" class="space-y-3">
+        <input type="tel" id="adm-phone-in" required placeholder="66 93 11 74" class="w-full px-3.5 py-2.5 rounded-xl bg-stone-100 dark:bg-stone-800 text-sm outline-none" />
+        <input type="password" id="adm-pin-in" required placeholder="Code secret (2260)" class="w-full px-3.5 py-2.5 rounded-xl bg-stone-100 dark:bg-stone-800 text-sm outline-none" />
+        <div class="flex gap-2">
+          <button type="button" onclick="document.getElementById('modal-admin-gate').classList.add('hidden')" class="flex-1 py-2.5 rounded-xl bg-stone-200 dark:bg-stone-800 text-xs font-bold">Annuler</button>
+          <button type="submit" class="flex-1 py-2.5 rounded-xl bg-faso-gold text-stone-950 text-xs font-black">Entrer</button>
+        </div>
+      </form>
+    </div>
+  </div> 
+  <script>
+    const STORAGE_KEY = 'fasso_tala_music_v1';
+
+    const BUILTIN_BEATS = [
+      { id: 'beat_ouaga_trap', title: 'Trap Ouaga 808', bpm: 140, style: 'Trap / Drill', pattern: [1,0,0,1, 0,0,1,0, 1,0,1,0, 0,1,0,0] },
+      { id: 'beat_bobo_boom', title: 'Bobo Boom-Bap Classic', bpm: 94, style: 'Rap Conscient', pattern: [1,0,0,0, 1,0,0,1, 0,0,1,0, 1,0,0,0] },
+      { id: 'beat_afro_faso', title: 'Afro-Rap Burkina Groove', bpm: 112, style: 'Afro Rap', pattern: [1,0,0,1, 0,0,1,0, 0,1,0,0, 1,0,1,0] },
+      { id: 'beat_drill_226', title: 'Drill 226 Street', bpm: 144, style: 'UK/BF Drill', pattern: [1,0,0,1, 0,0,1,0, 0,0,0,1, 0,1,0,0] }
+    ];
+
+    let appState = {
+      settings: {
+        appName: 'Fasso Tala',
+        omNumber: '66 93 11 74',
+        adminPin: '2260',
+        publicFee: 500,
+        tournamentFee: 250
+      },
+      currentUser: null,
+      isAdmin: false,
+      artists: [
+        {
+          id: 'art_demo_1',
+          stageName: 'MC Faso Flow',
+          city: 'Bobo-Dioulasso',
+          bio: 'Rappeur freestyle & beatmaker à Bobo 🇧🇫',
+          phone: '70000001',
+          pin: '1111',
+          profileViews: 18,
+          subscribers: ['art_demo_2']
+        },
+        {
+          id: 'art_demo_2',
+          stageName: 'Ouaga Queen Rap',
+          city: 'Ouagadougou',
+          bio: 'Voix mélodique & trap du Faso',
+          phone: '70000002',
+          pin: '2222',
+          profileViews: 24,
+          subscribers: ['art_demo_1']
+        }
+      ],
+      customBeats: [],
+      tracks: [
+        {
+          id: 'trk_demo_1',
+          artistId: 'art_demo_1',
+          artistName: 'MC Faso Flow',
+          city: 'Bobo-Dioulasso',
+          title: 'Freestyle Sya 226',
+          beatTitle: 'Trap Ouaga 808',
+          fx: 'Voix Chic',
+          isPublic: true,
+          publicStatus: 'validated',
+          plays: 42,
+          likes: 15,
+          likedBy: [],
+          mediaUrl: null,
+          mediaType: 'audio',
+          createdAt: Date.now() - 3600000
+        }
+      ],
+      tournaments: [
+        {
+          id: 'tourn_1',
+          title: 'Tournoi Rap Fasso Tala — Édition Bobo & Ouaga',
+          mode: 'En ligne & Finale Physique',
+          prize: 'Trophée Fasso Tala + 25 000 F CFA',
+          fee: 250,
+          entries: [
+            { artistId: 'art_demo_1', artistName: 'MC Faso Flow', trackId: 'trk_demo_1', trackTitle: 'Freestyle Sya 226', votes: 9, voters: [] }
+          ]
+        }
+      ],
+      payments: [],
+      smsThreads: {}
+    };
+
+    let selectedBeat = BUILTIN_BEATS[0];
+    let selectedFx = 'chic';
+    let beatInterval = null;
+    let audioCtx = null;
+    let mediaRecorder = null;
+    let recordedChunks = [];
+    let latestRecordedUrl = null;
+    let recSeconds = 0;
+    let recTimer = null;
+    let activeSmsPeerId = null;
+    let deferredInstallEvent = null;
+
+    function saveState() {
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(appState)); } catch (e) {}
+      if (window.FassoTalaDB && typeof window.FassoTalaDB.pushCloud === 'function') {
+        window.FassoTalaDB.pushCloud();
+      }
+    }
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          appState = { ...appState, ...parsed, settings: { ...appState.settings, ...(parsed.settings || {}) } };
+        }
+      } catch (e) {}
+    }
+
+    function notify(msg, type = 'info') {
+      const box = document.getElementById('toast-box');
+      const el = document.createElement('div');
+      const cls = type === 'ok' ? 'bg-faso-green text-white' : type === 'warn' ? 'bg-faso-orange text-white' : 'bg-stone-900 text-white border border-stone-700';
+      el.className = `${cls} px-4 py-2.5 rounded-2xl text-xs font-extrabold shadow-xl`;
+      el.textContent = msg;
+      box.appendChild(el);
+      setTimeout(() => el.remove(), 3000);
+    }
+
+    // PWA ANDROID & WEB
+    function initPWA() {
+      const manifest = {
+        name: 'Fasso Tala',
+        short_name: 'Fasso Tala',
+        start_url: window.location.pathname || './',
+        display: 'standalone',
+        background_color: '#0E0E11',
+        theme_color: '#0F7A4A',
+        icons: [{
+          src: 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192"><rect width="192" height="192" rx="40" fill="#0F7A4A"/><circle cx="96" cy="96" r="56" fill="#F59E0B"/><text x="96" y="112" font-size="54" text-anchor="middle" fill="#111" font-family="sans-serif" font-weight="bold">FT</text></svg>'),
+          sizes: '192x192',
+          type: 'image/svg+xml'
+        }]
+      };
+      const link = document.createElement('link');
+      link.rel = 'manifest';
+      link.href = URL.createObjectURL(new Blob([JSON.stringify(manifest)], { type: 'application/json' }));
+      document.head.appendChild(link);
+    }
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredInstallEvent = e;
+      document.getElementById('pwa-banner').classList.remove('hidden');
+    });
+
+    async function installFassoTalaApp() {
+      if (deferredInstallEvent) {
+        deferredInstallEvent.prompt();
+        await deferredInstallEvent.userChoice;
+        deferredInstallEvent = null;
+        document.getElementById('pwa-banner').classList.add('hidden');
+      } else {
+        notify('Dans Chrome Android : appuyez sur ⋮ en haut à droite puis "Installer l\'application".', 'info');
+      }
+    }
+
+    window.onload = function () {
+      loadState();
+      initPWA();
+      refreshAuthHeader();
+      renderPublicSpace();
+      renderBeatsCatalog();
+      renderTournamentsSpace();
+      renderPrivateSpace();
+      renderSmsSpace();
+      lucide.createIcons();
+    };
+
+    function switchTab(tab) {
+      ['public', 'studio', 'tournaments', 'private', 'messages', 'admin'].forEach(t => {
+        document.getElementById(`view-${t}`).classList.add('hidden');
+        const btn = document.getElementById(`nav-${t}`);
+        if (btn) btn.className = 'tab-btn px-4 py-2 rounded-xl text-xs font-bold text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 flex items-center gap-1.5';
+      });
+      document.getElementById(`view-${tab}`).classList.remove('hidden');
+      const activeBtn = document.getElementById(`nav-${tab}`);
+      if (activeBtn) activeBtn.className = 'tab-btn px-4 py-2 rounded-xl text-xs font-black bg-faso-red text-white flex items-center gap-1.5';
+
+      if (tab === 'public') renderPublicSpace();
+      if (tab === 'studio') renderBeatsCatalog();
+      if (tab === 'tournaments') renderTournamentsSpace();
+      if (tab === 'private') renderPrivateSpace();
+      if (tab === 'messages') renderSmsSpace();
+      if (tab === 'admin') renderAdminPanel();
+      lucide.createIcons();
+    }
+
+    // AUTHENTIFICATION ARTISTE
+    function openAuthModal(mode) {
+      document.getElementById('auth-mode').value = mode;
+      document.getElementById('auth-modal-title').textContent = mode === 'register' ? 'Créer mon compte Artiste' : 'Connexion Artiste';
+      document.getElementById('auth-register-fields').classList.toggle('hidden', mode !== 'register');
+      document.getElementById('modal-auth').classList.remove('hidden');
+    }
+
+    function submitArtistAuth(e) {
+      e.preventDefault();
+      const mode = document.getElementById('auth-mode').value;
+      const phone = document.getElementById('auth-phone').value.replace(/\D+/g, '');
+      const pin = document.getElementById('auth-pin').value.trim();
+
+      if (mode === 'register') {
+        const stageName = document.getElementById('auth-stage-name').value.trim();
+        const city = document.getElementById('auth-city').value;
+        const bio = document.getElementById('auth-bio').value.trim() || 'Artiste sur Fasso Tala 🇧🇫';
+        if (!stageName || !phone || !pin) return;
+
+        if (appState.artists.some(a => a.phone === phone)) {
+          notify('Ce numéro existe déjà. Connectez-vous !', 'warn');
+          return;
+        }
+        const artist = {
+          id: 'art_' + Date.now(),
+          stageName,
+          city,
+          bio,
+          phone,
+          pin,
+          profileViews: 1,
+          subscribers: []
+        };
+        appState.artists.unshift(artist);
+        appState.currentUser = artist;
+        saveState();
+        document.getElementById('modal-auth').classList.add('hidden');
+        refreshAuthHeader();
+        switchTab('private');
+        notify(`Bienvenue ${stageName} sur Fasso Tala ! 🎤`, 'ok');
+      } else {
+        const found = appState.artists.find(a => a.phone === phone && a.pin === pin);
+        if (!found) {
+          notify('Numéro ou code PIN incorrect.', 'warn');
+          return;
+        }
+        appState.currentUser = found;
+        saveState();
+        document.getElementById('modal-auth').classList.add('hidden');
+        refreshAuthHeader();
+        switchTab('private');
+        notify(`Bon retour ${found.stageName} !`, 'ok');
+      }
+    }
+
+    function refreshAuthHeader() {
+      const u = appState.currentUser;
+      document.getElementById('guest-auth-actions').classList.toggle('hidden', Boolean(u));
+      document.getElementById('member-auth-actions').classList.toggle('hidden', !u);
+      if (u) {
+        const badge = document.getElementById('header-artist-badge');
+        badge.textContent = `🎤 ${u.stageName}`;
+        badge.classList.remove('hidden');
+      }
+      document.getElementById('btn-open-admin').classList.toggle('hidden', !appState.isAdmin);
+    }
+
+    function logoutArtist() {
+      stopBeatPlayback();
+      appState.currentUser = null;
+      appState.isAdmin = false;
+      saveState();
+      refreshAuthHeader();
+      switchTab('public');
+      notify('Déconnecté.', 'info');
+    }
+
+    // 1. ESPACE PUBLIC (ARTISTES, ABONNEMENTS, ÉCOUTES, LIKES)
+    function renderPublicSpace() {
+      const artistsBar = document.getElementById('public-artists-bar');
+      artistsBar.innerHTML = appState.artists.map(art => {
+        const subsCount = Array.isArray(art.subscribers) ? art.subscribers.length : 0;
+        return `
+          <div onclick="openArtistProfileModal('${art.id}')" class="min-w-[165px] bg-white dark:bg-faso-darkCard rounded-2xl p-3.5 border border-stone-200 dark:border-stone-800 cursor-pointer hover:border-faso-gold transition shrink-0">
+            <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-faso-red to-faso-gold text-white font-black flex items-center justify-center text-sm mb-2">
+              ${art.stageName.slice(0, 2).toUpperCase()}
+            </div>
+            <h4 class="font-extrabold text-xs truncate">${art.stageName}</h4>
+            <p class="text-[10px] text-stone-400 truncate">${art.city}</p>
+            <div class="mt-2 flex items-center justify-between text-[10px] font-bold text-faso-green">
+              <span>${subsCount} abonné${subsCount > 1 ? 's' : ''}</span>
+              <span>👁️ ${art.profileViews || 0}</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      const publicTracks = appState.tracks.filter(t => t.isPublic && t.publicStatus === 'validated');
+      document.getElementById('public-tracks-count').textContent = `${publicTracks.length} titre${publicTracks.length > 1 ? 's' : ''}`;
+
+      const grid = document.getElementById('public-feed-grid');
+      grid.innerHTML = publicTracks.length === 0
+        ? `<div class="col-span-full bg-white dark:bg-faso-darkCard rounded-3xl p-8 text-center text-xs text-stone-400">Aucune chanson publique validée pour le moment.</div>`
+        : publicTracks.map(trk => `
+          <article class="bg-white dark:bg-faso-darkCard rounded-3xl p-4 border border-stone-200 dark:border-stone-800 space-y-3">
+            <div class="flex items-center justify-between gap-2">
+              <div onclick="openArtistProfileModal('${trk.artistId}')" class="flex items-center gap-2.5 cursor-pointer">
+                <div class="w-10 h-10 rounded-xl bg-faso-red text-white font-black text-xs flex items-center justify-center">
+                  ${(trk.artistName || 'FT').slice(0, 2).toUpperCase()}
+                </div>
+                <div>
+                  <h4 class="font-black text-sm hover:text-faso-gold">${trk.title}</h4>
+                  <p class="text-[11px] text-stone-400">${trk.artistName} • ${trk.city} • ${trk.fx || 'Studio'}</p>
+                </div>
+              </div>
+              <span class="px-2.5 py-1 rounded-full bg-faso-green/15 text-faso-green text-[10px] font-black">Public</span>
+            </div>
+
+            ${trk.mediaUrl
+              ? (trk.mediaType === 'video'
+                ? `<video src="${trk.mediaUrl}" controls onplay="registerTrackPlay('${trk.id}')" class="w-full h-56 rounded-2xl bg-black object-cover"></video>`
+                : `<audio src="${trk.mediaUrl}" controls onplay="registerTrackPlay('${trk.id}')" class="w-full h-10"></audio>`)
+              : `<div class="p-3 rounded-2xl bg-stone-100 dark:bg-stone-900 flex items-center justify-between">
+                  <span class="text-xs font-bold text-stone-400">Beat : ${trk.beatTitle || 'Instru Fasso Tala'}</span>
+                  <button type="button" onclick="registerTrackPlay('${trk.id}'); playSyntheticBeat('${BUILTIN_BEATS[0].id}');" class="px-3 py-1.5 rounded-xl bg-faso-red text-white text-xs font-black">▶ Écouter</button>
+                </div>`
+            }
+
+            <div class="flex items-center justify-between pt-2 border-t border-stone-200 dark:border-stone-800 text-xs">
+              <div class="flex items-center gap-3 font-bold text-stone-400">
+                <span>🎧 ${trk.plays || 0} écoutes</span>
+                <button type="button" onclick="likePublicTrack('${trk.id}')" class="text-faso-red font-black">❤️ ${trk.likes || 0} J'aime</button>
+              </div>
+              <button type="button" onclick="openSmsWithArtist('${trk.artistId}')" class="px-3 py-1.5 rounded-xl bg-stone-100 dark:bg-stone-800 font-bold hover:text-faso-gold">SMS Privé</button>
+            </div>
+          </article>
+        `).join('');
+      lucide.createIcons();
+    }
+
+    function registerTrackPlay(trackId) {
+      const trk = appState.tracks.find(t => t.id === trackId);
+      if (!trk) return;
+      trk.plays = (trk.plays || 0) + 1;
+      saveState();
+    }
+
+    function likePublicTrack(trackId) {
+      const trk = appState.tracks.find(t => t.id === trackId);
+      if (!trk) return;
+      trk.likes = (trk.likes || 0) + 1;
+      saveState();
+      renderPublicSpace();
+      notify('Mention J\'aime ajoutée ❤️', 'ok');
+    }
+
+    function openArtistProfileModal(artistId) {
+      const art = appState.artists.find(a => a.id === artistId);
+      if (!art) return;
+      if (!appState.currentUser || appState.currentUser.id !== art.id) {
+        art.profileViews = (art.profileViews || 0) + 1;
+        saveState();
+      }
+      const artTracks = appState.tracks.filter(t => t.artistId === art.id && t.isPublic && t.publicStatus === 'validated');
+      const totalPlays = appState.tracks.filter(t => t.artistId === art.id).reduce((s, t) => s + (t.plays || 0), 0);
+      const totalLikes = appState.tracks.filter(t => t.artistId === art.id).reduce((s, t) => s + (t.likes || 0), 0);
+      const subs = Array.isArray(art.subscribers) ? art.subscribers : [];
+      const isSub = appState.currentUser && subs.includes(appState.currentUser.id);
+
+      document.getElementById('prof-modal-name').textContent = art.stageName;
+      document.getElementById('prof-modal-city').textContent = `${art.city} • ${art.bio || ''}`;
+      document.getElementById('prof-modal-views').textContent = art.profileViews || 0;
+      document.getElementById('prof-modal-subs').textContent = subs.length;
+      document.getElementById('prof-modal-plays').textContent = totalPlays;
+      document.getElementById('prof-modal-likes').textContent = totalLikes;
+
+      const subBtn = document.getElementById('prof-modal-sub-btn');
+      subBtn.textContent = isSub ? '✓ Abonné' : '+ S\'abonner';
+      subBtn.onclick = () => toggleSubscribeArtist(art.id);
+
+      document.getElementById('prof-modal-sms-btn').onclick = () => {
+        document.getElementById('modal-artist-profile').classList.add('hidden');
+        openSmsWithArtist(art.id);
+      };
+
+      document.getElementById('prof-modal-tracks').innerHTML = artTracks.length === 0
+        ? `<p class="text-xs text-stone-400">Aucune chanson publique pour l'instant.</p>`
+        : artTracks.map(t => `<div class="p-2.5 rounded-xl bg-stone-100 dark:bg-stone-800 text-xs flex justify-between"><strong>${t.title}</strong><span>🎧 ${t.plays || 0} • ❤️ ${t.likes || 0}</span></div>`).join('');
+
+      document.getElementById('modal-artist-profile').classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function toggleSubscribeArtist(artistId) {
+      if (!appState.currentUser) {
+        notify('Connectez-vous pour vous abonner à un artiste.', 'warn');
+        openAuthModal('login');
+        return;
+      }
+      if (appState.currentUser.id === artistId) return;
+      const art = appState.artists.find(a => a.id === artistId);
+      if (!art) return;
+      if (!Array.isArray(art.subscribers)) art.subscribers = [];
+      const idx = art.subscribers.indexOf(appState.currentUser.id);
+      if (idx === -1) {
+        art.subscribers.push(appState.currentUser.id);
+        notify(`Abonné à ${art.stageName} !`, 'ok');
+      } else {
+        art.subscribers.splice(idx, 1);
+        notify(`Désabonné de ${art.stageName}.`, 'info');
+      }
+      saveState();
+      openArtistProfileModal(artistId);
+      renderPublicSpace();
+    }
+
+    // 2. STUDIO RAP, BEATS & EFFETS VOCAUX
+    function renderBeatsCatalog() {
+      const list = document.getElementById('beats-catalog-list');
+      const allBeats = [...BUILTIN_BEATS, ...appState.customBeats];
+      list.innerHTML = allBeats.map(b => {
+        const active = selectedBeat && selectedBeat.id === b.id;
+        return `
+          <div class="p-3 rounded-2xl border ${active ? 'border-faso-gold bg-amber-500/10' : 'border-stone-200 dark:border-stone-800 bg-stone-50 dark:bg-stone-900/70'} flex items-center justify-between gap-2">
+            <div class="min-w-0">
+              <h4 class="font-extrabold text-xs truncate">${b.title}</h4>
+              <p class="text-[10px] text-stone-400">${b.style || 'Beat Importé'} • ${b.bpm || 120} BPM</p>
+            </div>
+            <div class="flex items-center gap-1.5 shrink-0">
+              <button type="button" onclick="selectAndPlayBeat('${b.id}')" class="px-3 py-1.5 rounded-xl bg-faso-red text-white text-xs font-black">▶ Jouer</button>
+              <button type="button" onclick="stopBeatPlayback()" class="px-2.5 py-1.5 rounded-xl bg-stone-200 dark:bg-stone-800 text-xs font-bold">⏹</button>
+              <button type="button" onclick="downloadBeatFile('${b.id}')" class="px-2.5 py-1.5 rounded-xl bg-faso-green/20 text-faso-green text-xs font-black" title="Télécharger l'instru">⬇</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function handleImportBeat(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const url = URL.createObjectURL(file);
+      const custom = {
+        id: 'cbeat_' + Date.now(),
+        title: file.name.replace(/\.[^/.]+$/, ''),
+        style: 'Instru Importée',
+        bpm: 120,
+        audioUrl: url
+      };
+      appState.customBeats.unshift(custom);
+      selectedBeat = custom;
+      document.getElementById('studio-selected-beat-label').textContent = `Beat sélectionné : ${custom.title}`;
+      renderBeatsCatalog();
+      selectAndPlayBeat(custom.id);
+      notify('Instrumental importé dans le studio !', 'ok');
+    }
+
+    function selectAndPlayBeat(beatId) {
+      const all = [...BUILTIN_BEATS, ...appState.customBeats];
+      const beat = all.find(b => b.id === beatId);
+      if (!beat) return;
+      selectedBeat = beat;
+      document.getElementById('studio-selected-beat-label').textContent = `Beat sélectionné : ${beat.title}`;
+      renderBeatsCatalog();
+      stopBeatPlayback();
+
+      if (beat.audioUrl) {
+        const player = document.getElementById('studio-beat-player');
+        player.src = beat.audioUrl;
+        player.play().catch(() => {});
+      } else {
+        playSyntheticBeat(beat.id);
+      }
+    }
+
+    function playSyntheticBeat(beatId) {
+      stopBeatPlayback();
+      const beat = BUILTIN_BEATS.find(b => b.id === beatId) || BUILTIN_BEATS[0];
+      audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+      let step = 0;
+      const stepMs = (60 / beat.bpm / 4) * 1000;
+
+      beatInterval = setInterval(() => {
+        if (!audioCtx) return;
+        const now = audioCtx.currentTime;
+        // Hi-hat régulier
+        const hatOsc = audioCtx.createOscillator();
+        const hatGain = audioCtx.createGain();
+        hatOsc.type = 'square';
+        hatOsc.frequency.setValueAtTime(6500, now);
+        hatGain.gain.setValueAtTime(0.03, now);
+        hatGain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
+        hatOsc.connect(hatGain).connect(audioCtx.destination);
+        hatOsc.start(now);
+        hatOsc.stop(now + 0.04);
+
+        // Kick 808
+        if (beat.pattern[step % 16] === 1) {
+          const kickOsc = audioCtx.createOscillator();
+          const kickGain = audioCtx.createGain();
+          kickOsc.type = 'sine';
+          kickOsc.frequency.setValueAtTime(135, now);
+          kickOsc.frequency.exponentialRampToValueAtTime(42, now + 0.18);
+          kickGain.gain.setValueAtTime(0.35, now);
+          kickGain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+          kickOsc.connect(kickGain).connect(audioCtx.destination);
+          kickOsc.start(now);
+          kickOsc.stop(now + 0.2);
+        }
+
+        // Snare / Clap sur les temps 4 et 12
+        if (step % 16 === 4 || step % 16 === 12) {
+          const snOsc = audioCtx.createOscillator();
+          const snGain = audioCtx.createGain();
+          snOsc.type = 'triangle';
+          snOsc.frequency.setValueAtTime(220, now);
+          snGain.gain.setValueAtTime(0.22, now);
+          snGain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+          snOsc.connect(snGain).connect(audioCtx.destination);
+          snOsc.start(now);
+          snOsc.stop(now + 0.12);
+        }
+        step++;
+      }, stepMs);
+    }
+
+    function stopBeatPlayback() {
+      if (beatInterval) {
+        clearInterval(beatInterval);
+        beatInterval = null;
+      }
+      const player = document.getElementById('studio-beat-player');
+      if (player) {
+        player.pause();
+        player.currentTime = 0;
+      }
+    }
+
+    function downloadBeatFile(beatId) {
+      const custom = appState.customBeats.find(b => b.id === beatId);
+      if (custom && custom.audioUrl) {
+        const a = document.createElement('a');
+        a.href = custom.audioUrl;
+        a.download = `${custom.title}.mp3`;
+        a.click();
+        return;
+      }
+      notify('Beat intégré prêt dans le studio ! Vous pouvez aussi importer vos MP3 pour les télécharger.', 'info');
+    }
+
+    function selectVoiceEffect(fx) {
+      selectedFx = fx;
+      ['chic', 'reverb', 'echo', 'natural'].forEach(k => {
+        const btn = document.getElementById(`fx-${k}`);
+        if (btn) btn.className = k === fx
+          ? 'fx-btn py-2 px-2.5 rounded-xl bg-faso-red text-white text-xs font-black'
+          : 'fx-btn py-2 px-2.5 rounded-xl bg-stone-100 dark:bg-stone-800 text-xs font-bold';
+      });
+    }
+
+    async function startVocalRecording() {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        recordedChunks = [];
+        mediaRecorder = new MediaRecorder(stream);
+        mediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) recordedChunks.push(e.data); };
+        mediaRecorder.onstop = () => {
+          const blob = new Blob(recordedChunks, { type: 'audio/webm' });
+          latestRecordedUrl = URL.createObjectURL(blob);
+          const audioEl = document.getElementById('recorded-audio-el');
+          audioEl.src = latestRecordedUrl;
+          document.getElementById('recorded-preview-box').classList.remove('hidden');
+          stream.getTracks().forEach(t => t.stop());
+        };
+        mediaRecorder.start();
+        selectAndPlayBeat(selectedBeat.id);
+
+        recSeconds = 0;
+        document.getElementById('rec-timer-badge').textContent = '00:00';
+        recTimer = setInterval(() => {
+          recSeconds++;
+          const m = String(Math.floor(recSeconds / 60)).padStart(2, '0');
+          const s = String(recSeconds % 60).padStart(2, '0');
+          document.getElementById('rec-timer-badge').textContent = `${m}:${s}`;
+        }, 1000);
+
+        document.getElementById('btn-start-rec').classList.add('hidden');
+        document.getElementById('btn-stop-rec').classList.remove('hidden');
+        notify('Enregistrement en cours... Chantez sur le beat ! 🎤', 'ok');
+      } catch (err) {
+        notify('Autorisez l\'accès au microphone pour enregistrer votre voix.', 'warn');
+      }
+    }
+
+    function stopVocalRecording() {
+      if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+        mediaRecorder.stop();
+      }
+      stopBeatPlayback();
+      clearInterval(recTimer);
+      document.getElementById('btn-stop-rec').classList.add('hidden');
+      document.getElementById('btn-start-rec').classList.remove('hidden');
+      notify('Enregistrement terminé ! Écoutez votre prise.', 'ok');
+    }
+
+    function playRecordedMixWithFx() {
+      const audioEl = document.getElementById('recorded-audio-el');
+      if (!audioEl || !audioEl.src) return;
+      audioEl.currentTime = 0;
+      audioEl.play();
+      notify(`Lecture avec effet : ${selectedFx.toUpperCase()}`, 'info');
+    }
+
+    function saveRecordedTrackToPrivate(e) {
+      e.preventDefault();
+      if (!appState.currentUser) {
+        notify('Créez un compte ou connectez-vous pour enregistrer dans votre espace privé.', 'warn');
+        openAuthModal('register');
+        return;
+      }
+      const title = document.getElementById('track-title-input').value.trim();
+      const fileInput = document.getElementById('direct-media-upload');
+      let mediaUrl = latestRecordedUrl;
+      let mediaType = 'audio';
+
+      if (fileInput.files && fileInput.files[0]) {
+        mediaUrl = URL.createObjectURL(fileInput.files[0]);
+        mediaType = fileInput.files[0].type.startsWith('video/') ? 'video' : 'audio';
+      }
+
+      const fxNames = { chic: 'Voix Chic', reverb: 'Réverb Studio', echo: 'Écho Rap', natural: 'Voix Pure' };
+      const newTrack = {
+        id: 'trk_' + Date.now(),
+        artistId: appState.currentUser.id,
+        artistName: appState.currentUser.stageName,
+        city: appState.currentUser.city,
+        title,
+        beatTitle: selectedBeat ? selectedBeat.title : 'Instru Studio',
+        fx: fxNames[selectedFx] || 'Voix Chic',
+        isPublic: false,
+        publicStatus: 'private',
+        plays: 0,
+        likes: 0,
+        likedBy: [],
+        mediaUrl,
+        mediaType,
+        createdAt: Date.now()
+      };
+
+      appState.tracks.unshift(newTrack);
+      saveState();
+      document.getElementById('track-title-input').value = '';
+      fileInput.value = '';
+      latestRecordedUrl = null;
+      document.getElementById('recorded-preview-box').classList.add('hidden');
+      switchTab('private');
+      notify('Chanson enregistrée gratuitement dans votre Espace Privé !', 'ok');
+    }
+
+    // 3. TOURNOIS EN LIGNE & PHYSIQUES (250 F CFA)
+    function renderTournamentsSpace() {
+      const grid = document.getElementById('tournaments-list-grid');
+      grid.innerHTML = appState.tournaments.map(t => `
+        <div class="bg-white dark:bg-faso-darkCard rounded-3xl p-5 border border-stone-200 dark:border-stone-800 space-y-4">
+          <div class="flex items-start justify-between gap-2">
+            <div>
+              <span class="px-2.5 py-0.5 rounded-full bg-faso-gold/20 text-faso-gold text-[10px] font-black">${t.mode}</span>
+              <h3 class="font-black text-base mt-1">${t.title}</h3>
+              <p class="text-xs text-faso-green font-bold mt-0.5">🏆 Récompense : ${t.prize}</p>
+            </div>
+            <button type="button" onclick="openTournamentJoinModal('${t.id}')" class="px-3.5 py-2 rounded-xl bg-faso-orange text-white text-xs font-black shrink-0">
+              Participer (250 F)
+            </button>
+          </div>
+
+          <div class="space-y-2">
+            <h4 class="text-xs font-extrabold text-stone-400 uppercase">Candidats & Votes en direct</h4>
+            ${(t.entries || []).length === 0
+              ? `<p class="text-xs text-stone-400">Aucun participant validé pour l'instant.</p>`
+              : t.entries.map((ent, idx) => `
+                <div class="p-3 rounded-2xl bg-stone-100 dark:bg-stone-900 flex items-center justify-between gap-2">
+                  <div>
+                    <span class="text-xs font-black">#${idx + 1} ${ent.artistName}</span>
+                    <p class="text-[11px] text-stone-400">Morceau : ${ent.trackTitle}</p>
+                  </div>
+                  <button type="button" onclick="voteTournamentEntry('${t.id}', '${ent.artistId}')" class="px-3 py-1.5 rounded-xl bg-faso-green text-white text-xs font-black">
+                    Voter (${ent.votes || 0})
+                  </button>
+                </div>
+              `).join('')
+            }
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function voteTournamentEntry(tournId, artistId) {
+      const t = appState.tournaments.find(x => x.id === tournId);
+      if (!t) return;
+      const ent = (t.entries || []).find(e => e.artistId === artistId);
+      if (!ent) return;
+      ent.votes = (ent.votes || 0) + 1;
+      saveState();
+      renderTournamentsSpace();
+      notify(`Vote enregistré pour ${ent.artistName} ! 🏆`, 'ok');
+    }
+
+    function openTournamentJoinModal(tournId) {
+      if (!appState.currentUser) {
+        notify('Connectez-vous d\'abord pour participer au tournoi.', 'warn');
+        openAuthModal('login');
+        return;
+      }
+      const myTracks = appState.tracks.filter(t => t.artistId === appState.currentUser.id);
+      if (myTracks.length === 0) {
+        notify('Enregistrez d\'abord un morceau dans le Studio avant de rejoindre un tournoi.', 'warn');
+        switchTab('studio');
+        return;
+      }
+      document.getElementById('pay-purpose').value = 'tournament';
+      document.getElementById('pay-target-id').value = tournId;
+      document.getElementById('pay-modal-title').textContent = 'Inscription Tournoi Rap (250 F CFA)';
+      document.getElementById('pay-modal-amount').textContent = '250 F CFA';
+      document.getElementById('pay-modal-ussd').textContent = '*144*2*1*66931174*250#';
+      document.getElementById('pay-tournament-track-box').classList.remove('hidden');
+      document.getElementById('pay-tournament-track-select').innerHTML = myTracks.map(m => `<option value="${m.id}">${m.title}</option>`).join('');
+      document.getElementById('modal-payment').classList.remove('hidden');
+    }
+
+    // 4. ESPACE PRIVÉ, STATISTIQUES & PASSAGE EN PUBLIC (500 F CFA)
+    function renderPrivateSpace() {
+      const u = appState.currentUser;
+      document.getElementById('private-guest-notice').classList.toggle('hidden', Boolean(u));
+      document.getElementById('private-member-dashboard').classList.toggle('hidden', !u);
+      if (!u) return;
+
+      const freshArtist = appState.artists.find(a => a.id === u.id) || u;
+      appState.currentUser = freshArtist;
+      const myTracks = appState.tracks.filter(t => t.artistId === freshArtist.id);
+      const publicCount = myTracks.filter(t => t.isPublic && t.publicStatus === 'validated').length;
+      const privateCount = myTracks.length - publicCount;
+      const totalPlays = myTracks.reduce((s, t) => s + (t.plays || 0), 0);
+      const totalLikes = myTracks.reduce((s, t) => s + (t.likes || 0), 0);
+      const subs = Array.isArray(freshArtist.subscribers) ? freshArtist.subscribers.length : 0;
+
+      document.getElementById('my-artist-avatar').textContent = freshArtist.stageName.slice(0, 2).toUpperCase();
+      document.getElementById('my-artist-name').textContent = freshArtist.stageName;
+      document.getElementById('my-artist-meta').textContent = `${freshArtist.city} • Tél : ${freshArtist.phone}`;
+      document.getElementById('my-artist-bio').textContent = freshArtist.bio || '';
+
+      document.getElementById('stat-profile-views').textContent = freshArtist.profileViews || 0;
+      document.getElementById('stat-subscribers').textContent = subs;
+      document.getElementById('stat-total-plays').textContent = totalPlays;
+      document.getElementById('stat-total-likes').textContent = totalLikes;
+      document.getElementById('stat-tracks-split').textContent = `${privateCount} / ${publicCount}`;
+
+      const list = document.getElementById('my-private-tracks-list');
+      list.innerHTML = myTracks.length === 0
+        ? `<p class="text-xs text-stone-400">Vous n'avez pas encore enregistré de morceau. Allez dans l'onglet Studio & Beats !</p>`
+        : myTracks.map(t => {
+          const badge = t.publicStatus === 'validated'
+            ? `<span class="px-2.5 py-1 rounded-full bg-faso-green/20 text-faso-green text-[10px] font-black">Publié en Espace Public</span>`
+            : t.publicStatus === 'pending'
+              ? `<span class="px-2.5 py-1 rounded-full bg-faso-orange/20 text-faso-orange text-[10px] font-black">Validation 500 F en cours</span>`
+              : `<button type="button" onclick="openPublishPublicModal('${t.id}')" class="px-3 py-1.5 rounded-xl bg-faso-orange text-white text-xs font-black">Publier en Public (500 F)</button>`;
+
+          return `
+            <div class="p-3.5 rounded-2xl bg-stone-100 dark:bg-stone-900 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <h4 class="font-black text-xs">${t.title}</h4>
+                <p class="text-[11px] text-stone-400">Beat : ${t.beatTitle} • Effet : ${t.fx} • 🎧 ${t.plays || 0} • ❤️ ${t.likes || 0}</p>
+              </div>
+              <div class="flex items-center gap-2">
+                ${badge}
+                <button type="button" onclick="deleteOwnTrack('${t.id}')" class="px-2.5 py-1.5 rounded-xl bg-rose-500/15 text-rose-500 text-xs font-bold">Supprimer</button>
+              </div>
+            </div>
+          `;
+        }).join('');
+    }
+
+    function openPublishPublicModal(trackId) {
+      document.getElementById('pay-purpose').value = 'public_track';
+      document.getElementById('pay-target-id').value = trackId;
+      document.getElementById('pay-modal-title').textContent = 'Publier en Espace Public (500 F CFA)';
+      document.getElementById('pay-modal-amount').textContent = '500 F CFA';
+      document.getElementById('pay-modal-ussd').textContent = '*144*2*1*66931174*500#';
+      document.getElementById('pay-tournament-track-box').classList.add('hidden');
+      document.getElementById('modal-payment').classList.remove('hidden');
+    }
+
+    function copyOm66931174() {
+      const inp = document.createElement('input');
+      inp.value = '66 93 11 74';
+      document.body.appendChild(inp);
+      inp.select();
+      document.execCommand('copy');
+      document.body.removeChild(inp);
+      notify('Numéro 66 93 11 74 copié !', 'ok');
+    }
+
+    function submitOrangeMoneyRequest(e) {
+      e.preventDefault();
+      if (!appState.currentUser) return;
+      const purpose = document.getElementById('pay-purpose').value;
+      const targetId = document.getElementById('pay-target-id').value;
+      const senderNum = document.getElementById('pay-sender-num').value.trim();
+      const smsRef = document.getElementById('pay-sms-ref').value.trim();
+      const chosenTrackId = purpose === 'tournament' ? document.getElementById('pay-tournament-track-select').value : targetId;
+      const trk = appState.tracks.find(t => t.id === chosenTrackId);
+
+      if (purpose === 'public_track' && trk) {
+        trk.publicStatus = 'pending';
+      }
+
+      appState.payments.unshift({
+        id: 'pay_' + Date.now(),
+        purpose,
+        amount: purpose === 'public_track' ? 500 : 250,
+        artistId: appState.currentUser.id,
+        artistName: appState.currentUser.stageName,
+        targetId,
+        trackId: chosenTrackId,
+        trackTitle: trk ? trk.title : 'Morceau',
+        senderNum,
+        smsRef,
+        status: 'pending'
+      });
+
+      saveState();
+      document.getElementById('modal-payment').classList.add('hidden');
+      renderPrivateSpace();
+      notify('Preuve envoyée ! Activation dès validation sur le 66 93 11 74.', 'warn');
+    }
+
+    function deleteOwnTrack(trackId) {
+      appState.tracks = appState.tracks.filter(t => t.id !== trackId);
+      saveState();
+      renderPrivateSpace();
+      renderPublicSpace();
+      notify('Morceau supprimé.', 'info');
+    }
+
+    // 5. SMS PRIVÉS
+    function openSmsWithArtist(artistId) {
+      if (!appState.currentUser) {
+        notify('Connectez-vous pour envoyer un SMS privé.', 'warn');
+        openAuthModal('login');
+        return;
+      }
+      activeSmsPeerId = artistId;
+      switchTab('messages');
+    }
+
+    function renderSmsSpace() {
+      const list = document.getElementById('sms-contacts-list');
+      const peers = appState.artists.filter(a => !appState.currentUser || a.id !== appState.currentUser.id);
+      list.innerHTML = peers.map(p => `
+        <button type="button" onclick="selectSmsPeer('${p.id}')" class="w-full text-left p-2.5 rounded-xl ${activeSmsPeerId === p.id ? 'bg-faso-red text-white' : 'bg-stone-100 dark:bg-stone-900'} text-xs font-bold">
+          ${p.stageName} • ${p.city}
+        </button>
+      `).join('');
+      if (activeSmsPeerId) selectSmsPeer(activeSmsPeerId);
+    }
+
+    function selectSmsPeer(peerId) {
+      activeSmsPeerId = peerId;
+      const peer = appState.artists.find(a => a.id === peerId);
+      if (!peer || !appState.currentUser) return;
+      const key = [appState.currentUser.id, peerId].sort().join('_');
+      const msgs = appState.smsThreads[key] || [];
+      document.getElementById('sms-thread-header').textContent = `SMS privé avec ${peer.stageName} (${peer.city})`;
+      const box = document.getElementById('sms-bubbles-box');
+      box.innerHTML = msgs.length === 0
+        ? `<p class="text-xs text-stone-400 text-center py-6">Aucun SMS pour le moment.</p>`
+        : msgs.map(m => `
+          <div class="flex flex-col ${m.from === appState.currentUser.id ? 'items-end' : 'items-start'}">
+            <span class="px-3.5 py-2 rounded-2xl text-xs ${m.from === appState.currentUser.id ? 'bg-faso-green text-white' : 'bg-white dark:bg-stone-800'}">${m.text}</span>
+          </div>
+        `).join('');
+    }
+
+    function sendPrivateSms(e) {
+      e.preventDefault();
+      if (!appState.currentUser || !activeSmsPeerId) return;
+      const inp = document.getElementById('sms-input-text');
+      const text = inp.value.trim();
+      if (!text) return;
+      const key = [appState.currentUser.id, activeSmsPeerId].sort().join('_');
+      if (!Array.isArray(appState.smsThreads[key])) appState.smsThreads[key] = [];
+      appState.smsThreads[key].push({ from: appState.currentUser.id, text, at: Date.now() });
+      inp.value = '';
+      saveState();
+      selectSmsPeer(activeSmsPeerId);
+    }
+
+    // 6. ADMINISTRATION (VALIDATION 500 F PUBLIC & 250 F TOURNOIS)
+    function openAdminGate() {
+      document.getElementById('modal-admin-gate').classList.remove('hidden');
+    }
+
+    function verifyAdminLogin(e) {
+      e.preventDefault();
+      const ph = document.getElementById('adm-phone-in').value.replace(/\D+/g, '');
+      const pin = document.getElementById('adm-pin-in').value.trim();
+      if (ph === '66931174' && pin === appState.settings.adminPin) {
+        appState.isAdmin = true;
+        saveState();
+        refreshAuthHeader();
+        document.getElementById('modal-admin-gate').classList.add('hidden');
+        switchTab('admin');
+        notify('Espace Administrateur ouvert.', 'ok');
+      } else {
+        notify('Identifiants administrateur incorrects.', 'warn');
+      }
+    }
+
+    function openAdminPanel() {
+      if (!appState.isAdmin) return openAdminGate();
+      switchTab('admin');
+    }
+
+    function renderAdminPanel() {
+      const validated = appState.payments.filter(p => p.status === 'validated');
+      const pending = appState.payments.filter(p => p.status === 'pending');
+      const totalCfa = validated.reduce((s, p) => s + (p.amount || 0), 0);
+
+      document.getElementById('admin-kpi-total-cfa').textContent = `${totalCfa.toLocaleString('fr-FR')} F CFA`;
+      document.getElementById('admin-kpi-pending-pay').textContent = pending.length;
+      document.getElementById('admin-kpi-artists').textContent = appState.artists.length;
+      document.getElementById('admin-kpi-public-tracks').textContent = appState.tracks.filter(t => t.isPublic && t.publicStatus === 'validated').length;
+
+      const list = document.getElementById('admin-payments-list');
+      list.innerHTML = appState.payments.length === 0
+        ? `<p class="text-xs text-stone-400">Aucune demande de paiement enregistrée.</p>`
+        : appState.payments.map(p => `
+          <div class="p-3.5 rounded-2xl bg-stone-100 dark:bg-stone-900 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div class="text-xs">
+              <strong>${p.artistName}</strong> — <span class="text-faso-orange font-black">${p.amount} F CFA</span> (${p.purpose === 'public_track' ? 'Passage en Espace Public' : 'Inscription Tournoi'})
+              <p class="text-stone-400">Morceau : ${p.trackTitle} • Tél : ${p.senderNum} • SMS : <code>${p.smsRef}</code></p>
+            </div>
+            <div class="flex gap-1.5">
+              ${p.status === 'pending'
+                ? `<button onclick="validateFassoPayment('${p.id}')" class="px-3 py-1.5 rounded-xl bg-faso-green text-white text-xs font-black">Valider</button>`
+                : `<span class="text-xs font-black text-faso-green">✓ Validé</span>`
+              }
+            </div>
+          </div>
+        `).join('');
+    }
+
+    function validateFassoPayment(payId) {
+      const pay = appState.payments.find(p => p.id === payId);
+      if (!pay) return;
+      pay.status = 'validated';
+      if (pay.purpose === 'public_track') {
+        const trk = appState.tracks.find(t => t.id === pay.trackId);
+        if (trk) {
+          trk.isPublic = true;
+          trk.publicStatus = 'validated';
+        }
+      } else if (pay.purpose === 'tournament') {
+        const tourn = appState.tournaments.find(t => t.id === pay.targetId);
+        if (tourn) {
+          tourn.entries = tourn.entries || [];
+          tourn.entries.push({
+            artistId: pay.artistId,
+            artistName: pay.artistName,
+            trackId: pay.trackId,
+            trackTitle: pay.trackTitle,
+            votes: 0
+          });
+        }
+      }
+      saveState();
+      renderAdminPanel();
+      notify('Paiement validé avec succès !', 'ok');
+    }
+
+    function adminCreateTournament(e) {
+      e.preventDefault();
+      const title = document.getElementById('new-tourn-title').value.trim();
+      const mode = document.getElementById('new-tourn-mode').value;
+      const prize = document.getElementById('new-tourn-prize').value.trim();
+      appState.tournaments.unshift({
+        id: 'tourn_' + Date.now(),
+        title,
+        mode,
+        prize,
+        fee: 250,
+        entries: []
+      });
+      saveState();
+      document.getElementById('new-tourn-title').value = '';
+      document.getElementById('new-tourn-prize').value = '';
+      notify('Nouveau tournoi publié ! 🏆', 'ok');
+    }
+  </script>
+
+  <!-- CONNEXION FIREBASE FIRESTORE (DOCUMENT DÉDIÉ FASSO TALA) -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+    import { getFirestore, doc, getDoc, setDoc, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCexdElr5DdD7TIHzdVyeGQqbPtoJ5yWJE",
+      authDomain: "fasorencontre-9b5a9.firebaseapp.com",
+      projectId: "fasorencontre-9b5a9",
+      storageBucket: "fasorencontre-9b5a9.firebasestorage.app",
+      messagingSenderId: "213099669353",
+      appId: "1:213099669353:web:f63143c9f8efcc978b3ff8",
+      measurementId: "G-8SPQ732YY7"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const talaDocRef = doc(db, "plateforme", "fassoTalaGlobal");
+
+    function mergeCloud(data) {
+      if (!data) return;
+      if (Array.isArray(data.artists)) appState.artists = data.artists;
+      if (Array.isArray(data.tracks)) appState.tracks = data.tracks;
+      if (Array.isArray(data.tournaments)) appState.tournaments = data.tournaments;
+      if (Array.isArray(data.payments)) appState.payments = data.payments;
+      if (data.smsThreads) appState.smsThreads = data.smsThreads;
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(appState)); } catch (e) {}
+    }
+
+    window.FassoTalaDB = {
+      async pushCloud() {
+        try {
+          const cleanTracks = (appState.tracks || []).map(t => ({
+            ...t,
+            mediaUrl: (t.mediaUrl && t.mediaUrl.startsWith('blob:')) ? null : (t.mediaUrl || null)
+          }));
+          await setDoc(talaDocRef, {
+            artists: appState.artists || [],
+            tracks: cleanTracks,
+            tournaments: appState.tournaments || [],
+            payments: appState.payments || [],
+            smsThreads: appState.smsThreads || {},
+            updatedAt: serverTimestamp()
+          }, { merge: true });
+        } catch (e) {}
+      }
+    };
+
+    getDoc(talaDocRef).then(snap => { if (snap.exists()) mergeCloud(snap.data()); });
+    onSnapshot(talaDocRef, snap => { if (snap.exists()) mergeCloud(snap.data()); });
+  </script>
+</body>
+</html>
