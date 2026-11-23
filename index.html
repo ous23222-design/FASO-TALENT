@@ -977,3 +977,1588 @@
   </script>
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Faso Talent — Partie 1 (Design)</title>
+  <style>
+    :root {
+      --gold: #f5c22b;
+      --dark: #111115;
+      --top-bg: #16161a;
+      --sheet-bg: #1f1f21;
+      --card-bg: #2a2a2d;
+      --border-card: #3a3a3e;
+      --red: #e53935;
+      --orange: #ff7900;
+      --muted: #767682;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+
+    body {
+      background: #08080a;
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    .phone-app {
+      width: 100%;
+      max-width: 430px;
+      min-height: 100vh;
+      background: #ffffff;
+      color: #141418;
+      position: relative;
+      padding-bottom: 98px;
+    }
+
+    .home-topbar {
+      background: var(--top-bg);
+      color: #fff;
+      padding: 12px 14px 0;
+    }
+
+    .home-top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      gap: 8px;
+    }
+
+    .gratuit-pill {
+      background: var(--gold);
+      color: #111;
+      border: none;
+      border-radius: 999px;
+      padding: 6px 13px;
+      font-size: 12.5px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .top-right-actions {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .ico-btn {
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 19px;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .dot-alert {
+      position: absolute;
+      top: 0;
+      right: -2px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #ff2d55;
+    }
+
+    .feed-tabs {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      text-align: center;
+    }
+
+    .feed-tab {
+      background: none;
+      border: none;
+      color: #a6a6b0;
+      font-size: 12.5px;
+      font-weight: 800;
+      padding: 10px 4px;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+    }
+
+    .feed-tab.active {
+      color: #fff;
+      border-bottom-color: var(--gold);
+    }
+
+    .tab-red-dot {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #ff2d55;
+      margin-left: 3px;
+      vertical-align: top;
+    }
+
+    .info-strip {
+      background: #fff8e1;
+      color: #7c5600;
+      border-bottom: 1px solid #f0dc9c;
+      padding: 7px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .mini-dark {
+      background: #17171d;
+      color: #fff;
+      border: none;
+      border-radius: 7px;
+      padding: 5px 9px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .post-block {
+      padding-bottom: 14px;
+      border-bottom: 8px solid #f0f0f5;
+      background: #fff;
+    }
+
+    .feat-bar {
+      background: linear-gradient(90deg, #1a6b2b, #36b34a, #1a6b2b);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 800;
+      text-align: center;
+      letter-spacing: 0.8px;
+      padding: 2px 0;
+    }
+
+    .post-artist-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+    }
+
+    .duo-avatars {
+      display: flex;
+      align-items: center;
+    }
+
+    .duo-avatars div {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: 2px solid #fff;
+      background: #222229;
+      color: var(--gold);
+      font-weight: 800;
+      font-size: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .duo-avatars div:last-child {
+      margin-left: -10px;
+      background: #3b2609;
+    }
+
+    .cover-stage {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1.02;
+      background: radial-gradient(circle at 50% 35%, #5b4212, #121110 75%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .rank-chip {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      background: rgba(20, 20, 24, 0.78);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 6px 10px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .right-badges {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 6px;
+    }
+
+    .featured-btn {
+      background: var(--gold);
+      color: #111;
+      border: none;
+      border-radius: 999px;
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .listens-chip {
+      background: rgba(18, 18, 22, 0.78);
+      color: #fff;
+      border-radius: 999px;
+      padding: 5px 10px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .center-play {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: rgba(16, 16, 20, 0.65);
+      border: 2px solid rgba(255, 255, 255, 0.75);
+      color: #fff;
+      font-size: 24px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;      justify-content: center;
+      overflow: hidden;
+    }
+
+    .rank-chip {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      background: rgba(20, 20, 24, 0.78);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 6px 10px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .right-badges {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 6px;
+    }
+
+    .featured-btn {
+      background: var(--gold);
+      color: #111;
+      border: none;
+      border-radius: 999px;
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .listens-chip {
+      background: rgba(18, 18, 22, 0.78);
+      color: #fff;
+      border-radius: 999px;
+      padding: 5px 10px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .center-play {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: rgba(16, 16, 20, 0.65);
+      border: 2px solid rgba(255, 255, 255, 0.75);
+      color: #fff;
+      font-size: 24px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .post-footer-zone {
+      padding: 10px 14px 0;
+    }
+
+    .like-line {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+
+    .like-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 1.5px solid #2b2b33;
+      background: #fff;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .actions-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 8px;
+    }
+
+    .left-actions {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .link-btn {
+      background: none;
+      border: none;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: #24242c;
+      cursor: pointer;
+    }
+
+    .plus-note-btn {
+      background: none;
+      border: none;
+      font-size: 21px;
+      font-weight: 900;
+      color: #141418;
+      cursor: pointer;
+    }
+
+    .profile-wrap {
+      background: #f4f4f7;
+      min-height: 80vh;
+    }
+
+    .profile-header-bg {
+      background: linear-gradient(180deg, #2b2318, #16161c);
+      color: #fff;
+      padding: 14px;
+    }
+
+    .prof-top-line {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .prof-identity {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .prof-pic {
+      width: 68px;
+      height: 68px;
+      border-radius: 50%;
+      border: 2px solid var(--gold);
+      background: #2b2b36;
+      color: var(--gold);
+      font-size: 22px;
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .stats-grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      padding: 10px;
+      background: #fff;
+    }
+
+    .stat-box {
+      background: #f8f8fb;
+      border: 1px solid #ececf2;
+      border-radius: 10px;
+      padding: 8px 4px;
+      text-align: center;
+    }
+
+    .stat-v {
+      font-weight: 800;
+      font-size: 14px;
+      color: #141418;
+    }
+
+    .stat-k {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .prof-subtabs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      background: #fff;
+      border-bottom: 1px solid #e4e4ec;
+    }
+
+    .prof-subtab {
+      background: none;
+      border: none;
+      padding: 11px 4px;
+      font-size: 12px;
+      font-weight: 800;
+      color: #6b6b76;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+    }
+
+    .prof-subtab.active {
+      color: #141418;
+      border-bottom-color: var(--gold);
+    }
+
+    .plus-screen {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 45;
+      flex-direction: column;
+      justify-content: flex-end;
+      background: radial-gradient(circle at 50% 25%, rgba(110, 44, 155, 0.45), rgba(10, 9, 14, 0.92) 72%);
+    }
+
+    .plus-screen.open {
+      display: flex;
+    }
+
+    .plus-top-modes {
+      position: absolute;
+      top: 42px;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: center;
+      gap: 28px;
+      font-size: 13px;
+      font-weight: 800;
+      color: #8f8e9a;
+    }
+
+    .plus-sheet {
+      background: var(--sheet-bg);
+      border-top-left-radius: 22px;
+      border-top-right-radius: 22px;
+      padding: 16px;
+      color: #fff;
+    }
+
+    .plus-item-btn {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: var(--card-bg);
+      border: 1px solid var(--border-card);
+      border-radius: 14px;
+      padding: 12px 14px;
+      margin-bottom: 10px;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .round-ico {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: #171719;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--gold);
+      font-weight: 900;
+      flex-shrink: 0;
+    }
+
+    .red-dot-ico {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--red);
+    }
+
+    .plus-item-title {
+      color: var(--gold);
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .plus-item-sub {
+      color: #b5b5be;
+      font-size: 12.5px;
+    }
+
+    .dock-bottom {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      max-width: 430px;
+      background: #141418;
+      color: #fff;
+      z-index: 35;
+    }
+
+    .dock-row {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 8px 10px;
+    }
+
+    .dock-btn {
+      background: none;
+      border: none;
+      color: #d4d4de;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    .dock-btn.active {
+      color: var(--gold);
+    }
+
+    .fab-gold {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: var(--gold);
+      color: #111;
+      border: none;
+      font-size: 30px;
+      font-weight: 900;
+      cursor: pointer;
+      margin-top: -18px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+    }
+
+    .avatar-dot {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--gold);
+      color: #111;
+      font-size: 11px;
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .premium-bar {
+      background: #1d1d22;
+      color: #d8d8e0;
+      text-align: center;
+      font-size: 12px;
+      padding: 6px;
+      cursor: pointer;
+    }
+
+    .modal-wrap {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.78);
+      z-index: 65;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+    }
+
+    .modal-wrap.open {
+      display: flex;
+    }
+
+    .modal-panel {
+      width: 100%;
+      max-width: 400px;
+      background: #1b1b22;
+      color: #fff;
+      border: 1px solid #353542;
+      border-radius: 16px;
+      padding: 16px;
+      max-height: 88vh;
+      overflow-y: auto;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      background: #111116;
+      color: #fff;
+      border: 1px solid #363644;
+      border-radius: 10px;
+      padding: 9px 11px;
+      margin: 6px 0 11px;
+      font-size: 13px;
+    }
+
+    .btn-gold-full {
+      background: var(--gold);
+      color: #111;
+      border: none;
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-weight: 800;
+      cursor: pointer;
+      width: 100%;
+      margin-bottom: 8px;
+    }
+
+    .btn-om-full {
+      background: var(--orange);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-weight: 800;
+      cursor: pointer;
+      width: 100%;
+      margin-bottom: 8px;
+    }
+
+    .btn-grey-full {
+      background: #2d2d38;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 9px 12px;
+      font-weight: 700;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    .box-line {
+      background: #25252f;
+      border-radius: 10px;
+      padding: 10px;
+      margin-bottom: 8px;
+      font-size: 12.5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="phone-app">
+    <div class="home-topbar">
+      <div class="home-top-row">
+        <button class="gratuit-pill" onclick="openPay('full', 1000, 'Accès Complet (1 000 F)')">
+          💎 Gratuit / 1 000 F
+        </button>
+        <div class="top-right-actions">
+          <button class="gratuit-pill" style="padding:5px 10px;font-size:11.5px;" onclick="openPay('hot', 250, 'Publier en HOT (250 F)')">
+            🔥 HOT 250F
+          </button>
+          <button class="ico-btn" onclick="openNotifs()">🔔<span class="dot-alert"></span></button>
+          <button class="ico-btn" onclick="openMessages()">➤</button>
+        </div>
+      </div>
+
+      <div class="feed-tabs">
+        <button class="feed-tab active" id="ft-HOT" onclick="setFeedTab('HOT')">HOT</button>
+        <button class="feed-tab" id="ft-RÉCENT" onclick="setFeedTab('RÉCENT')">RÉCENT</button>
+        <button class="feed-tab" id="ft-MY" onclick="setFeedTab('MY')">MY</button>
+        <button class="feed-tab" id="ft-ACTUS" onclick="setFeedTab('ACTUS')">ACTUS<span class="tab-red-dot"></span></button>
+      </div>
+    </div>
+
+    <div class="info-strip">
+      <span id="topStatus">OM : 66931174 • HOT 250F • Vidéo Payante • Tout 1 000F</span>
+      <button class="mini-dark" onclick="openAuth()">Compte</button>
+    </div>
+
+    <div id="screenBody"></div>
+
+    <div class="dock-bottom">
+      <div class="dock-row">
+        <button class="dock-btn active" id="dHome" onclick="openMainScreen('home')">☰</button>
+        <button class="dock-btn" id="dVideos" onclick="openMainScreen('videos')">🎬</button>
+        <button class="fab-gold" onclick="openPlus()">+</button>
+        <button class="dock-btn" id="dSearch" onclick="openSearch()">🔍</button>
+        <button class="dock-btn" id="dProfile" onclick="openMainScreen('profile')">
+          <div class="avatar-dot">FT</div>
+        </button>
+      </div>
+      <div class="premium-bar" onclick="openPay('full', 1000, 'Accès Complet (1 000 F)')">
+        Expérience sans pub avec le Premium
+      </div>
+    </div>
+  </div>
+
+  <div class="plus-screen" id="plusScreen">
+    <div class="plus-top-modes">
+      <span style="color:#fff;border-bottom:2px solid #fff;padding-bottom:4px;">BOOSTED</span>
+      <span>RECENT</span>
+    </div>
+
+    <div class="plus-sheet">
+      <button class="plus-item-btn" onclick="runPlusOption('session')">
+        <div class="round-ico"><div class="red-dot-ico"></div></div>
+        <div>
+          <div class="plus-item-title">Continue la Session</div>
+          <div class="plus-item-sub">Continue à modifier le son</div>
+        </div>
+      </button>
+
+      <button class="plus-item-btn" onclick="runPlusOption('video')">
+        <div class="round-ico">▶</div>
+        <div>
+          <div class="plus-item-title">Publier une Vidéo</div>
+          <div class="plus-item-sub">Enregistrer maintenant ou télécharger</div>
+        </div>
+      </button>
+
+      <button class="plus-item-btn" onclick="runPlusOption('audio')">
+        <div class="round-ico">🎙</div>
+        <div>
+          <div class="plus-item-title">Enregistrer un Audio</div>
+          <div class="plus-item-sub">Studio facile à utiliser avec FX</div>
+        </div>
+      </button>
+
+      <button class="plus-item-btn" onclick="runPlusOption('beats')">
+        <div class="round-ico">♪</div>
+        <div>
+          <div class="plus-item-title">Parcourir les Instrus</div>
+          <div class="plus-item-sub">10 000+ instrus pour toi!</div>
+        </div>
+      </button>
+
+      <div style="text-align:center;margin-top:8px;">
+        <button onclick="closePlus()" style="background:none;border:none;color:#fff;font-size:15px;font-weight:700;cursor:pointer;">
+          × Toutes les Options
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-wrap" id="modalWrap">
+    <div class="modal-panel" id="modalPanel"></div>
+  </div>
+
+  <script>
+    const OM_NUM = "66931174";
+    const HOT_FEE = 250;
+    const VIDEO_FEE = 250;
+    const FULL_FEE = 1000;
+
+    const US_BEATS = [
+      { id: "trap_us", name: "ATL Trap Banger", style: "US Trap", bpm: 140, freq: 55 },
+      { id: "west_us", name: "West Coast Bounce", style: "US West Coast", bpm: 98, freq: 49 },
+      { id: "drill_us", name: "NY Dark Drill", style: "US Drill", bpm: 144, freq: 46.25 },
+      { id: "boombap_us", name: "Golden Era Boom Bap", style: "US Boom Bap", bpm: 92, freq: 65.41 }
+    ];
+
+    let db = JSON.parse(localStorage.getItem("faso_talent_two_parts_v1") || "null") || {
+      screen: "home",
+      feedTab: "HOT",
+      profTab: "PUBLIÉ",
+      hasFullAccess: false,
+      userName: "Abonné Faso",
+      userHandle: "@abonne_faso",
+      city: "Bobo-Dioulasso, Burkina Faso",
+      clan: "Faso Talent",
+      beatId: "trap_us",
+      fx: "Rap Fame Air",
+      notes: "Couplet 1 prêt",
+      hotPosts: [
+        {
+          id: 1,
+          tab: "HOT",
+          feat: "FEAT",
+          artist1: "Faso King",
+          artist2: "Bobo Flow",
+          title: "Déjà Vu",
+          sub: "FASO TALENT EDITION",
+          rank: "#87",
+          badge: "Featured ▾",
+          listens: 1218,
+          likes: 598,
+          timeAgo: "il y a 14 heures",
+          caption: "DE jAVu2 Faso King ft Bobo Flow",
+          tags: "@fasotalent_officiel @bobo_rap",
+          comments: ["Lourd le son !", "Force Faso Talent"]
+        }
+      ],
+      videos: [
+        { id: 11, author: "@ouaga_mc", title: "Clip Freestyle Membre #1", views: 430, likes: 52, comments: ["Très propre"] }
+      ],
+      published: ["Déjà Vu — Session Faso Talent"],
+      drafts: ["Tâche non-terminée — Brouillon"],
+      playlists: ["Top Beats Américains"],
+      payments: []
+    };
+
+    let payCtx = { mode: "hot", amount: HOT_FEE, label: "Publier en HOT (250 F)" };
+    let audioCtx = null;
+    let beatLoop = null;
+    let playingTrackId = null;
+    let recObj = null;
+    let recChunks = [];
+    let recordingNow = false;
+
+    function saveDb() {
+      localStorage.setItem("faso_talent_two_parts_v1", JSON.stringify(db));
+    }
+
+    function setTopInfo(msg) {
+      document.getElementById("topStatus").textContent = msg;
+    }
+
+    function showModal(html) {
+      document.getElementById("modalPanel").innerHTML = html;
+      document.getElementById("modalWrap").classList.add("open");
+    }
+
+    function hideModal() {
+      stopBeatLoop();
+      document.getElementById("modalWrap").classList.remove("open");
+    }
+
+    function openPlus() {
+      document.getElementById("plusScreen").classList.add("open");
+    }
+
+    function closePlus() {
+      document.getElementById("plusScreen").classList.remove("open");
+    }
+
+    function getBeat(id) {
+      return US_BEATS.find(b => b.id === id) || US_BEATS[0];
+    }
+
+    function startBeatLoop(beat) {
+      stopBeatLoop();
+      const Ctx = window.AudioContext || window.webkitAudioContext;
+      if (!audioCtx) audioCtx = new Ctx();
+      if (audioCtx.state === "suspended") audioCtx.resume();
+      let step = 0;
+      const intervalMs = (60 / beat.bpm / 2) * 1000;
+      beatLoop = setInterval(() => {
+        const now = audioCtx.currentTime;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(beat.freq * (step % 4 === 0 ? 2 : 1), now);
+        osc.frequency.exponentialRampToValueAtTime(beat.freq * 0.72, now + 0.16);
+        gain.gain.setValueAtTime(0.3, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(now);
+        osc.stop(now + 0.19);
+        step++;
+      }, intervalMs);
+    }
+
+    function stopBeatLoop() {
+      if (beatLoop) clearInterval(beatLoop);
+      beatLoop = null;
+    }
+
+    function setFeedTab(tab) {
+      db.screen = "home";
+      db.feedTab = tab;
+      document.querySelectorAll(".feed-tab").forEach(b => b.classList.toggle("active", b.id === "ft-" + tab));
+      saveDb();
+      renderScreen();
+    }
+
+    function openMainScreen(scr) {
+      stopBeatLoop();
+      playingTrackId = null;
+      db.screen = scr;
+      ["dHome", "dVideos", "dSearch", "dProfile"].forEach(id => document.getElementById(id).classList.remove("active"));
+      if (scr === "home") document.getElementById("dHome").classList.add("active");
+      if (scr === "videos") document.getElementById("dVideos").classList.add("active");
+      if (scr === "profile") document.getElementById("dProfile").classList.add("active");
+      saveDb();
+      renderScreen();
+    }
+
+    function runPlusOption(opt) {
+      closePlus();
+      if (opt === "video") {
+        const fee = db.hasFullAccess ? 0 : VIDEO_FEE;
+        openPay("video", fee, "Publier une Vidéo Membre (Paiement OM)");
+        return;
+      }
+      if (!db.hasFullAccess) {
+        openPay("full", FULL_FEE, "Débloquer Toutes les Fonctionnalités (1 000 F)");
+        return;
+      }
+      if (opt === "session") openSessionModal();
+      if (opt === "audio") openAudioModal();
+      if (opt === "beats") openBeatsModal();
+    }
+
+    function openPay(mode, amount, label) {
+      payCtx = { mode, amount, label };
+      showModal(`
+        <h3 style="color:var(--gold);margin-bottom:6px;">${label}</h3>
+        <p style="font-size:13px;color:#d8d8e2;margin-bottom:10px;">
+          Paiement sur Orange Money : <strong style="color:#ff9a3c;font-size:15px;">${OM_NUM}</strong><br/>
+          Montant : <strong style="color:var(--gold);">${amount > 0 ? amount + " F CFA" : "0 F (Déjà débloqué 1 000 F)"}</strong>
+        </p>
+        <label style="font-size:12px;color:#b8b8c6;">Titre de la publication</label>
+        <input type="text" id="pTitle" placeholder="Ex: Freestyle HOT / Vidéo Membre" />
+        <label style="font-size:12px;color:#b8b8c6;">Référence de transfert Orange Money</label>
+        <input type="text" id="pRef" placeholder="Ex: OM261123.XXXX.123" />
+        <button class="btn-om-full" onclick="confirmPay()">Valider Paiement & Publier / Débloquer</button>
+        <button class="btn-grey-full" onclick="hideModal()">Annuler</button>
+        <div id="pMsg" style="font-size:12px;color:var(--gold);margin-top:8px;"></div>
+      `);
+    }
+
+    function confirmPay() {
+      const ref = document.getElementById("pRef").value.trim();
+      const title = document.getElementById("pTitle").value.trim() || "Titre Faso Talent";
+      if (payCtx.amount > 0 && ref.length < 4) {
+        document.getElementById("pMsg").textContent = "Entre la référence de paiement vers " + OM_NUM + ".";
+        return;
+      }
+      if (payCtx.amount > 0) {
+        db.payments.unshift({
+          user: db.userHandle,
+          label: payCtx.label,
+          amount: payCtx.amount,
+          ref,
+          title
+        });
+      }
+      if (payCtx.mode === "full") {
+        db.hasFullAccess = true;
+        saveDb();
+        hideModal();
+        setTopInfo("Accès complet (1 000 F) activé !");
+        openAudioModal();
+      } else if (payCtx.mode === "hot") {
+        db.hotPosts.unshift({
+          id: Date.now(),
+          tab: db.feedTab,
+          feat: "HOT 250F",
+          artist1: db.userName,
+          artist2: "",
+          title,
+          sub: "PUBLIC & VISIBILITÉ",
+          rank: "#01",
+          badge: "Boosté ★",
+          listens: 1,
+          likes: 0,
+          timeAgo: "à l'instant",
+          caption: title + " — " + db.userHandle,
+          tags: "@fasotalent_officiel",
+          comments: []
+        });
+        db.published.unshift(title + " (HOT 250F)");
+        saveDb();
+        hideModal()    function openPlus() {
+      document.getElementById("plusScreen").classList.add("open");
+    }
+
+    function closePlus() {
+      document.getElementById("plusScreen").classList.remove("open");
+    }
+
+    function getBeat(id) {
+      return US_BEATS.find(b => b.id === id) || US_BEATS[0];
+    }
+
+    function startBeatLoop(beat) {
+      stopBeatLoop();
+      const Ctx = window.AudioContext || window.webkitAudioContext;
+      if (!audioCtx) audioCtx = new Ctx();
+      if (audioCtx.state === "suspended") audioCtx.resume();
+      let step = 0;
+      const intervalMs = (60 / beat.bpm / 2) * 1000;
+      beatLoop = setInterval(() => {
+        const now = audioCtx.currentTime;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(beat.freq * (step % 4 === 0 ? 2 : 1), now);
+        osc.frequency.exponentialRampToValueAtTime(beat.freq * 0.72, now + 0.16);
+        gain.gain.setValueAtTime(0.3, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(now);
+        osc.stop(now + 0.19);
+        step++;
+      }, intervalMs);
+    }
+
+    function stopBeatLoop() {
+      if (beatLoop) clearInterval(beatLoop);
+      beatLoop = null;
+    }
+
+    function setFeedTab(tab) {
+      db.screen = "home";
+      db.feedTab = tab;
+      document.querySelectorAll(".feed-tab").forEach(b => b.classList.toggle("active", b.id === "ft-" + tab));
+      saveDb();
+      renderScreen();
+    }
+
+    function openMainScreen(scr) {
+      stopBeatLoop();
+      playingTrackId = null;
+      db.screen = scr;
+      ["dHome", "dVideos", "dSearch", "dProfile"].forEach(id => document.getElementById(id).classList.remove("active"));
+      if (scr === "home") document.getElementById("dHome").classList.add("active");
+      if (scr === "videos") document.getElementById("dVideos").classList.add("active");
+      if (scr === "profile") document.getElementById("dProfile").classList.add("active");
+      saveDb();
+      renderScreen();
+    }
+
+    function runPlusOption(opt) {
+      closePlus();
+      if (opt === "video") {
+        const fee = db.hasFullAccess ? 0 : VIDEO_FEE;
+        openPay("video", fee, "Publier une Vidéo Membre (Paiement OM)");
+        return;
+      }
+      if (!db.hasFullAccess) {
+        openPay("full", FULL_FEE, "Débloquer Toutes les Fonctionnalités (1 000 F)");
+        return;
+      }
+      if (opt === "session") openSessionModal();
+      if (opt === "audio") openAudioModal();
+      if (opt === "beats") openBeatsModal();
+    }
+
+    function openPay(mode, amount, label) {
+      payCtx = { mode, amount, label };
+      showModal(`
+        <h3 style="color:var(--gold);margin-bottom:6px;">${label}</h3>
+        <p style="font-size:13px;color:#d8d8e2;margin-bottom:10px;">
+          Paiement sur Orange Money : <strong style="color:#ff9a3c;font-size:15px;">${OM_NUM}</strong><br/>
+          Montant : <strong style="color:var(--gold);">${amount > 0 ? amount + " F CFA" : "0 F (Déjà débloqué 1 000 F)"}</strong>
+        </p>
+        <label style="font-size:12px;color:#b8b8c6;">Titre de la publication</label>
+        <input type="text" id="pTitle" placeholder="Ex: Freestyle HOT / Vidéo Membre" />
+        <label style="font-size:12px;color:#b8b8c6;">Référence de transfert Orange Money</label>
+        <input type="text" id="pRef" placeholder="Ex: OM261123.XXXX.123" />
+        <button class="btn-om-full" onclick="confirmPay()">Valider Paiement & Publier / Débloquer</button>
+        <button class="btn-grey-full" onclick="hideModal()">Annuler</button>
+        <div id="pMsg" style="font-size:12px;color:var(--gold);margin-top:8px;"></div>
+      `);
+    }
+
+    function confirmPay() {
+      const ref = document.getElementById("pRef").value.trim();
+      const title = document.getElementById("pTitle").value.trim() || "Titre Faso Talent";
+      if (payCtx.amount > 0 && ref.length < 4) {
+        document.getElementById("pMsg").textContent = "Entre la référence de paiement vers " + OM_NUM + ".";
+        return;
+      }
+      if (payCtx.amount > 0) {
+        db.payments.unshift({
+          user: db.userHandle,
+          label: payCtx.label,
+          amount: payCtx.amount,
+          ref,
+          title
+        });
+      }
+      if (payCtx.mode === "full") {
+        db.hasFullAccess = true;
+        saveDb();
+        hideModal();
+        setTopInfo("Accès complet (1 000 F) activé !");
+        openAudioModal();
+      } else if (payCtx.mode === "hot") {
+        db.hotPosts.unshift({
+          id: Date.now(),
+          tab: db.feedTab,
+          feat: "HOT 250F",
+          artist1: db.userName,
+          artist2: "",
+          title,
+          sub: "PUBLIC & VISIBILITÉ",
+          rank: "#01",
+          badge: "Boosté ★",
+          listens: 1,
+          likes: 0,
+          timeAgo: "à l'instant",
+          caption: title + " — " + db.userHandle,
+          tags: "@fasotalent_officiel",
+          comments: []
+        });
+        db.published.unshift(title + " (HOT 250F)");
+        saveDb();
+        hideModal();
+        openMainScreen("home");
+        setTopInfo("Publié en HOT (250 F) sur OM " + OM_NUM);
+      } else if (payCtx.mode === "video") {
+        db.videos.unshift({
+          id: Date.now(),
+          author: db.userHandle,
+          title,
+          views: 1,
+          likes: 0,
+          comments: []
+        });
+        db.published.unshift(title + " (Vidéo)");
+        saveDb();
+        hideModal();
+        openMainScreen("videos");
+        setTopInfo("Vidéo membre publiée !");
+      }
+    }
+
+    function openSessionModal() {
+      showModal(`
+        <h3 style="color:var(--gold);margin-bottom:8px;">● Continue la Session</h3>
+        <label style="font-size:12px;color:#b8b8c6;">Beat Américain</label>
+        <select id="sBeat">
+          ${US_BEATS.map(b => `<option value="${b.id}" ${b.id === db.beatId ? "selected" : ""}>${b.name} (${b.bpm} BPM)</option>`).join("")}
+        </select>
+        <label style="font-size:12px;color:#b8b8c6;">FX Vocal</label>
+        <select id="sFx">
+          <option ${db.fx === "Rap Fame Air" ? "selected" : ""}>Rap Fame Air</option>
+          <option ${db.fx === "Trap Auto-Tune" ? "selected" : ""}>Trap Auto-Tune</option>
+          <option ${db.fx === "Dark Reverb" ? "selected" : ""}>Dark Reverb</option>
+        </select>
+        <textarea id="sNotes" rows="3">${db.notes}</textarea>
+        <button class="btn-gold-full" onclick="startBeatLoop(getBeat(document.getElementById('sBeat').value))">▶ Écouter le Beat US</button>
+        <button class="btn-gold-full" onclick="db.beatId=document.getElementById('sBeat').value;db.fx=document.getElementById('sFx').value;db.notes=document.getElementById('sNotes').value;saveDb();hideModal();setTopInfo('Session enregistrée');">Sauvegarder Session</button>
+        <button class="btn-grey-full" onclick="hideModal()">Fermer</button>
+      `);
+    }
+
+    function openAudioModal() {
+      showModal(`
+        <h3 style="color:var(--gold);margin-bottom:8px;">🎙 Studio Audio + Beat US</h3>
+        <select id="aBeat">
+          ${US_BEATS.map(b => `<option value="${b.id}" ${b.id === db.beatId ? "selected" : ""}>${b.name} (${b.bpm} BPM)</option>`).join("")}
+        </select>
+        <button class="btn-om-full" id="aRecBtn" onclick="toggleAudioRecording()">● Enregistrer Voix + Beat US</button>
+        <audio id="aPlayer" controls style="width:100%;margin-bottom:8px;"></audio>
+        <input type="text" id="aTitle" placeholder="Titre du morceau..." />
+        <button class="btn-gold-full" onclick="saveAudioTrack()">Publier dans Mon Profil</button>
+        <button class="btn-grey-full" onclick="hideModal()">Fermer</button>
+      `);
+    }
+
+    async function toggleAudioRecording() {
+      const btn = document.getElementById("aRecBtn");
+      const player = document.getElementById("aPlayer");
+      if (!recordingNow) {
+        startBeatLoop(getBeat(document.getElementById("aBeat").value));
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          recObj = new MediaRecorder(stream);
+          recChunks = [];
+          recObj.ondataavailable = e => recChunks.push(e.data);
+          recObj.onstop = () => {
+            player.src = URL.createObjectURL(new Blob(recChunks, { type: "audio/webm" }));
+          };
+          recObj.start();
+          recordingNow = true;
+          btn.textContent = "■ Arrêter Enregistrement";
+        } catch (err) {
+          setTopInfo("Micro non autorisé ; beat US actif.");
+        }
+      } else {
+        recObj.stop();
+        stopBeatLoop();
+        recordingNow = false;
+        btn.textContent = "● Enregistrer Voix + Beat US";
+      }
+    }
+
+    function saveAudioTrack() {
+      const title = document.getElementById("aTitle").value.trim() || "Track Beat US";
+      db.published.unshift(title + " (" + getBeat(document.getElementById("aBeat").value).name + ")");
+      saveDb();
+      hideModal();
+      openMainScreen("profile");
+    }
+        function openBeatsModal() {
+      showModal(`
+        <h3 style="color:var(--gold);margin-bottom:8px;">♪ Beats Américains</h3>
+        ${US_BEATS.map(b => `
+          <div class="box-line" style="display:flex;justify-content:space-between;align-items:center;">
+            <div><strong>${b.name}</strong><br/><span style="color:#b8b8c6;">${b.style} • ${b.bpm} BPM</span></div>
+            <button class="mini-dark" style="background:var(--gold);color:#111;" onclick="startBeatLoop(getBeat('${b.id}'))">Play</button>
+          </div>
+        `).join("")}
+        <button class="btn-grey-full" onclick="hideModal()">Fermer</button>
+      `);
+    }
+
+    function openAuth() {
+      showModal(`
+        <h3 style="color:var(--gold);margin-bottom:8px;">Connexion Abonné Faso Talent</h3>
+        <input type="text" id="uName" value="${db.userName}" placeholder="Nom d'artiste" />
+        <input type="text" id="uHandle" value="${db.userHandle}" placeholder="@pseudo" />
+        <input type="text" id="uCity" value="${db.city}" placeholder="Ville / Clan" />
+        <button class="btn-gold-full" onclick="db.userName=document.getElementById('uName').value.trim()||'Abonné Faso';let h=document.getElementById('uHandle').value.trim()||'@abonne_faso';db.userHandle=h.startsWith('@')?h:'@'+h;db.city=document.getElementById('uCity').value.trim()||'Bobo-Dioulasso, Burkina Faso';saveDb();hideModal();openMainScreen('profile');">Valider Connexion</button>
+        <button class="btn-grey-full" onclick="hideModal()">Fermer</button>
+      `);
+    }
+
+    function openNotifs() {
+      showModal(`
+        <h3 style="color:var(--gold);margin-bottom:8px;">Notifications</h3>
+        <div class="box-line">🔥 HOT = 250 F • Vidéo Membre = Payante • Accès complet = 1 000 F (OM ${OM_NUM})</div>
+        <div class="box-line">Paiements enregistrés : <strong>${db.payments.length}</strong></div>
+        <button class="btn-grey-full" onclick="hideModal()">Fermer</button>
+      `);
+    }
+
+    function openMessages() {
+      showModal(`
+        <h3 style="color:var(--gold);margin-bottom:8px;">Messages & Relations</h3>
+        <div class="box-line"><strong>Bobo Flow</strong> : On est visibles sur le fil HOT Faso Talent !</div>
+        <button class="btn-grey-full" onclick="hideModal()">Fermer</button>
+      `);
+    }
+
+    function openSearch() {
+      showModal(`
+        <h3 style="color:var(--gold);margin-bottom:8px;">Recherche</h3>
+        <input type="text" id="qInp" placeholder="Rechercher un titre ou artiste..." oninput="drawSearch()" />
+        <div id="qList"></div>
+        <button class="btn-grey-full" onclick="hideModal()">Fermer</button>
+      `);
+      drawSearch();
+    }
+
+    function drawSearch() {
+      const q = (document.getElementById("qInp")?.value || "").toLowerCase();
+      const hits = db.hotPosts.filter(p => p.title.toLowerCase().includes(q) || p.artist1.toLowerCase().includes(q));
+      document.getElementById("qList").innerHTML = hits.length
+        ? hits.map(h => `<div class="box-line"><strong>${h.title}</strong> — ${h.artist1}</div>`).join("")
+        : `<div class="box-line">Aucun résultat.</div>`;
+    }
+
+    function openPostComments(id) {
+      const post = db.hotPosts.find(p => p.id === id);
+      if (!post) return;
+      showModal(`
+        <h3 style="color:var(--gold);margin-bottom:8px;">Commentaires — ${post.title}</h3>
+        ${post.comments.length ? post.comments.map(c => `<div class="box-line">${c}</div>`).join("") : `<div class="box-line">Aucun commentaire.</div>`}
+        <input type="text" id="cInp" placeholder="Ajouter un commentaire..." />
+        <button class="btn-gold-full" onclick="const v=document.getElementById('cInp').value.trim();if(v){post.comments.push(db.userHandle+': '+v);saveDb();renderScreen();openPostComments(${id});}">Publier</button>
+        <button class="btn-grey-full" onclick="hideModal()">Fermer</button>
+      `);
+    }
+
+    function renderScreen() {
+      const body = document.getElementById("screenBody");
+
+      if (db.screen === "home") {
+        const list = db.hotPosts.filter(p => p.tab === db.feedTab || db.feedTab === "HOT");
+        body.innerHTML = `
+          <div class="info-strip">
+            <span>🔥 Publier en HOT : <strong>${HOT_FEE} F</strong> sur OM <strong>${OM_NUM}</strong></span>
+            <button class="mini-dark" onclick="openPay('hot', ${HOT_FEE}, 'Publier en HOT (250 F)')">+ Publier HOT</button>
+          </div>
+          ${list.map(p => {
+            const isPlay = playingTrackId === p.id;
+            return `
+              <div class="post-block">
+                <div class="feat-bar">${p.feat}</div>
+                <div class="post-artist-row">
+                  <div class="duo-avatars">
+                    <div>${p.artist1.slice(0, 2).toUpperCase()}</div>
+                    ${p.artist2 ? `<div>${p.artist2.slice(0, 2).toUpperCase()}</div>` : ""}
+                  </div>
+                  <div style="font-weight:800;font-size:14px;">
+                    ${p.artist1} <span style="color:#1da1f2;">✔</span>
+                    ${p.artist2 ? `• ${p.artist2} <span style="color:#1da1f2;">✔</span>` : ""}
+                  </div>
+                </div>
+
+                <div class="cover-stage">
+                  <button class="rank-chip">📊 ${p.rank}</button>
+                  <div class="right-badges">
+                    <button class="featured-btn" onclick="openPay('hot', ${HOT_FEE}, 'Booster / Publier en HOT (250 F)')">${p.badge}</button>
+                    <div class="listens-chip">✦ ${p.listens} Ecoutes ✦</div>
+                  </div>
+                  <div style="text-align:center;color:var(--gold);padding:16px;">
+                    <div style="font-family:Georgia,serif;font-style:italic;font-size:42px;font-weight:900;">${p.title}</div>
+                    <div style="font-size:11px;letter-spacing:2.5px;color:#f3e5b5;">${p.sub}</div>
+                  </div>
+                  <button class="center-play" onclick="if(playingTrackId===${p.id}){playingTrackId=null;stopBeatLoop();}else{playingTrackId=${p.id};p.listens+=1;startBeatLoop(getBeat(db.beatId));}saveDb();renderScreen();">
+                    ${isPlay ? "❚❚" : "▶"}
+                  </button>
+                </div>
+
+                <div class="post-footer-zone">
+                  <div class="like-line">
+                    <button class="like-btn" onclick="p.likes+=1;saveDb();renderScreen();">👍</button>
+                    <strong>${p.likes}</strong>
+                  </div>
+                  <div style="font-size:12px;color:var(--muted);">${p.timeAgo} &nbsp; ${p.listens} écoutes</div>
+                  <div style="font-size:13.5px;margin-top:4px;">${p.caption} <span style="color:#4b5563;font-weight:600;">${p.tags}</span></div>
+                  <div class="actions-row">
+                    <div class="left-actions">
+                      <button class="link-btn" onclick="openPostComments(${p.id})">💬 ${p.comments.length}</button>
+                      <button class="link-btn" onclick="setTopInfo('Lien prêt pour ${p.title}')">➤ Partager</button>
+                    </div>
+                    <button class="plus-note-btn" onclick="openAudioModal()">+♪</button>
+                  </div>
+                </div>
+              </div>
+            `;
+          }).join("")}
+        `;
+      } else if (db.screen === "videos") {
+        const fee = db.hasFullAccess ? 0 : VIDEO_FEE;
+        body.innerHTML = `
+          <div style="padding:12px;">
+            <div class="info-strip" style="border-radius:10px;margin-bottom:12px;">
+              <span>🎬 <strong>Vidéos Membres</strong> (Payant OM <strong>${OM_NUM}</strong>)</span>
+              <button class="mini-dark" onclick="openPay('video', ${fee}, 'Publier une Vidéo Membre')">+ Publier Vidéo</button>
+            </div>
+            ${db.videos.map(v => `
+              <div class="post-block" style="border-radius:14px;border:1px solid #e6e6ee;margin-bottom:12px;">
+                <div class="post-artist-row" style="justify-content:space-between;">
+                  <strong>${v.author}</strong>
+                  <span style="background:#141418;color:var(--gold);padding:3px 8px;border-radius:999px;font-size:11px;font-weight:800;">VIDÉO • ${v.views} vues</span>
+                </div>
+                <div class="cover-stage" style="aspect-ratio:16/10;">
+                  <button class="center-play" onclick="v.views+=1;saveDb();renderScreen();">▶</button>
+                </div>
+                <div class="post-footer-zone">
+                  <strong>${v.title}</strong>
+                  <div class="actions-row">
+                    <button class="link-btn" onclick="v.likes+=1;saveDb();renderScreen();">👍 ${v.likes}</button>
+                    <span style="font-size:12px;color:var(--muted);">Vidéo Membre</span>
+                  </div>
+                </div>
+              </div>
+            `).join("")}
+          </div>
+        `;
+      } else {
+        const items =
+          db.profTab === "PUBLIÉ" ? db.published :
+          db.profTab === "NON PUBLIÉ" ? db.drafts : db.playlists;
+
+        body.innerHTML = `
+          <div class="profile-wrap">
+            <div class="profile-header-bg">
+              <div class="prof-top-line">
+                <strong>${db.userHandle}</strong>
+                <button class="gratuit-pill" onclick="openPay('full', ${FULL_FEE}, 'Accès Complet (1 000 F)')">
+                  ${db.hasFullAccess ? "✓ Tout Débloqué (1 000 F)" : "Obtiens Premium (1 000 F)"}
+                </button>
+              </div>
+              <div class="prof-identity">
+                <div class="prof-pic">${db.userName.slice(0, 2).toUpperCase()}</div>
+                <div>
+                  <div style="font-size:12px;color:#d6d6e0;">📍 ${db.city}</div>
+                  <div style="font-size:18px;font-weight:800;">${db.userName}</div>
+                  <div style="font-size:12px;color:var(--gold);">Clan : ${db.clan}</div>
+                  <div style="font-size:12px;margin-top:4px;"><strong>217</strong> abonnés &nbsp; <strong>806</strong> abonnements</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="stats-grid-4">
+              <div class="stat-box"><div class="stat-v">212</div><div class="stat-k">respect</div></div>
+              <div class="stat-box"><div class="stat-v">686</div><div class="stat-k">écoutes</div></div>
+              <div class="stat-box"><div class="stat-v">86</div><div class="stat-k">génie</div></div>
+              <div class="stat-box"><div class="stat-v">13</div><div class="stat-k">titres jugés</div></div>
+            </div>
+
+            <div class="prof-subtabs">
+              <button class="prof-subtab ${db.profTab === "PUBLIÉ" ? "active" : ""}" onclick="db.profTab='PUBLIÉ';saveDb();renderScreen();">PUBLIÉ</button>
+              <button class="prof-subtab ${db.profTab === "NON PUBLIÉ" ? "active" : ""}" onclick="db.profTab='NON PUBLIÉ';saveDb();renderScreen();">NON PUBLIÉ</button>
+              <button class="prof-subtab ${db.profTab === "PLAYLISTS" ? "active" : ""}" onclick="db.profTab='PLAYLISTS';saveDb();renderScreen();">PLAYLISTS</button>
+            </div>
+
+            <div style="padding:12px;">
+              ${items.map(it => `<div class="post-block" style="padding:12px;border-radius:12px;margin-bottom:10px;"><strong>${it}</strong></div>`).join("")}
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    saveDb();
+    renderScreen();
+  </script>
+</body>
+</html>
+<!-- SDK Firebase (Compat v10 pour fonctionner directement dans un simple fichier HTML) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+<script>
+  // 1. REMPLACE CES VALEURS PAR CELLES DE TON PROJET FIREBASE
+  const firebaseConfig = {
+    apiKey: "TA_CLE_API_ICI",
+    authDomain: "TON_PROJET.firebaseapp.com",
+    projectId: "TON_PROJET_ID",
+    storageBucket: "TON_PROJET.appspot.com",
+    messagingSenderId: "TON_SENDER_ID",
+    appId: "TON_APP_ID"
+  };
+
+  // Initialisation sécurisée
+  if (!firebase.apps.length && firebaseConfig.apiKey !== "TA_CLE_API_ICI") {
+    firebase.initializeApp(firebaseConfig);
+    const fsDb = firebase.firestore();
+    const auth = firebase.auth();
+
+    // Connexion anonyme automatique si l'utilisateur n'est pas encore connecté via e-mail
+    auth.onAuthStateChanged((user) => {
+      if (!user) {
+        auth.signInAnonymously().catch(() => {});
+      }
+    });
+
+    // 2. Synchronisation des publications HOT en temps réel (collection dédiée Faso Talent)
+    fsDb.collection("faso_talent_hot")
+      .orderBy("createdAt", "desc")
+      .limit(30)
+      .onSnapshot((snapshot) => {
+        if (!snapshot.empty) {
+          db.hotPosts = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+          saveDb();
+          if (db.screen === "home") renderScreen();
+        }
+      });
+
+    // 3. Synchronisation des vidéos membres en temps réel
+    fsDb.collection("faso_talent_videos")
+      .orderBy("createdAt", "desc")
+      .limit(30)
+      .onSnapshot((snapshot) => {
+        if (!snapshot.empty) {
+          db.videos = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+          saveDb();
+          if (db.screen === "videos") renderScreen();
+        }
+      });
+
+    // 4. Envoi automatique vers Firebase lors d'un paiement validé (250 F HOT / Vidéo / 1 000 F)
+    const originalConfirmPay = confirmPay;
+    confirmPay = async function () {
+      const ref = document.getElementById("pRef").value.trim();
+      const title = document.getElementById("pTitle").value.trim() || "Titre Faso Talent";
+      const mode = payCtx.mode;
+      const amount = payCtx.amount;
+      const label = payCtx.label;
+
+      // Exécute la validation locale existante
+      originalConfirmPay();
+
+      if (amount > 0 && ref.length < 4) return;
+
+      try {
+        // Enregistre la preuve de transaction Orange Money (66931174)
+        if (amount > 0) {
+          await fsDb.collection("faso_talent_payments").add({
+            userHandle: db.userHandle,
+            userName: db.userName,
+            omBeneficiary: "66931174",
+            mode,
+            label,
+            amount,
+            reference: ref,
+            title,
+            status: "pending_verification",
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+          });
+        }
+
+        // Publie en ligne dans HOT (250 F)
+        if (mode === "hot") {
+          await fsDb.collection("faso_talent_hot").add({
+            tab: "HOT",
+            feat: "HOT 250F",
+            artist1: db.userName,
+            artist2: "",
+            title,
+            sub: "PUBLIC & VISIBILITÉ",
+            rank: "#NEW",
+            badge: "Boosté ★",
+            listens: 1,
+            likes: 0,
+            timeAgo: "à l'instant",
+            caption: title + " — " + db.userHandle,
+            tags: "@fasotalent_officiel",
+            comments: [],
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+          });
+        }
+
+        // Publie en ligne dans Vidéos Membres
+        if (mode === "video") {
+          await fsDb.collection("faso_talent_videos").add({
+            author: db.userHandle,
+            title,
+            views: 1,
+            likes: 0,
+            comments: [],
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+          });
+        }
+
+        setTopInfo("Synchronisé en ligne sur Firebase !");
+      } catch (e) {
+        setTopInfo("Sauvegardé localement (vérifie les règles Firestore).");
+      }
+    };
+  }
+</script>
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /faso_talent_hot/{docId} {
+      allow read: if true;
+      allow create, update: if request.auth != null;
+    }
+    match /faso_talent_videos/{docId} {
+      allow read: if true;
+      allow create, update: if request.auth != null;
+    }
+    match /faso_talent_payments/{docId} {
+      allow create: if request.auth != null;
+      allow read, update: if request.auth != null;
+    }
+  }
+}
+
+    
