@@ -1,1366 +1,979 @@
-jeun
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#101010">
-<title>FASO TALENT</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Faso Talent — Accueil</title>
+  <style>
+    :root {
+      --gold: #f5c22b;
+      --dark-bg: #111114;
+      --top-bg: #16161a;
+      --card-bg: #ffffff;
+      --text-dark: #141418;
+      --text-muted: #6e6e78;
+    }
 
-<style>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, sans-serif;
+    }
 
-body {
-  background: #101010;
-  color: white;
-  font-family: Arial, sans-serif;
-  padding-bottom: 85px;
-}
+    body {
+      background: #08080a;
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+    }
 
-header {
-  height: 65px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 18px;
-  background: #181818;
-  border-bottom: 1px solid #303030;
-  position: sticky;
-  top: 0;
-  z-index: 10;
-}
+    .phone-frame {
+      width: 100%;
+      max-width: 430px;
+      min-height: 100vh;
+      background: var(--card-bg);
+      color: var(--text-dark);
+      display: flex;
+      flex-direction: column;
+      padding-bottom: 94px;
+      position: relative;
+    }
 
-.logo {
-  font-size: 21px;
-  font-weight: bold;
-  color: #ffb000;
-}
+    .top-header {
+      background: var(--top-bg);
+      color: #fff;
+      padding: 12px 14px 0;
+    }
 
-.logo span {
-  color: white;
-}
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
 
-.header-icon {
-  font-size: 23px;
-  cursor: pointer;
-}
+    .free-pill {
+      background: var(--gold);
+      color: #111;
+      font-weight: 800;
+      font-size: 13px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+    }
 
-main {
-  padding: 18px;
-}
+    .header-icons {
+      display: flex;
+      gap: 18px;
+      align-items: center;
+    }
 
-.page {
-  display: none;
-}
+    .icon-btn {
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 20px;
+      cursor: pointer;
+      position: relative;
+    }
 
-.page.active {
-  display: block;
-}
+    .red-dot {
+      position: absolute;
+      top: 0;
+      right: -2px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #ff2d55;
+    }
 
-h2 {
-  font-size: 23px;
-  margin-bottom: 15px;
-}
+    .tabs-bar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      text-align: center;
+    }
 
-.subtitle {
-  color: #aaa;
-  margin-bottom: 22px;
-  font-size: 14px;
-}
+    .tab-item {
+      background: none;
+      border: none;
+      color: #a8a8b2;
+      font-weight: 800;
+      font-size: 13px;
+      padding: 10px 4px;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+    }
 
-.welcome {
-  background: linear-gradient(135deg, #302000, #171717);
-  border: 1px solid #654500;
-  border-radius: 15px;
-  padding: 23px 18px;
-  margin-bottom: 25px;
-}
+    .tab-item.active {
+      color: #ffffff;
+      border-bottom-color: var(--gold);
+    }
 
-.welcome h2 {
-  color: #ffb000;
-}
+    .tab-dot {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #ff2d55;
+      margin-left: 3px;
+      vertical-align: top;
+    }
 
-.welcome p {
-  color: #ddd;
-  line-height: 1.6;
-  font-size: 14px;
-}
+    .status-banner {
+      margin: 8px 14px 0;
+      font-size: 12px;
+      font-weight: 700;
+      color: #9b6b00;
+      background: #fff9e3;
+      padding: 7px 10px;
+      border-radius: 8px;
+    }
 
-.section-title {
-  margin: 23px 0 14px;
-  font-size: 18px;
-}
+    .post-card {
+      padding: 10px 0 16px;
+      border-bottom: 8px solid #f0f0f4;
+    }
 
-.cards {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
-}
+    .feat-banner {
+      background: linear-gradient(90deg, #1a6b2b, #36b34a, #1a6b2b);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 800;
+      text-align: center;
+      letter-spacing: 0.8px;
+      padding: 2px 0;
+    }
 
-.card {
-  background: #202020;
-  border: 1px solid #333;
-  padding: 17px 12px;
-  border-radius: 13px;
-  min-height: 105px;
-}
+    .artist-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+    }
 
-.card .emoji {
-  font-size: 26px;
-  margin-bottom: 10px;
-}
+    .avatars {
+      display: flex;
+      align-items: center;
+    }
 
-.card h3 {
-  font-size: 14px;
-  margin-bottom: 6px;
-}
+    .avatars div {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: 2px solid #fff;
+      background: #222;
+      color: var(--gold);
+      font-weight: 800;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
-.card p {
-  color: #999;
-  font-size: 12px;
-}
+    .avatars div:last-child {
+      margin-left: -10px;
+      background: #3b2609;
+    }
 
-.navbar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 72px;
-  background: #191919;
-  border-top: 1px solid #333;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  z-index: 20;
-}
+    .artist-names {
+      font-weight: 800;
+      font-size: 14px;
+      color: #121216;
+    }
 
-.nav-item {
-  color: #999;
-  text-align: center;
-  font-size: 11px;
-  cursor: pointer;
-  border: none;
-  background: none;
-}
+    .verified {
+      color: #1da1f2;
+      font-size: 13px;
+    }
 
-.nav-item .symbol {
-  display: block;
-  font-size: 22px;
-  margin-bottom: 5px;
-}
+    .artwork-box {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1.05;
+      background: radial-gradient(circle at 50% 35%, #594112, #121110 75%);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
-.nav-item.active {
-  color: #ffb000;
-}
+    .artwork-bg-title {
+      text-align: center;
+      padding: 20px;
+      color: var(--gold);
+    }
 
-.coming {
-  background: #202020;
-  padding: 25px;
-  border-radius: 14px;
-  text-align: center;
-  color: #bbb;
-  line-height: 1.7;
-}
-</style>
+    .artwork-bg-title .big-script {
+      font-family: Georgia, serif;
+      font-style: italic;
+      font-size: 46px;
+      font-weight: 900;
+      text-shadow: 0 4px 16px rgba(0, 0, 0, 0.8);
+    }
+
+    .artwork-bg-title .sub-cap {
+      font-size: 12px;
+      letter-spacing: 3px;
+      color: #f3e5b5;
+      margin-top: 6px;
+    }
+
+    .rank-badge {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      background: rgba(20, 20, 24, 0.78);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 800;
+      padding: 6px 10px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+    }
+
+    .featured-stack {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 6px;
+    }
+
+    .featured-pill {
+      background: var(--gold);
+      color: #111;
+      font-size: 12px;
+      font-weight: 800;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+    }
+
+    .plays-pill {
+      background: rgba(18, 18, 22, 0.78);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 5px 10px;
+      border-radius: 999px;
+    }
+
+    .play-center-btn {
+      position: absolute;
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: rgba(16, 16, 20, 0.65);
+      border: 2px solid rgba(255, 255, 255, 0.7);
+      color: #fff;
+      font-size: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .post-actions {
+      padding: 10px 14px 0;
+    }
+
+    .like-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .like-circle {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 1.5px solid #2b2b33;
+      background: #fff;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .like-circle.liked {
+      background: #fff3c4;
+      border-color: var(--gold);
+    }
+
+    .meta-line {
+      font-size: 12.5px;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .caption-line {
+      font-size: 14px;
+      color: #16161c;
+      margin-bottom: 10px;
+    }
+
+    .caption-line .tag {
+      color: #4b5563;
+      font-weight: 600;
+    }
+
+    .bottom-post-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 4px;
+    }
+
+    .left-social {
+      display: flex;
+      gap: 18px;
+      align-items: center;
+    }
+
+    .social-btn, .use-beat-btn {
+      background: none;
+      border: none;
+      font-size: 14px;
+      font-weight: 600;
+      color: #262630;
+      cursor: pointer;
+    }
+
+    .use-beat-btn {
+      font-size: 21px;
+      font-weight: 800;
+    }
+
+    /* Barre inférieure */
+    .bottom-dock {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      max-width: 430px;
+      background: #141418;
+      color: #fff;
+      z-index: 25;
+    }
+
+    .dock-icons {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 8px 10px;
+    }
+
+    .dock-btn {
+      background: none;
+      border: none;
+      color: #d0d0d8;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    .dock-btn.active {
+      color: var(--gold);
+    }
+
+    .center-plus {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: var(--gold);
+      color: #111;
+      border: none;
+      font-size: 30px;
+      font-weight: 900;
+      cursor: pointer;
+      margin-top: -18px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+    }
+
+    .mini-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--gold);
+      color: #111;
+      font-size: 11px;
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .premium-strip {
+      background: #1d1d22;
+      color: #d8d8e0;
+      text-align: center;
+      font-size: 12px;
+      padding: 6px;
+      cursor: pointer;
+    }
+
+    /* Fenêtre modale interactive */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.72);
+      z-index: 40;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+    }
+
+    .modal-overlay.open {
+      display: flex;
+    }
+
+    .modal-card {
+      width: 100%;
+      max-width: 390px;
+      background: #1a1a20;
+      color: #fff;
+      border: 1px solid #343440;
+      border-radius: 16px;
+      padding: 16px;
+      max-height: 82vh;
+      overflow-y: auto;
+    }
+
+    .modal-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .modal-title {
+      color: var(--gold);
+      font-weight: 800;
+      font-size: 16px;
+    }
+
+    .btn-close {
+      background: #2c2c38;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 6px 10px;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .btn-gold {
+      background: var(--gold);
+      color: #111;
+      border: none;
+      border-radius: 10px;
+      padding: 9px 12px;
+      font-weight: 800;
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      background: #111116;
+      color: #fff;
+      border: 1px solid #353542;
+      border-radius: 10px;
+      padding: 9px 11px;
+      margin-bottom: 10px;
+      font-size: 13px;
+    }
+
+    .list-row {
+      background: #24242c;
+      border-radius: 10px;
+      padding: 9px 11px;
+      margin-bottom: 8px;
+      font-size: 13px;
+    }
+  </style>
 </head>
-
 <body>
+  <div class="phone-frame">
+    <div class="top-header">
+      <div class="header-row">
+        <button class="free-pill" onclick="openCoinsModal()">💎 Gratuit (<span id="coinsTop">250</span>)</button>
+        <div class="header-icons">
+          <button class="icon-btn" onclick="openNotifsModal()">
+            🔔<span class="red-dot"></span>
+          </button>
+          <button class="icon-btn" onclick="openMessagesModal()">➤</button>
+        </div>
+      </div>
 
-<header>
-  <div class="logo">FASO <span>TALENT</span></div>
-  <div class="header-icon" onclick="showPage('activity')">🔔</div>
-</header>
-
-<main>
-
-<section id="home" class="page active">
-  <div class="welcome">
-    <h2>Bienvenue sur Faso Talent</h2>
-    <p>
-      Le talent musical africain mérite une scène.
-      Crée ta musique, découvre des artistes et partage
-      ton univers avec le monde.
-    </p>
-  </div>
-
-  <h2>Découvrir</h2>
-  <p class="subtitle">Tout l'univers musical au même endroit.</p>
-
-  <div class="cards">
-    <div class="card" onclick="showPage('studio')">
-      <div class="emoji">🎙️</div>
-      <h3>Studio musical</h3>
-      <p>Enregistre tes morceaux</p>
+      <div class="tabs-bar">
+        <button class="tab-item active" id="tab-HOT" onclick="switchFeedTab('HOT')">HOT</button>
+        <button class="tab-item" id="tab-RÉCENT" onclick="switchFeedTab('RÉCENT')">RÉCENT</button>
+        <button class="tab-item" id="tab-MY" onclick="switchFeedTab('MY')">MY</button>
+        <button class="tab-item" id="tab-ACTUS" onclick="switchFeedTab('ACTUS')">
+          ACTUS<span class="tab-dot"></span>
+        </button>
+      </div>
     </div>
 
-    <div class="card" onclick="showPage('explore')">
-      <div class="emoji">🎧</div>
-      <h3>Explorer</h3>
-      <p>Découvre des musiques</p>
-    </div>
+    <div class="status-banner" id="feedStatus">Fil actif : HOT • Solde : 250 pièces</div>
 
-    <div class="card" onclick="showPage('profile')">
-      <div class="emoji">👤</div>
-      <h3>Mon profil</h3>
-      <p>Ton espace artiste</p>
-    </div>
+    <div id="feedContainer"></div>
 
-    <div class="card" onclick="showPage('activity')">
-      <div class="emoji">🔥</div>
-      <h3>Activités</h3>
-      <p>Suis les nouveautés</p>
+    <div class="bottom-dock">
+      <div class="dock-icons">
+        <button class="dock-btn active" id="dockHome" onclick="setDock('home')">☰</button>
+        <button class="dock-btn" id="dockClips" onclick="setDock('clips')">🎬</button>
+        <button class="center-plus" onclick="openCreateModal()">+</button>
+        <button class="dock-btn" id="dockSearch" onclick="openSearchModal()">🔍</button>
+        <button class="dock-btn" id="dockProfile" onclick="openProfileModal()">
+          <div class="mini-avatar">FT</div>
+        </button>
+      </div>
+      <div class="premium-strip" onclick="openPremiumModal()">
+        Expérience sans pub avec le Premium
+      </div>
     </div>
   </div>
 
-  <h3 class="section-title">La communauté musicale</h3>
-  <div class="coming">
-    🎵 Les publications des artistes arriveront ici.
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal-card" id="modalCard"></div>
   </div>
-</section>
 
-<section id="explore" class="page">
-  <h2>Explorer</h2>
-  <p class="subtitle">Découvre les talents et les musiques.</p>
-  <div class="coming">🎧 Espace de découverte musicale</div>
-</section>
+  <script>
+    let coins = 250;
+    let isPremium = false;
+    let currentTab = "HOT";
+    let playingId = null;
+    let audioCtx = null;
+    let beatInterval = null;
+    const likedIds = new Set();
 
-<section id="studio" class="page">
-  <h2>Studio musical</h2>
-  <p class="subtitle">Ton espace de création musicale.</p>
-  <div class="coming">🎙️ Ton futur studio d'enregistrement</div>
-</section>
-
-<section id="activity" class="page">
-  <h2>Activités</h2>
-  <p class="subtitle">Notifications et nouveautés.</p>
-  <div class="coming">🔔 Tes activités apparaîtront ici.</div>
-</section>
-
-<section id="profile" class="page">
-  <h2>Mon profil</h2>
-  <p class="subtitle">Ton identité musicale.</p>
-  <div class="coming">👤 Ton espace personnel d'artiste.</div>
-</section>
-
-</main>
-
-<nav class="navbar">
-  <button class="nav-item active" onclick="showPage('home',this)">
-    <span class="symbol">🏠</span>Accueil
-  </button>
-
-  <button class="nav-item" onclick="showPage('explore',this)">
-    <span class="symbol">🔎</span>Explorer
-  </button>
-
-  <button class="nav-item" onclick="showPage('studio',this)">
-    <span class="symbol">🎙️</span>Studio
-  </button>
-
-  <button class="nav-item" onclick="showPage('activity',this)">
-    <span class="symbol">🔔</span>Activités
-  </button>
-
-  <button class="nav-item" onclick="showPage('profile',this)">
-    <span class="symbol">👤</span>Profil
-  </button>
-</nav>
-
-<script>
-function showPage(pageId, button) {
-  document.querySelectorAll('.page').forEach(page => {
-    page.classList.remove('active');
-  });
-
-  document.getElementById(pageId).classList.add('active');
-
-  document.querySelectorAll('.nav-item').forEach(item => {
-    item.classList.remove('active');
-  });
-
-  if (button) {
-    button.classList.add('active');
-  } else {
-    document.querySelectorAll('.nav-item').forEach(item => {
-      if (item.getAttribute('onclick').includes(pageId)) {
-        item.classList.add('active');
+    const POSTS = [
+      {
+        id: 1,
+        tab: "HOT",
+        feat: "FEAT",
+        artists: "Faso King",
+        coArtist: "Bobo Flow",
+        titleMain: "Déjà Vu",
+        subCap: "FASO TALENT EDITION",
+        rank: "#87",
+        featuredLabel: "Featured ▾",
+        plays: 1218,
+        likes: 598,
+        timeAgo: "il y a 14 heures",
+        caption: "DE jAVu2 Faso King ft Bobo Flow",
+        tags: "@fasotalent_officiel @bobo_rap",
+        bpm: 138,
+        freq: 55,
+        comments: ["Lourd le refrain !", "Force depuis Bobo"]
+      },
+      {
+        id: 2,
+        tab: "RÉCENT",
+        feat: "SOLO",
+        artists: "Ouaga Drill",
+        coArtist: "",
+        titleMain: "Nuit d'Or",
+        subCap: "TRAP / DRILL",
+        rank: "#12",
+        featuredLabel: "Boosté ▾",
+        plays: 480,
+        likes: 142,
+        timeAgo: "il y a 2 heures",
+        caption: "Nuit d'Or — Freestyle Studio",
+        tags: "@fasotalent_officiel #BurkinaRap",
+        bpm: 144,
+        freq: 46.25,
+        comments: ["Gros flow sur la prod"]
+      },
+      {
+        id: 3,
+        tab: "MY",
+        feat: "STUDIO",
+        artists: "Mon Son",
+        coArtist: "",
+        titleMain: "Brouillon 01",
+        subCap: "SESSION LOCALE",
+        rank: "#04",
+        featuredLabel: "Perso ▾",
+        plays: 75,
+        likes: 18,
+        timeAgo: "aujourd'hui",
+        caption: "Brouillon 01 — Prêt pour mixage",
+        tags: "@fasotalent_officiel",
+        bpm: 96,
+        freq: 49,
+        comments: []
+      },
+      {
+        id: 4,
+        tab: "ACTUS",
+        feat: "TOURNOI",
+        artists: "Faso Battle",
+        coArtist: "Saison 2026",
+        titleMain: "Clash Faso",
+        subCap: "INSCRIPTIONS OUVERTES",
+        rank: "#01",
+        featuredLabel: "Actu ▾",
+        plays: 2310,
+        likes: 810,
+        timeAgo: "il y a 5 heures",
+        caption: "Tournoi Faso Talent — Vote & Soutien",
+        tags: "@fasotalent_officiel #FasoTalent",
+        bpm: 120,
+        freq: 65.41,
+        comments: ["Je m'inscris pour le tournoi !"]
       }
-    });
-    
-<style>
-.account-button {
-  background: #ffb000;
-  color: #111;
-  border: none;
-  padding: 9px 13px;
-  border-radius: 8px;
-  font-weight: bold;
-  cursor: pointer;
-}
+    ];
 
-.auth-box {
-  background: #202020;
-  border: 1px solid #444;
-  border-radius: 15px;
-  padding: 20px;
-  margin-top: 15px;
-}
-
-.auth-box input {
-  width: 100%;
-  padding: 14px;
-  margin: 8px 0;
-  background: #111;
-  border: 1px solid #444;
-  border-radius: 8px;
-  color: white;
-  font-size: 15px;
-}
-
-.auth-action {
-  width: 100%;
-  padding: 14px;
-  margin-top: 12px;
-  background: #ffb000;
-  color: #111;
-  border: none;
-  border-radius: 8px;
-  font-weight: bold;
-  font-size: 15px;
-  cursor: pointer;
-}
-
-.auth-link {
-  color: #ffb000;
-  cursor: pointer;
-  text-align: center;
-  margin-top: 16px;
-  font-size: 14px;
-}
-
-.auth-message {
-  margin-top: 14px;
-  color: #ffb000;
-  font-size: 14px;
-  line-height: 1.5;
-  overflow-wrap: anywhere;
-}
-</style>
-
-<script type="module">
-import { initializeApp }
-from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
-
-import {
-  getAuth,
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  sendPasswordResetEmail,
-  signOut,
-  onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
-
-import {
-  getFirestore,
-  doc,
-  setDoc,
-  serverTimestamp
-} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
-
-// CONFIGURATION FIREBASE
-const firebaseConfig = {
-  apiKey: "AIzaSyCexdElr5DdD7TIHzdVyeGQqbPtoJ5yWJE",
-  authDomain: "fasorencontre-9b5a9.firebaseapp.com",
-  projectId: "fasorencontre-9b5a9",
-  storageBucket: "fasorencontre-9b5a9.firebasestorage.app",
-  messagingSenderId: "213099669353",
-  appId: "1:213099669353:web:f63143c9f8efcc978b3ff8",
-  measurementId: "G-8SPQ732YY7"
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-
-// AJOUT DU BOUTON COMPTE
-const header = document.querySelector("header");
-
-const accountButton = document.createElement("button");
-accountButton.className = "account-button";
-accountButton.textContent = "Mon compte";
-
-header.appendChild(accountButton);
-
-// CREATION DE L'ESPACE COMPTE
-const main = document.querySelector("main");
-
-const accountPage = document.createElement("section");
-accountPage.id = "accountPage";
-accountPage.className = "page";
-
-accountPage.innerHTML = `
-  <h2>Bienvenue sur Faso Talent</h2>
-  <p class="subtitle">
-    Connecte-toi ou crée ton compte artiste.
-  </p>
-
-  <div class="auth-box">
-
-    <div id="registerFields">
-      <h3>Créer un compte</h3>
-
-      <input id="fullName"
-        type="text"
-        placeholder="Ton nom complet">
-
-      <input id="username"
-        type="text"
-        placeholder="Ton pseudo d'artiste">
-    </div>
-
-    <input id="email"
-      type="email"
-      placeholder="Adresse e-mail">
-
-    <input id="password"
-      type="password"
-      placeholder="Mot de passe">
-
-    <button id="mainAuthButton" class="auth-action">
-      Créer mon compte
-    </button>
-
-    <div id="forgotPassword" class="auth-link">
-      Mot de passe oublié ?
-    </div>
-
-    <div id="switchAuth" class="auth-link">
-      J'ai déjà un compte : Se connecter
-    </div>
-
-    <div id="authMessage" class="auth-message"></div>
-
-    <button id="logoutButton"
-      class="auth-action"
-      style="display:none">
-      Se déconnecter
-    </button>
-
-  </div>
-`;
-
-main.appendChild(accountPage);
-
-// NAVIGATION VERS LE COMPTE
-accountButton.addEventListener("click", () => {
-  document.querySelectorAll(".page").forEach(page => {
-    page.classList.remove("active");
-  });
-
-  accountPage.classList.add("active");
-
-  document.querySelectorAll(".nav-item").forEach(item => {
-    item.classList.remove("active");
-  });
-
-  window.scrollTo(0, 0);
-});
-
-let registerMode = true;
-
-const registerFields = document.getElementById("registerFields");
-const mainAuthButton = document.getElementById("mainAuthButton");
-const switchAuth = document.getElementById("switchAuth");
-const forgotPassword = document.getElementById("forgotPassword");
-const authMessage = document.getElementById("authMessage");
-const logoutButton = document.getElementById("logoutButton");
-
-// CHANGER INSCRIPTION / CONNEXION
-switchAuth.addEventListener("click", () => {
-  registerMode = !registerMode;
-
-  registerFields.style.display =
-    registerMode ? "block" : "none";
-
-  mainAuthButton.textContent =
-    registerMode ? "Créer mon compte" : "Me connecter";
-
-  switchAuth.textContent =
-    registerMode
-      ? "J'ai déjà un compte : Se connecter"
-      : "Je n'ai pas de compte : S'inscrire";
-
-  authMessage.textContent = "";
-});
-
-// INSCRIPTION
-mainAuthButton.addEventListener("click", async () => {
-  const email = document.getElementById("email").value.trim();
-  const password = document.getElementById("password").value;
-
-  authMessage.textContent = "";
-
-  if (!email || !password) {
-    authMessage.textContent =
-      "Remplis ton adresse e-mail et ton mot de passe.";
-    return;
-  }
-
-  try {
-    if (registerMode) {
-      const fullName =
-        document.getElementById("fullName").value.trim();
-
-      const username =
-        document.getElementById("username").value.trim();
-
-      if (!fullName || !username) {
-        authMessage.textContent =
-          "Entre ton nom complet et ton pseudo.";
-        return;
-      }
-
-      if (password.length < 6) {
-        authMessage.textContent =
-          "Le mot de passe doit contenir au moins 6 caractères.";
-        return;
-      }
-
-      const result =
-        await createUserWithEmailAndPassword(
-          auth,
-          email,
-          password
-        );
-
-      await setDoc(
-        doc(db, "platformUsers", result.user.uid),
-        {
-          uid: result.user.uid,
-          fullName: fullName,
-          username: username,
-          email: email,
-          role: "artist",
-          createdAt: serverTimestamp()
-        }
-      );
-
-      authMessage.textContent =
-        "Ton compte Faso Talent a été créé avec succès !";
-
-    } else {
-
-      await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-
-      authMessage.textContent =
-        "Connexion réussie ! Bienvenue sur Faso Talent.";
+    function updateStatus(msg) {
+      document.getElementById("coinsTop").textContent = coins;
+      document.getElementById("feedStatus").textContent = `${msg} • Solde : ${coins} pièces`;
     }
 
-  } catch (error) {
-    console.error(error);
-
-    const messages = {
-      "auth/email-already-in-use":
-        "Cette adresse e-mail possède déjà un compte.",
-      "auth/invalid-email":
-        "Adresse e-mail invalide.",
-      "auth/weak-password":
-        "Mot de passe trop faible.",
-      "auth/invalid-credential":
-        "Adresse e-mail ou mot de passe incorrect.",
-      "permission-denied":
-        "Accès refusé par les règles Firestore."
-    };
-
-    authMessage.textContent =
-      messages[error.code] ||
-      "Une erreur est survenue : " + error.message;
-  }
-});
-
-// MOT DE PASSE OUBLIE
-forgotPassword.addEventListener("click", async () => {
-  const email = document.getElementById("email").value.trim();
-
-  if (!email) {
-    authMessage.textContent =
-      "Entre d'abord ton adresse e-mail.";
-    return;
-  }
-
-  try {
-    await sendPasswordResetEmail(auth, email);
-
-    authMessage.textContent =
-      "Un lien de récupération a été envoyé à ton adresse e-mail.";
-
-  } catch (error) {
-    authMessage.textContent =
-      "Erreur : " + error.message;
-  }
-});
-
-// DECONNEXION
-logoutButton.addEventListener("click", async () => {
-  try {
-    await signOut(auth);
-    authMessage.textContent = "Tu es déconnecté.";
-  } catch (error) {
-    authMessage.textContent = error.message;
-  }
-});
-
-// SURVEILLANCE DE LA CONNEXION
-onAuthStateChanged(auth, user => {
-  if (user) {
-    accountButton.textContent = "Mon profil";
-    mainAuthButton.style.display = "none";
-    registerFields.style.display = "none";
-    switchAuth.style.display = "none";
-    forgotPassword.style.display = "none";
-    logoutButton.style.display = "block";
-
-    authMessage.textContent =
-      "Connecté avec : " + user.email;
-
-  } else {
-    accountButton.textContent = "Mon compte";
-    mainAuthButton.style.display = "block";
-    registerFields.style.display =
-      registerMode ? "block" : "none";
-    switchAuth.style.display = "block";
-    forgotPassword.style.display = "block";
-    logoutButton.style.display = "none";
-  }
-});
-
-</script>
-</body>
-</html>
-
-  }
-
-  window.scrollTo(0, 0);
-}
-</script>
-
-</body>
-</html>
-
-<style>
-.account-button {
-  background: #ffb000;
-  color: #111;
-  border: none;
-  padding: 9px 13px;
-  border-radius: 8px;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.auth-box {
-  background: #202020;
-  border: 1px solid #444;
-  border-radius: 15px;
-  padding: 20px;
-  margin-top: 15px;
-}
-
-.auth-box input {
-  width: 100%;
-  padding: 14px;
-  margin: 8px 0;
-  background: #111;
-  border: 1px solid #444;
-  border-radius: 8px;
-  color: white;
-  font-size: 15px;
-}
-
-.auth-action {
-  width: 100%;
-  padding: 14px;
-  margin-top: 12px;
-  background: #ffb000;
-  color: #111;
-  border: none;
-  border-radius: 8px;
-  font-weight: bold;
-  font-size: 15px;
-  cursor: pointer;
-}
-
-.auth-link {
-  color: #ffb000;
-  cursor: pointer;
-  text-align: center;
-  margin-top: 16px;
-  font-size: 14px;
-}
-
-.auth-message {
-  margin-top: 14px;
-  color: #ffb000;
-  font-size: 14px;
-  line-height: 1.5;
-  overflow-wrap: anywhere;
-}
-</style>
-
-<script type="module">
-import { initializeApp }
-from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
-
-import {
-  getAuth,
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  sendPasswordResetEmail,
-  signOut,
-  onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
-
-import {
-  getFirestore,
-  doc,
-  setDoc,
-  serverTimestamp
-} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
-
-// CONFIGURATION FIREBASE
-const firebaseConfig = {
-  apiKey: "AIzaSyCexdElr5DdD7TIHzdVyeGQqbPtoJ5yWJE",
-  authDomain: "fasorencontre-9b5a9.firebaseapp.com",
-  projectId: "fasorencontre-9b5a9",
-  storageBucket: "fasorencontre-9b5a9.firebasestorage.app",
-  messagingSenderId: "213099669353",
-  appId: "1:213099669353:web:f63143c9f8efcc978b3ff8",
-  measurementId: "G-8SPQ732YY7"
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-
-// AJOUT DU BOUTON COMPTE
-const header = document.querySelector("header");
-
-const accountButton = document.createElement("button");
-accountButton.className = "account-button";
-accountButton.textContent = "Mon compte";
-
-header.appendChild(accountButton);
-
-// CREATION DE L'ESPACE COMPTE
-const main = document.querySelector("main");
-
-const accountPage = document.createElement("section");
-accountPage.id = "accountPage";
-accountPage.className = "page";
-
-accountPage.innerHTML = `
-  <h2>Bienvenue sur Faso Talent</h2>
-  <p class="subtitle">
-    Connecte-toi ou crée ton compte artiste.
-  </p>
-
-  <div class="auth-box">
-
-    <div id="registerFields">
-      <h3>Créer un compte</h3>
-
-      <input id="fullName"
-        type="text"
-        placeholder="Ton nom complet">
-
-      <input id="username"
-        type="text"
-        placeholder="Ton pseudo d'artiste">
-    </div>
-
-    <input id="email"
-      type="email"
-      placeholder="Adresse e-mail">
-
-    <input id="password"
-      type="password"
-      placeholder="Mot de passe">
-
-    <button id="mainAuthButton" class="auth-action">
-      Créer mon compte
-    </button>
-
-    <div id="forgotPassword" class="auth-link">
-      Mot de passe oublié ?
-    </div>
-
-    <div id="switchAuth" class="auth-link">
-      J'ai déjà un compte : Se connecter
-    </div>
-
-    <div id="authMessage" class="auth-message"></div>
-
-    <button id="logoutButton"
-      class="auth-action"
-      style="display:none">
-      Se déconnecter
-    </button>
-
-  </div>
-`;
-
-main.appendChild(accountPage);
-
-// NAVIGATION VERS LE COMPTE
-accountButton.addEventListener("click", () => {
-  document.querySelectorAll(".page").forEach(page => {
-    page.classList.remove("active");
-  });
-
-  accountPage.classList.add("active");
-
-  document.querySelectorAll(".nav-item").forEach(item => {
-    item.classList.remove("active");
-  });
-
-  window.scrollTo(0, 0);
-});
-
-let registerMode = true;
-
-const registerFields = document.getElementById("registerFields");
-const mainAuthButton = document.getElementById("mainAuthButton");
-const switchAuth = document.getElementById("switchAuth");
-const forgotPassword = document.getElementById("forgotPassword");
-const authMessage = document.getElementById("authMessage");
-const logoutButton = document.getElementById("logoutButton");
-
-// CHANGER INSCRIPTION / CONNEXION
-switchAuth.addEventListener("click", () => {
-  registerMode = !registerMode;
-
-  registerFields.style.display =
-    registerMode ? "block" : "none";
-
-  mainAuthButton.textContent =
-    registerMode ? "Créer mon compte" : "Me connecter";
-
-  switchAuth.textContent =
-    registerMode
-      ? "J'ai déjà un compte : Se connecter"
-      : "Je n'ai pas de compte : S'inscrire";
-
-  authMessage.textContent = "";
-});
-
-// INSCRIPTION
-mainAuthButton.addEventListener("click", async () => {
-  const email = document.getElementById("email").value.trim();
-  const password = document.getElementById("password").value;
-
-  authMessage.textContent = "";
-
-  if (!email || !password) {
-    authMessage.textContent =
-      "Remplis ton adresse e-mail et ton mot de passe.";
-    return;
-  }
-
-  try {
-    if (registerMode) {
-      const fullName =
-        document.getElementById("fullName").value.trim();
-
-      const username =
-        document.getElementById("username").value.trim();
-
-      if (!fullName || !username) {
-        authMessage.textContent =
-          "Entre ton nom complet et ton pseudo.";
-        return;
-      }
-
-      if (password.length < 6) {
-        authMessage.textContent =
-          "Le mot de passe doit contenir au moins 6 caractères.";
-        return;
-      }
-
-      const result =
-        await createUserWithEmailAndPassword(
-          auth,
-          email,
-          password
-        );
-
-      await setDoc(
-        doc(db, "platformUsers", result.user.uid),
-        {
-          uid: result.user.uid,
-          fullName: fullName,
-          username: username,
-          email: email,
-          role: "artist",
-          createdAt: serverTimestamp()
-        }
-      );
-
-      authMessage.textContent =
-        "Ton compte Faso Talent a été créé avec succès !";
-
-    } else {
-
-      await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-
-      authMessage.textContent =
-        "Connexion réussie ! Bienvenue sur Faso Talent.";
+    function openModal(html) {
+      document.getElementById("modalCard").innerHTML = html;
+      document.getElementById("modalOverlay").classList.add("open");
     }
 
-  } catch (error) {
-    console.error(error);
-
-    const messages = {
-      "auth/email-already-in-use":
-        "Cette adresse e-mail possède déjà un compte.",
-      "auth/invalid-email":
-        "Adresse e-mail invalide.",
-      "auth/weak-password":
-        "Mot de passe trop faible.",
-      "auth/invalid-credential":
-        "Adresse e-mail ou mot de passe incorrect.",
-      "permission-denied":
-        "Accès refusé par les règles Firestore."
-    };
-
-    authMessage.textContent =
-      messages[error.code] ||
-      "Une erreur est survenue : " + error.message;
-  }
-});
-
-// MOT DE PASSE OUBLIE
-forgotPassword.addEventListener("click", async () => {
-  const email = document.getElementById("email").value.trim();
-
-  if (!email) {
-    authMessage.textContent =
-      "Entre d'abord ton adresse e-mail.";
-    return;
-  }
-
-  try {
-    await sendPasswordResetEmail(auth, email);
-
-    authMessage.textContent =
-      "Un lien de récupération a été envoyé à ton adresse e-mail.";
-
-  } catch (error) {
-    authMessage.textContent =
-      "Erreur : " + error.message;
-  }
-});
-
-// DECONNEXION
-logoutButton.addEventListener("click", async () => {
-  try {
-    await signOut(auth);
-    authMessage.textContent = "Tu es déconnecté.";
-  } catch (error) {
-    authMessage.textContent = error.message;
-  }
-});
-
-// SURVEILLANCE DE LA CONNEXION
-onAuthStateChanged(auth, user => {
-  if (user) {
-    accountButton.textContent = "Mon profil";
-    mainAuthButton.style.display = "none";
-    registerFields.style.display = "none";
-    switchAuth.style.display = "none";
-    forgotPassword.style.display = "none";
-    logoutButton.style.display = "block";
-
-    authMessage.textContent =
-      "Connecté avec : " + user.email;
-
-  } else {
-    accountButton.textContent = "Mon compte";
-    mainAuthButton.style.display = "block";
-    registerFields.style.display =
-      registerMode ? "block" : "none";
-    switchAuth.style.display = "block";
-    forgotPassword.style.display = "block";
-    logoutButton.style.display = "none";
-  }
-});
-
-</script>
-
-<style>
-.feed-card {
-  background: #202020;
-  border: 1px solid #383838;
-  border-radius: 14px;
-  padding: 16px;
-  margin: 15px 0;
-}
-
-.feed-card h3 {
-  color: #ffb000;
-  margin-bottom: 8px;
-}
-
-.feed-card p {
-  color: #bbb;
-  font-size: 14px;
-  margin-bottom: 12px;
-}
-
-.feed-card audio {
-  width: 100%;
-  margin: 10px 0;
-}
-
-.feed-actions {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  flex-wrap: wrap;
-}
-
-.feed-actions button {
-  background: #303030;
-  color: white;
-  border: 1px solid #444;
-  padding: 9px 13px;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-.feed-actions button.liked {
-  color: #ffb000;
-}
-
-.publish-box {
-  background: #202020;
-  border: 1px solid #444;
-  border-radius: 14px;
-  padding: 16px;
-  margin: 15px 0;
-}
-
-.publish-box input,
-.publish-box textarea {
-  width: 100%;
-  background: #111;
-  color: white;
-  border: 1px solid #444;
-  padding: 12px;
-  border-radius: 8px;
-  margin: 7px 0 12px;
-}
-
-.publish-box textarea {
-  min-height: 75px;
-}
-
-.publish-box button {
-  width: 100%;
-  background: #ffb000;
-  border: none;
-  padding: 13px;
-  border-radius: 8px;
-  font-weight: bold;
-}
-
-.feed-status {
-  color: #ffb000;
-  font-size: 13px;
-  margin-top: 10px;
-}
-</style>
-
-<script type="module">
-import { getApp } from
-"https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
-
-import {
-  getAuth,
-  onAuthStateChanged
-} from
-"https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
-
-import {
-  getFirestore,
-  collection,
-  addDoc,
-  doc,
-  getDoc,
-  updateDoc,
-  deleteDoc,
-  query,
-  orderBy,
-  onSnapshot,
-  arrayUnion,
-  arrayRemove,
-  serverTimestamp
-} from
-"https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
-
-import {
-  getStorage,
-  ref,
-  uploadBytes,
-  getDownloadURL
-} from
-"https://www.gstatic.com/firebasejs/11.6.0/firebase-storage.js";
-
-const app = getApp();
-const auth = getAuth(app);
-const db = getFirestore(app);
-const storage = getStorage(app);
-
-const feedPage = document.getElementById("home");
-
-feedPage.innerHTML = `
-  <h2>Communauté musicale</h2>
-  <p class="subtitle">
-    Découvre et partage les talents de Faso Talent.
-  </p>
-
-  <div class="publish-box">
-    <h3>🎵 Publier un morceau</h3>
-
-    <input id="trackTitle"
-      placeholder="Titre de ton morceau">
-
-    <textarea id="trackDescription"
-      placeholder="Présente ta musique..."></textarea>
-
-    <label>Choisir ton fichier audio</label>
-    <input id="trackFile" type="file" accept="audio/*">
-
-    <button id="publishTrack">
-      Publier mon morceau
-    </button>
-
-    <p id="publishStatus" class="feed-status"></p>
-  </div>
-
-  <h3 style="margin-top:25px">🎧 Publications récentes</h3>
-  <div id="musicFeed"></div>
-`;
-
-const musicFeed = document.getElementById("musicFeed");
-const publishStatus = document.getElementById("publishStatus");
-
-let currentArtist = null;
-let unsubscribeFeed = null;
-
-onAuthStateChanged(auth, user => {
-  currentArtist = user;
-
-  if (unsubscribeFeed) {
-    unsubscribeFeed();
-    unsubscribeFeed = null;
-  }
-
-  if (!user) {
-    musicFeed.innerHTML =
-      '<p class="coming">Connecte-toi pour découvrir les publications.</p>';
-    return;
-  }
-
-  const postsQuery = query(
-    collection(db, "musicPosts"),
-    orderBy("createdAt", "desc")
-  );
-
-  unsubscribeFeed = onSnapshot(postsQuery, snapshot => {
-    musicFeed.innerHTML = "";
-
-    if (snapshot.empty) {
-      musicFeed.innerHTML =
-        '<p class="coming">Aucun morceau publié pour le moment.</p>';
-      return;
+    function closeModal() {
+      document.getElementById("modalOverlay").classList.remove("open");
     }
 
-    snapshot.forEach(postDoc => {
-      const post = postDoc.data();
-      const postId = postDoc.id;
+    function startAudioPreview(post) {
+      stopAudioPreview();
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      if (!audioCtx) audioCtx = new AudioContext();
+      if (audioCtx.state === "suspended") audioCtx.resume();
 
-      const likes = Array.isArray(post.likes) ? post.likes : [];
-      const liked = likes.includes(user.uid);
+      const stepMs = (60 / post.bpm / 2) * 1000;
+      let step = 0;
+      beatInterval = setInterval(() => {
+        const now = audioCtx.currentTime;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(post.freq * (step % 4 === 0 ? 2 : 1), now);
+        osc.frequency.exponentialRampToValueAtTime(post.freq * 0.7, now + 0.16);
+        gain.gain.setValueAtTime(0.32, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(now);
+        osc.stop(now + 0.19);
+        step++;
+      }, stepMs);
+    }
 
-      const card = document.createElement("div");
-      card.className = "feed-card";
+    function stopAudioPreview() {
+      if (beatInterval) clearInterval(beatInterval);
+      beatInterval = null;
+    }
 
-      const title = document.createElement("h3");
-      title.textContent = post.title || "Morceau sans titre";
+    function switchFeedTab(tab) {
+      currentTab = tab;
+      document.querySelectorAll(".tab-item").forEach(btn => {
+        btn.classList.toggle("active", btn.id === "tab-" + tab);
+      });
+      renderPosts();
+      updateStatus("Onglet actif : " + tab);
+    }
 
-      const artist = document.createElement("p");
-      artist.textContent = "Artiste : " + (post.username || "Artiste");
+    function renderPosts() {
+      const container = document.getElementById("feedContainer");
+      const list = POSTS.filter(p => p.tab === currentTab);
 
-      const description = document.createElement("p");
-      description.textContent = post.description || "";
+      container.innerHTML = list.map(post => {
+        const isLiked = likedIds.has(post.id);
+        const isPlaying = playingId === post.id;
+        return `
+          <div class="post-card">
+            <div class="feat-banner">${post.feat}</div>
+            <div class="artist-bar">
+              <div class="avatars">
+                <div>${post.artists.slice(0, 2).toUpperCase()}</div>
+                ${post.coArtist ? `<div>${post.coArtist.slice(0, 2).toUpperCase()}</div>` : ""}
+              </div>
+              <div class="artist-names">
+                ${post.artists} <span class="verified">✔</span>
+                ${post.coArtist ? `• ${post.coArtist} <span class="verified">✔</span>` : ""}
+              </div>
+            </div>
 
-      card.append(title, artist, description);
+            <div class="artwork-box">
+              <button class="rank-badge" onclick="openRankingModal('${post.titleMain}', '${post.rank}')">📊 ${post.rank}</button>
+              <div class="featured-stack">
+                <button class="featured-pill" onclick="boostPost(${post.id})">${post.featuredLabel}</button>
+                <div class="plays-pill">✦ ${post.plays} Ecoutes ✦</div>
+              </div>
+              <div class="artwork-bg-title">
+                <div class="big-script">${post.titleMain}</div>
+                <div class="sub-cap">${post.subCap}</div>
+              </div>
+              <button class="play-center-btn" onclick="togglePlay(${post.id})">
+                ${isPlaying ? "❚❚" : "▶"}
+              </button>
+            </div>
 
-      if (post.audioUrl) {
-        const audio = document.createElement("audio");
-        audio.controls = true;
-        audio.preload = "none";
-        audio.src = post.audioUrl;
-        card.appendChild(audio);
+            <div class="post-actions">
+              <div class="like-row">
+                <button class="like-circle ${isLiked ? "liked" : ""}" onclick="toggleLike(${post.id})">👍</button>
+                <strong>${post.likes + (isLiked ? 1 : 0)}</strong>
+              </div>
+              <div class="meta-line">${post.timeAgo} &nbsp; ${post.plays} écoutes</div>
+              <div class="caption-line">
+                ${post.caption} <span class="tag">${post.tags}</span>
+              </div>
+              <div class="bottom-post-bar">
+                <div class="left-social">
+                  <button class="social-btn" onclick="openCommentsModal(${post.id})">💬 ${post.comments.length}</button>
+                  <button class="social-btn" onclick="sharePost(${post.id})">➤ Partager</button>
+                </div>
+                <button class="use-beat-btn" title="Utiliser ce morceau" onclick="useTrackInStudio(${post.id})">+♪</button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function togglePlay(id) {
+      const post = POSTS.find(p => p.id === id);
+      if (!post) return;
+      if (playingId === id) {
+        playingId = null;
+        stopAudioPreview();
+        updateStatus("Pause : " + post.titleMain);
+      } else {
+        playingId = id;
+        post.plays += 1;
+        startAudioPreview(post);
+        updateStatus("Lecture : " + post.titleMain);
       }
+      renderPosts();
+    }
 
-      const actions = document.createElement("div");
-      actions.className = "feed-actions";
+    function toggleLike(id) {
+      if (likedIds.has(id)) likedIds.delete(id);
+      else likedIds.add(id);
+      renderPosts();
+      updateStatus("Like mis à jour");
+    }
 
-      const likeButton = document.createElement("button");
-      likeButton.textContent =
-        (liked ? "❤️ " : "🤍 ") + likes.length + " J'aime";
-
-      if (liked) likeButton.classList.add("liked");
-
-      likeButton.onclick = async () => {
-        try {
-          const postRef = doc(db, "musicPosts", postId);
-
-          if (liked) {
-            await updateDoc(postRef, {
-              likes: arrayRemove(user.uid)
-            });
-          } else {
-            await updateDoc(postRef, {
-              likes: arrayUnion(user.uid)
-            });
-          }
-        } catch (error) {
-          alert("Impossible de modifier le like : " + error.message);
-        }
-      };
-
-      actions.appendChild(likeButton);
-
-      if (post.uid === user.uid) {
-        const deleteButton = document.createElement("button");
-        deleteButton.textContent = "🗑 Supprimer";
-
-        deleteButton.onclick = async () => {
-          if (!confirm("Supprimer cette publication ?")) return;
-
-          try {
-            await deleteDoc(doc(db, "musicPosts", postId));
-          } catch (error) {
-            alert("Erreur : " + error.message);
-          }
-        };
-
-        actions.appendChild(deleteButton);
+    function boostPost(id) {
+      const post = POSTS.find(p => p.id === id);
+      if (!post) return;
+      if (coins < 50) {
+        openCoinsModal();
+        return;
       }
+      coins -= 50;
+      post.featuredLabel = "Boosté ★";
+      renderPosts();
+      updateStatus(`"${post.titleMain}" boosté (-50 pièces)`);
+    }
 
-      card.appendChild(actions);
-      musicFeed.appendChild(card);
-    });
-  }, error => {
-    console.error(error);
-    musicFeed.textContent =
-      "Impossible de charger les publications : " + error.message;
-  });
-});
+    function openCommentsModal(id) {
+      const post = POSTS.find(p => p.id === id);
+      if (!post) return;
+      openModal(`
+        <div class="modal-top">
+          <div class="modal-title">Commentaires — ${post.titleMain}</div>
+          <button class="btn-close" onclick="closeModal()">×</button>
+        </div>
+        <div id="commentsBox">
+          ${post.comments.length ? post.comments.map(c => `<div class="list-row">${c}</div>`).join("") : `<div class="list-row">Aucun commentaire pour l'instant.</div>`}
+        </div>
+        <input type="text" id="newCommentInput" placeholder="Écrire un commentaire..." />
+        <button class="btn-gold" onclick="submitComment(${post.id})">Publier</button>
+      `);
+    }
 
-// PUBLICATION AUDIO
-document.getElementById("publishTrack")
-.addEventListener("click", async () => {
-  if (!currentArtist) {
-    publishStatus.textContent =
-      "Connecte-toi avant de publier.";
-    return;
-  }
+    function submitComment(id) {
+      const input = document.getElementById("newCommentInput");
+      const text = input.value.trim();
+      if (!text) return;
+      const post = POSTS.find(p => p.id === id);
+      post.comments.push(text);
+      renderPosts();
+      openCommentsModal(id);
+      updateStatus("Commentaire ajouté");
+    }
 
-  const title = document.getElementById("trackTitle").value.trim();
-  const description =
-    document.getElementById("trackDescription").value.trim();
-  const file = document.getElementById("trackFile").files[0];
+    function sharePost(id) {
+      const post = POSTS.find(p => p.id === id);
+      updateStatus(`Lien prêt pour "${post.titleMain}" (${post.tags})`);
+      openModal(`
+        <div class="modal-top">
+          <div class="modal-title">Partager</div>
+          <button class="btn-close" onclick="closeModal()">×</button>
+        </div>
+        <div class="list-row">Morceau : <strong>${post.titleMain}</strong> — ${post.artists}</div>
+        <div class="list-row">Lien Faso Talent : https://fasotalent.app/track/${post.id}</div>
+        <button class="btn-gold" onclick="closeModal()">OK</button>
+      `);
+    }
 
-  if (!title || !file) {
-    publishStatus.textContent =
-      "Ajoute un titre et sélectionne un fichier audio.";
-    return;
-  }
+    function useTrackInStudio(id) {
+      const post = POSTS.find(p => p.id === id);
+      startAudioPreview(post);
+      updateStatus(`Beat/Son "${post.titleMain}" chargé (${post.bpm} BPM)`);
+    }
 
-  if (!file.type.startsWith("audio/")) {
-    publishStatus.textContent = "Le fichier doit être un fichier audio.";
-    return;
-  }
+    function openCoinsModal() {
+      openModal(`
+        <div class="modal-top">
+          <div class="modal-title">💎 Pièces & Boost Faso Talent</div>
+          <button class="btn-close" onclick="closeModal()">×</button>
+        </div>
+        <div class="list-row">Solde actuel : <strong>${coins} pièces</strong></div>
+        <button class="btn-gold" style="width:100%;margin-bottom:8px;" onclick="addCoins(100, 'Pack Gratuit / Pub')">+100 pièces (Gratuit / Pub)</button>
+        <button class="btn-gold" style="width:100%;" onclick="addCoins(500, 'Recharge Orange Money / Coris Money')">+500 pièces (Orange Money / Coris Money)</button>
+      `);
+    }
 
-  if (file.size > 20 * 1024 * 1024) {
-    publishStatus.textContent =
-      "Le fichier ne doit pas dépasser 20 Mo.";
-    return;
-  }
+    function addCoins(amount, source) {
+      coins += amount;
+      updateStatus(`+${amount} pièces (${source})`);
+      closeModal();
+    }
 
-  const button = document.getElementById("publishTrack");
-  button.disabled = true;
-  publishStatus.textContent = "Envoi de ton morceau...";
+    function openNotifsModal() {
+      openModal(`
+        <div class="modal-top">
+          <div class="modal-title">Notifications</div>
+          <button class="btn-close" onclick="closeModal()">×</button>
+        </div>
+        <div class="list-row">🔥 Déjà Vu est classé #87 dans le fil HOT.</div>
+        <div class="list-row">💰 Boost disponible pour 50 pièces.</div>
+      `);
+    }
 
-  try {
-    const userRef = doc(db, "platformUsers", currentArtist.uid);
-    const userSnap = await getDoc(userRef);
+    function openMessagesModal() {
+      openModal(`
+        <div class="modal-top">
+          <div class="modal-title">Messages</div>
+          <button class="btn-close" onclick="closeModal()">×</button>
+        </div>
+        <div class="list-row"><strong>Bobo Flow</strong> : On pose le prochain feat quand tu veux !</div>
+        <input type="text" id="msgInput" placeholder="Envoyer un message..." />
+        <button class="btn-gold" onclick="closeModal(); updateStatus('Message envoyé');">Envoyer</button>
+      `);
+    }
 
-    const profile = userSnap.exists() ? userSnap.data() : {};
+    function openRankingModal(title, rank) {
+      openModal(`
+        <div class="modal-top">
+          <div class="modal-title">Classement ${rank}</div>
+          <button class="btn-close" onclick="closeModal()">×</button>
+        </div>
+        <div class="list-row">Titre : <strong>${title}</strong></div>
+        <div class="list-row">Position actuelle : <strong>${rank}</strong> sur Faso Talent.</div>
+      `);
+    }
 
-    const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
-    const audioRef = ref(
-      storage,
-      "musicPosts/" + currentArtist.uid + "/" +
-      Date.now() + "_" + safeName
-    );
+    function openCreateModal() {
+      openModal(`
+        <div class="modal-top">
+          <div class="modal-title">Créer sur Faso Talent (+)</div>
+          <button class="btn-close" onclick="closeModal()">×</button>
+        </div>
+        <button class="btn-gold" style="width:100%;margin-bottom:8px;" onclick="quickPublish('HOT')">Publier un son dans HOT</button>
+        <button class="btn-gold" style="width:100%;" onclick="quickPublish('MY')">Enregistrer dans MY</button>
+      `);
+    }
 
-    await uploadBytes(audioRef, file);
-    const audioUrl = await getDownloadURL(audioRef);
+    function quickPublish(targetTab) {
+      const nextId = POSTS.length + 1;
+      POSTS.unshift({
+        id: nextId,
+        tab: targetTab,
+        feat: "NEW",
+        artists: "Faso Artiste",
+        coArtist: "",
+        titleMain: "Flow Faso #" + nextId,
+        subCap: "STUDIO FASO TALENT",
+        rank: "#" + nextId,
+        featuredLabel: "Nouveau ▾",
+        plays: 1,
+        likes: 1,
+        timeAgo: "à l'instant",
+        caption: "Flow Faso #" + nextId + " — Nouveau titre",
+        tags: "@fasotalent_officiel",
+        bpm: 130,
+        freq: 55,
+        comments: []
+      });
+      switchFeedTab(targetTab);
+      closeModal();
+      updateStatus(`Nouveau titre ajouté dans ${targetTab}`);
+    }
 
-    await addDoc(collection(db, "musicPosts"), {
-      uid: currentArtist.uid,
-      username: profile.username || "Artiste",
-      title: title,
-      description: description,
-      audioUrl: audioUrl,
-      likes: [],
-      createdAt: serverTimestamp()
-    });
+    function openSearchModal() {
+      openModal(`
+        <div class="modal-top">
+          <div class="modal-title">Rechercher</div>
+          <button class="btn-close" onclick="closeModal()">×</button>
+        </div>
+        <input type="text" id="searchQuery" placeholder="Nom d'artiste ou titre..." oninput="filterSearch()" />
+        <div id="searchResults">
+          ${POSTS.map(p => `<div class="list-row"><strong>${p.titleMain}</strong> — ${p.artists} (${p.tab})</div>`).join("")}
+        </div>
+      `);
+    }
 
-    document.getElementById("trackTitle").value = "";
-    document.getElementById("trackDescription").value = "";
-    document.getElementById("trackFile").value = "";
+    function filterSearch() {
+      const q = document.getElementById("searchQuery").value.toLowerCase();
+      const matches = POSTS.filter(p => p.titleMain.toLowerCase().includes(q) || p.artists.toLowerCase().includes(q));
+      document.getElementById("searchResults").innerHTML = matches.length
+        ? matches.map(p => `<div class="list-row"><strong>${p.titleMain}</strong> — ${p.artists} (${p.tab})</div>`).join("")
+        : `<div class="list-row">Aucun résultat.</div>`;
+    }
 
-    publishStatus.textContent =
-      "Ton morceau a été publié avec succès !";
+    function openProfileModal() {
+      openModal(`
+        <div class="modal-top">
+          <div class="modal-title">Profil Faso Talent</div>
+          <button class="btn-close" onclick="closeModal()">×</button>
+        </div>
+        <div class="list-row">Artiste : <strong>@faso_talent</strong></div>
+        <div class="list-row">Solde : <strong>${coins} pièces</strong> • Premium : <strong>${isPremium ? "Actif" : "Non"}</strong></div>
+        <button class="btn-gold" onclick="closeModal()">Fermer</button>
+      `);
+    }
 
-  } catch (error) {
-    console.error(error);
-    publishStatus.textContent =
-      "Erreur de publication : " + error.message;
+    function openPremiumModal() {
+      openModal(`
+        <div class="modal-top">
+          <div class="modal-title">Faso Talent Premium</div>
+          <button class="btn-close" onclick="closeModal()">×</button>
+        </div>
+        <div class="list-row">Sans publicité + badge artiste + bonus de pièces.</div>
+        <button class="btn-gold" onclick="isPremium = true; coins += 200; closeModal(); updateStatus('Premium activé (+200 pièces)');">Activer Premium (+200 pièces)</button>
+      `);
+    }
 
-  } finally {
-    button.disabled = false;
-  }
-});
-</script>
-</body>
+    function setDock(name) {
+      stopAudioPreview();
+      playingId = null;
+      document.querySelectorAll(".dock-btn").forEach(b => b.classList.remove("active"));
+      if (name === "home") {
+        document.getElementById("dockHome").classList.add("active");
+        renderPosts();
+        updateStatus("Accueil actif");
+      } else if (name === "clips") {
+        document.getElementById("dockClips").classList.add("active");
+        updateStatus("Mode Clips & Vidéos sélectionné");
+      }
+    }
 
+    renderPosts();
+  </script>
 </body>
 </html>
