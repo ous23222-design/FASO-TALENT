@@ -1537,3 +1537,1720 @@
   </script>
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="fr" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#0B0D10" />
+  <title>Fasso Tala — Étape 7 Effets & Mixage</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] },
+          colors: {
+            surface: '#0B0D10',
+            card: '#13171D',
+            cardAlt: '#1A1F27',
+            accent: '#10B981',
+            gold: '#F59E0B',
+            crimson: '#EF4444',
+            om: '#FF6600'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+  </style>
+</head>
+<body class="bg-surface text-stone-100 min-h-screen flex flex-col pb-16">
+  <div id="toast-container" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-11/12 max-w-md flex flex-col gap-2 pointer-events-none"></div>
+
+  <header class="sticky top-0 z-30 bg-surface/90 backdrop-blur-md border-b border-stone-800/80 px-4 py-3">
+    <div class="max-w-3xl mx-auto flex items-center justify-between gap-3">
+      <div class="flex items-center gap-2.5">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-crimson via-gold to-accent flex items-center justify-center text-stone-950 font-black shadow">
+          <i data-lucide="sliders" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <span class="font-extrabold text-base tracking-tight block leading-none">Fasso Tala</span>
+          <span class="text-[10px] font-semibold text-gold uppercase tracking-wider">Étape 7 • Effets & Mixage</span>
+        </div>
+      </div>
+      <span class="px-2.5 py-1 rounded-xl bg-card border border-stone-800 text-[11px] font-bold text-accent">Web Audio</span>
+    </div>
+  </header>
+
+  <main class="flex-1 max-w-3xl w-full mx-auto px-4 pt-5 space-y-5">
+    <!-- Chargement Voix + Instrumentale -->
+    <section class="bg-card border border-stone-800 rounded-3xl p-4 sm:p-5 space-y-4 shadow-xl">
+      <div>
+        <span class="px-2.5 py-0.5 rounded-full bg-gold/15 text-gold text-[10px] font-black uppercase">Console de Mixage</span>
+        <h1 class="text-lg font-extrabold mt-1">Effets Vocaux & Balance Voix / Beat</h1>
+        <p class="text-xs text-stone-400">Chargez un fichier vocal (ou une prise audio) et une instrumentale pour régler le mix en direct.</p>
+      </div>
+
+      <div class="grid sm:grid-cols-2 gap-3">
+        <div class="p-3 rounded-2xl bg-surface border border-stone-800 space-y-2">
+          <label class="block text-xs font-bold text-accent">1. Piste Voix (fichier audio)</label>
+          <input type="file" id="mix-vocal-file" accept="audio/*" class="w-full text-xs text-stone-300" />
+          <audio id="mix-vocal-el" controls class="w-full h-9"></audio>
+        </div>
+
+        <div class="p-3 rounded-2xl bg-surface border border-stone-800 space-y-2">
+          <label class="block text-xs font-bold text-gold">2. Instrumentale (fichier ou URL)</label>
+          <input type="file" id="mix-beat-file" accept="audio/*" class="w-full text-xs text-stone-300" />
+          <input type="url" id="mix-beat-url" placeholder="Ou lien MP3 / WAV..." class="w-full px-3 py-1.5 rounded-xl bg-card border border-stone-800 text-xs outline-none focus:border-gold" />
+          <audio id="mix-beat-el" controls class="w-full h-9"></audio>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap gap-2.5 pt-1">
+        <button type="button" onclick="playBothTracks()" class="px-4 py-2.5 rounded-xl bg-accent text-stone-950 text-xs font-extrabold flex items-center gap-1.5">
+          <i data-lucide="play" class="w-4 h-4"></i> Lancer le mix
+        </button>
+        <button type="button" onclick="pauseBothTracks()" class="px-4 py-2.5 rounded-xl bg-cardAlt text-white text-xs font-bold flex items-center gap-1.5">
+          <i data-lucide="pause" class="w-4 h-4"></i> Pause
+        </button>
+        <button type="button" onclick="resetMixerSettings()" class="px-4 py-2.5 rounded-xl bg-surface border border-stone-800 text-stone-300 text-xs font-bold">
+          Réinitialiser
+        </button>
+      </div>
+    </section>
+
+    <!-- Réglages Voix, Égaliseur, Écho & Réverbération -->
+    <section class="bg-card border border-stone-800 rounded-3xl p-4 sm:p-5 space-y-4 shadow-xl">
+      <h2 class="text-sm font-extrabold">Réglages des pistes & effets vocaux</h2>
+
+      <div class="grid sm:grid-cols-2 gap-4 text-xs">
+        <div class="p-3.5 rounded-2xl bg-surface border border-stone-800 space-y-1">
+          <div class="flex justify-between font-bold"><span>Volume Voix</span><span id="val-vocal-vol" class="text-accent">100%</span></div>
+          <input type="range" id="ctrl-vocal-vol" min="0" max="150" value="100" oninput="updateMixerGraph()" class="w-full accent-emerald-500" />
+        </div>
+
+        <div class="p-3.5 rounded-2xl bg-surface border border-stone-800 space-y-1">
+          <div class="flex justify-between font-bold"><span>Volume Instrumentale</span><span id="val-beat-vol" class="text-gold">80%</span></div>
+          <input type="range" id="ctrl-beat-vol" min="0" max="150" value="80" oninput="updateMixerGraph()" class="w-full accent-amber-500" />
+        </div>
+
+        <div class="p-3.5 rounded-2xl bg-surface border border-stone-800 space-y-1">
+          <div class="flex justify-between font-bold"><span>Basses (Low Shelf)</span><span id="val-bass" class="text-white">0 dB</span></div>
+          <input type="range" id="ctrl-bass" min="-12" max="12" value="0" step="1" oninput="updateMixerGraph()" class="w-full accent-emerald-500" />
+        </div>
+
+        <div class="p-3.5 rounded-2xl bg-surface border border-stone-800 space-y-1">
+          <div class="flex justify-between font-bold"><span>Aigus / Clarté (High Shelf)</span><span id="val-treble" class="text-white">0 dB</span></div>
+          <input type="range" id="ctrl-treble" min="-12" max="12" value="0" step="1" oninput="updateMixerGraph()" class="w-full accent-emerald-500" />
+        </div>
+
+        <div class="p-3.5 rounded-2xl bg-surface border border-stone-800 space-y-1">
+          <div class="flex justify-between font-bold"><span>Écho (Delay)</span><span id="val-delay" class="text-white">20%</span></div>
+          <input type="range" id="ctrl-delay" min="0" max="80" value="20" oninput="updateMixerGraph()" class="w-full accent-emerald-500" />
+        </div>
+
+        <div class="p-3.5 rounded-2xl bg-surface border border-stone-800 space-y-1">
+          <div class="flex justify-between font-bold"><span>Réverbération (Ambiance)</span><span id="val-reverb" class="text-white">25%</span></div>
+          <input type="range" id="ctrl-reverb" min="0" max="100" value="25" oninput="updateMixerGraph()" class="w-full accent-emerald-500" />
+        </div>
+      </div>
+    </section>
+        <!-- Sauvegarde de projet / mix -->
+    <section class="bg-card border border-stone-800 rounded-3xl p-4 sm:p-5 space-y-3 shadow-xl">
+      <h2 class="text-sm font-extrabold">Sauvegarder les réglages du projet</h2>
+      <div class="flex flex-col sm:flex-row gap-2.5">
+        <input type="text" id="mix-project-title" placeholder="Titre du projet (Ex. Freestyle Faso)" class="flex-1 px-3.5 py-2.5 rounded-xl bg-surface border border-stone-800 text-sm outline-none focus:border-accent" />
+        <button type="button" onclick="saveMixPreset()" class="px-4 py-2.5 rounded-xl bg-gold text-stone-950 text-xs font-extrabold">Sauvegarder le mix</button>
+      </div>
+      <div id="saved-mixes-list" class="space-y-2 pt-1"></div>
+    </section>
+  </main>
+
+  <script>
+    const vocalEl = document.getElementById('mix-vocal-el');
+    const beatEl = document.getElementById('mix-beat-el');
+
+    let audioCtx = null;
+    let vocalGain = null;
+    let beatGain = null;
+    let bassFilter = null;
+    let trebleFilter = null;
+    let delayNode = null;
+    let delayFeedback = null;
+    let delayWetGain = null;
+    let reverbConvolver = null;
+    let reverbWetGain = null;
+    let graphReady = false;
+
+    function showToast(msg, kind = 'info') {
+      const box = document.getElementById('toast-container');
+      const el = document.createElement('div');
+      el.className = `${kind === 'ok' ? 'bg-accent text-stone-950' : 'bg-cardAlt text-white'} px-4 py-2.5 rounded-2xl text-xs font-extrabold shadow-lg`;
+      el.textContent = msg;
+      box.appendChild(el);
+      setTimeout(() => el.remove(), 3000);
+    }
+
+    function createImpulseBuffer(ctx, seconds = 1.6, decay = 2.2) {
+      const rate = ctx.sampleRate;
+      const len = Math.floor(rate * seconds);
+      const buf = ctx.createBuffer(2, len, rate);
+      for (let ch = 0; ch < 2; ch++) {
+        const data = buf.getChannelData(ch);
+        for (let i = 0; i < len; i++) {
+          data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, decay);
+        }
+      }
+      return buf;
+    }
+
+    function initAudioMixer() {
+      if (graphReady) return;
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContextClass) return;
+
+      audioCtx = new AudioContextClass();
+
+      const vocalSource = audioCtx.createMediaElementSource(vocalEl);
+      bassFilter = audioCtx.createBiquadFilter();
+      bassFilter.type = 'lowshelf';
+      bassFilter.frequency.value = 180;
+
+      trebleFilter = audioCtx.createBiquadFilter();
+      trebleFilter.type = 'highshelf';
+      trebleFilter.frequency.value = 3800;
+
+      vocalGain = audioCtx.createGain();
+
+      delayNode = audioCtx.createDelay(1.0);
+      delayNode.delayTime.value = 0.24;
+      delayFeedback = audioCtx.createGain();
+      delayFeedback.gain.value = 0.28;
+      delayWetGain = audioCtx.createGain();
+
+      delayNode.connect(delayFeedback);
+      delayFeedback.connect(delayNode);
+      delayNode.connect(delayWetGain);
+      delayWetGain.connect(audioCtx.destination);
+
+      reverbConvolver = audioCtx.createConvolver();
+      reverbConvolver.buffer = createImpulseBuffer(audioCtx);
+      reverbWetGain = audioCtx.createGain();
+      reverbConvolver.connect(reverbWetGain);
+      reverbWetGain.connect(audioCtx.destination);
+
+      vocalSource.connect(bassFilter);
+      bassFilter.connect(trebleFilter);
+      trebleFilter.connect(vocalGain);
+      vocalGain.connect(audioCtx.destination);
+      vocalGain.connect(delayNode);
+      vocalGain.connect(reverbConvolver);
+
+      const beatSource = audioCtx.createMediaElementSource(beatEl);
+      beatGain = audioCtx.createGain();
+      beatSource.connect(beatGain);
+      beatGain.connect(audioCtx.destination);
+
+      graphReady = true;
+      updateMixerGraph();
+    }
+
+    function updateMixerGraph() {
+      const vVol = Number(document.getElementById('ctrl-vocal-vol').value);
+      const bVol = Number(document.getElementById('ctrl-beat-vol').value);
+      const bass = Number(document.getElementById('ctrl-bass').value);
+      const treble = Number(document.getElementById('ctrl-treble').value);
+      const delayPct = Number(document.getElementById('ctrl-delay').value);
+      const reverbPct = Number(document.getElementById('ctrl-reverb').value);
+
+      document.getElementById('val-vocal-vol').textContent = `${vVol}%`;
+      document.getElementById('val-beat-vol').textContent = `${bVol}%`;
+      document.getElementById('val-bass').textContent = `${bass > 0 ? '+' : ''}${bass} dB`;
+      document.getElementById('val-treble').textContent = `${treble > 0 ? '+' : ''}${treble} dB`;
+      document.getElementById('val-delay').textContent = `${delayPct}%`;
+      document.getElementById('val-reverb').textContent = `${reverbPct}%`;
+
+      if (!graphReady) return;
+      vocalGain.gain.value = vVol / 100;
+      beatGain.gain.value = bVol / 100;
+      bassFilter.gain.value = bass;
+      trebleFilter.gain.value = treble;
+      delayWetGain.gain.value = delayPct / 100;
+      reverbWetGain.gain.value = reverbPct / 100;
+    }
+
+    function resetMixerSettings() {
+      document.getElementById('ctrl-vocal-vol').value = 100;
+      document.getElementById('ctrl-beat-vol').value = 80;
+      document.getElementById('ctrl-bass').value = 0;
+      document.getElementById('ctrl-treble').value = 0;
+      document.getElementById('ctrl-delay').value = 20;
+      document.getElementById('ctrl-reverb').value = 25;
+      updateMixerGraph();
+      showToast('Réglages réinitialisés.', 'info');
+    }
+
+    async function playBothTracks() {
+      initAudioMixer();
+      if (audioCtx && audioCtx.state === 'suspended') {
+        await audioCtx.resume();
+      }
+      updateMixerGraph();
+      if (vocalEl.src) vocalEl.play().catch(() => {});
+      if (beatEl.src) beatEl.play().catch(() => {});
+    }
+
+    function pauseBothTracks() {
+      vocalEl.pause();
+      beatEl.pause();
+    }
+
+    document.getElementById('mix-vocal-file').addEventListener('change', (e) => {
+      const f = e.target.files[0];
+      if (!f) return;
+      vocalEl.src = URL.createObjectURL(f);
+      showToast('Piste voix chargée.', 'ok');
+    });
+
+    document.getElementById('mix-beat-file').addEventListener('change', (e) => {
+      const f = e.target.files[0];
+      if (!f) return;
+      beatEl.src = URL.createObjectURL(f);
+      showToast('Instrumentale chargée.', 'ok');
+    });
+
+    document.getElementById('mix-beat-url').addEventListener('change', (e) => {
+      const u = e.target.value.trim();
+      if (u) {
+        beatEl.src = u;
+        showToast('Lien beat chargé.', 'ok');
+      }
+    });
+
+    function saveMixPreset() {
+      const title = document.getElementById('mix-project-title').value.trim() || `Mix #${Date.now().toString().slice(-4)}`;
+      const preset = {
+        id: Date.now(),
+        title,
+        vocalVol: document.getElementById('ctrl-vocal-vol').value,
+        beatVol: document.getElementById('ctrl-beat-vol').value,
+        bass: document.getElementById('ctrl-bass').value,
+        treble: document.getElementById('ctrl-treble').value,
+        delay: document.getElementById('ctrl-delay').value,
+        reverb: document.getElementById('ctrl-reverb').value
+      };
+      const list = JSON.parse(localStorage.getItem('fasso_tala_mixes') || '[]');
+      list.unshift(preset);
+      localStorage.setItem('fasso_tala_mixes', JSON.stringify(list.slice(0, 10)));
+      renderSavedMixes();
+      showToast('Mix sauvegardé.', 'ok');
+    }
+
+    function applySavedMix(id) {
+      const list = JSON.parse(localStorage.getItem('fasso_tala_mixes') || '[]');
+      const m = list.find((x) => x.id === id);
+      if (!m) return;
+      document.getElementById('ctrl-vocal-vol').value = m.vocalVol;
+      document.getElementById('ctrl-beat-vol').value = m.beatVol;
+      document.getElementById('ctrl-bass').value = m.bass;
+      document.getElementById('ctrl-treble').value = m.treble;
+      document.getElementById('ctrl-delay').value = m.delay;
+      document.getElementById('ctrl-reverb').value = m.reverb;
+      updateMixerGraph();
+      showToast(`Mix « ${m.title} » appliqué.`, 'ok');
+    }
+
+    function renderSavedMixes() {
+      const box = document.getElementById('saved-mixes-list');
+      const list = JSON.parse(localStorage.getItem('fasso_tala_mixes') || '[]');
+      if (!list.length) {
+        box.innerHTML = '<p class="text-[11px] text-stone-400">Aucun mix sauvegardé pour l’instant.</p>';
+        return;
+      }
+      box.innerHTML = list.map((m) => `
+        <div class="p-2.5 rounded-xl bg-surface border border-stone-800 flex items-center justify-between gap-2 text-xs">
+          <div>
+            <strong class="font-extrabold text-white">${m.title}</strong>
+            <span class="text-[10px] text-stone-400 block">Voix ${m.vocalVol}% • Beat ${m.beatVol}% • Écho ${m.delay}% • Réverb ${m.reverb}%</span>
+          </div>
+          <button type="button" onclick="applySavedMix(${m.id})" class="px-3 py-1.5 rounded-lg bg-accent/15 text-accent font-extrabold">Appliquer</button>
+        </div>`).join('');
+    }
+
+    renderSavedMixes();
+    lucide.createIcons();
+  </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="fr" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#0B0D10" />
+  <title>Fasso Tala — Étape 8 Vidéos & Clips</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] },
+          colors: {
+            surface: '#0B0D10',
+            card: '#13171D',
+            cardAlt: '#1A1F27',
+            accent: '#10B981',
+            gold: '#F59E0B',
+            crimson: '#EF4444',
+            om: '#FF6600'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+  </style>
+</head>
+<body class="bg-surface text-stone-100 min-h-screen flex flex-col pb-16">
+  <div id="toast-container" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-11/12 max-w-md flex flex-col gap-2 pointer-events-none"></div>
+
+  <header class="sticky top-0 z-30 bg-surface/90 backdrop-blur-md border-b border-stone-800/80 px-4 py-3">
+    <div class="max-w-3xl mx-auto flex items-center justify-between gap-3">
+      <div class="flex items-center gap-2.5">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-crimson via-gold to-accent flex items-center justify-center text-stone-950 font-black shadow">
+          <i data-lucide="video" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <span class="font-extrabold text-base tracking-tight block leading-none">Fasso Tala</span>
+          <span class="text-[10px] font-semibold text-gold uppercase tracking-wider">Étape 8 • Vidéos & Clips</span>
+        </div>
+      </div>
+      <div id="header-session-box" class="flex items-center gap-2"></div>
+    </div>
+  </header>
+
+  <main class="flex-1 max-w-3xl w-full mx-auto px-4 pt-5 space-y-5">
+    <section id="auth-section" class="bg-card border border-stone-800 rounded-3xl p-5 space-y-3">
+      <h1 class="text-base font-extrabold">Connexion</h1>
+      <form id="form-login" onsubmit="handleLogin(
+              <!-- Flux Vertical des Clips Musicaux -->
+      <div class="space-y-3">
+        <h2 class="text-base font-extrabold">Flux vertical des clips musicaux</h2>
+        <div id="vertical-clips-feed" class="space-y-4"></div>
+      </div>
+    </section>
+  </main>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, query, orderBy, onSnapshot, arrayUnion, arrayRemove, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+
+    const app = initializeApp({
+      apiKey: "AIzaSyCexdElr5DdD7TIHzdVyeGQqbPtoJ5yWJE",
+      authDomain: "fasorencontre-9b5a9.firebaseapp.com",
+      projectId: "fasorencontre-9b5a9",
+      storageBucket: "fasorencontre-9b5a9.firebasestorage.app",
+      messagingSenderId: "213099669353",
+      appId: "1:213099669353:web:f63143c9f8efcc978b3ff8",
+      measurementId: "G-8SPQ732YY7"
+    });
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    let profile = null;
+    let clips = [];
+    let unsub = null;
+    let camRecorder = null;
+    let camChunks = [];
+    let localVideoBlob = null;
+    let
+      <!DOCTYPE html>
+<html lang="fr" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#0B0D10" />
+  <title>Fasso Tala — Étape 9 Réseau Social</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] },
+          colors: {
+            surface: '#0B0D10',
+            card: '#13171D',
+            cardAlt: '#1A1F27',
+            accent: '#10B981',
+            gold: '#F59E0B',
+            crimson: '#EF4444',
+            om: '#FF6600'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+  </style>
+</head>
+<body class="bg-surface text-stone-100 min-h-screen flex flex-col pb-16">
+  <div id="toast-container" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-11/12 max-w-md flex flex-col gap-2 pointer-events-none"></div>
+
+  <header class="sticky top-0 z-30 bg-surface/90 backdrop-blur-md border-b border-stone-800/80 px-4 py-3">
+    <div class="max-w-3xl mx-auto flex items-center justify-between gap-3">
+      <div class="flex items-center gap-2.5">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-crimson via-gold to-accent flex items-center justify-center text-stone-950 font-black shadow">
+          <i data-lucide="users" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <span class="font-extrabold text-base tracking-tight block leading-none">Fasso Tala</span>
+          <span class="text-[10px] font-semibold text-gold uppercase tracking-wider">Étape 9 • Réseau & Collabs</span>
+        </div>
+      </div>
+      <div id="header-session-box" class="flex items-center gap-2"></div>
+    </div>
+  </header>
+
+  <main class="flex-1 max-w-3xl w-full mx-auto px-4 pt-5 space-y-5">
+    <section id="auth-section" class="bg-card border border-stone-800 rounded-3xl p-5 space-y-3">
+      <h1 class="text-base font-extrabold">Connexion</h1>
+            <!-- Onglet Notifications -->
+      <div id="spanel-notifs" class="hidden space-y-3">
+        <div class="bg-card border border-stone-800 rounded-3xl p-4 sm:p-5">
+          <h2 class="text-base font-extrabold">Notifications récentes</h2>
+          <p class="text-xs text-stone-400">Abonnements et demandes de collaboration reçues.</p>
+        </div>
+        <div id="notifications-feed-list" class="space-y-2.5"></div>
+      </div>
+    </section>
+  </main>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, query, where, orderBy, onSnapshot, arrayUnion, arrayRemove, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+
+    const app = initializeApp({
+      apiKey: "AIzaSyCexdElr5DdD7TIHzdVyeGQqbPtoJ5yWJE",
+      authDomain: "fasorencontre-9b5a9.firebaseapp.com",
+      projectId: "fasorencontre-9b5a9",
+      storageBucket: "fasorencontre-9b5a9.firebasestorage.app",
+      messagingSenderId: "213099669353",
+      appId: "1:213099669353:web:f63143c9f8efcc978b3ff8",
+      measurementId: "G-8SPQ732YY7"
+    });
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    let me = null;
+    let usersList = [];
+    let collabsList = [];
+    let notifsList = [];
+    let unsubUsers = null;
+    let unsubCollabs = null;
+    let unsubNotifs = null;
+
+    function notify(msg, kind = 'info') {
+      const box = document.getElementById('toast-container');
+      const el = document.createElement('div');
+      el.className = `${kind === 'ok' ? 'bg-accent text-stone-950' : 'bg-cardAlt text-white'} px-4 py-2.5 rounded-2xl text-xs font-extrabold shadow-lg`;
+      el.textContent = msg;
+      box.appendChild(el);
+      setTimeout(() => el.remove(), 3000);
+    }
+
+    function esc(s = '') {
+      return String(s).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
+    }
+
+    window.handleLogin = async (e) => {
+      e.preventDefault();
+      await signInWithEmailAndPassword(auth, document.getElementById('login-email').value.trim(), document.getElementById('login-password').value);
+      notify('Connecté.', 'ok');
+    };
+
+    window.handleLogout = async () => {
+      await signOut(auth);
+    };
+
+    window.switchSocialTab = (tab) => {
+      ['artistes', 'collabs', 'notifs'].forEach(t => {
+        document.getElementById(`spanel-${t}`).classList.toggle('hidden', t !== tab);
+        document.getElementById(`stab-${t}`).className = t === tab
+          ? 'py-2 rounded-xl text-xs font-extrabold bg-accent text-stone-950'
+          : 'py-2 rounded-xl text-xs font-bold text-stone-400';
+      });
+    };
+
+    async function pushNotification(toUid, text) {
+      if (!toUid || !auth.currentUser || toUid === auth.currentUser.uid) return;
+      const id = `notif_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
+      await setDoc(doc(db, 'userNotifications', id), {
+        id,
+        toUid,
+        fromUid: auth.currentUser.uid,
+        fromName: me?.stageName || auth.currentUser.email,
+        text,
+        createdAtMs: Date.now(),
+        createdAt: serverTimestamp()
+      });
+    }
+
+    window.toggleFollowUser = async (targetUid) => {
+      if (!auth.currentUser || !me || targetUid === auth.currentUser.uid) return;
+      const myUid = auth.currentUser.uid;
+      const following = Array.isArray(me.following) ? me.following : [];
+      const isFollowing = following.includes(targetUid);
+
+      await updateDoc(doc(db, 'platformUsers', myUid), {
+        following: isFollowing ? arrayRemove(targetUid) : arrayUnion(targetUid)
+      });
+      await updateDoc(doc(db, 'platformUsers', targetUid), {
+        followers: isFollowing ? arrayRemove(myUid) : arrayUnion(myUid)
+      });
+
+      me.following = isFollowing ? following.filter(x => x !== targetUid) : [...following, targetUid];
+      if (!isFollowing) {
+        await pushNotification(targetUid, `${me.stageName || 'Un membre'} s'est abonné à votre profil.`);
+      }
+      renderUsers();
+      notify(isFollowing ? 'Abonnement retiré.' : 'Abonnement activé.', 'ok');
+    };
+
+    window.publishCollabRequest = async (e) => {
+      e.preventDefault();
+      if (!auth.currentUser) return;
+      const id = `collab_${Date.now()}_${auth.currentUser.uid.slice(0, 6)}`;
+      await setDoc(doc(db, 'musicCollabs', id), {
+        id,
+        authorId: auth.currentUser.uid,
+        authorName: me?.stageName || auth.currentUser.email,
+        role: document.getElementById('collab-role').value.trim(),
+        genre: document.getElementById('collab-genre').value,
+        description: document.getElementById('collab-desc').value.trim(),
+        createdAtMs: Date.now(),
+        createdAt: serverTimestamp()
+      });
+      e.target.reset();
+      notify('Annonce de collaboration publiée.', 'ok');
+    };
+
+    window.proposeCollab = async (authorId, roleTitle) => {
+      await pushNotification(authorId, `${me?.stageName || 'Un artiste'} souhaite collaborer sur : ${roleTitle}`);
+      notify('Invitation de collaboration envoyée.', 'ok');
+    };
+
+    function renderUsers() {
+      const box = document.getElementById('artists-directory-list');
+      const myUid = auth.currentUser?.uid || '';
+      const following = me?.following || [];
+      const others = usersList.filter(u => u.uid !== myUid);
+
+      if (!others.length) {
+        box.innerHTML = '<div class="bg-card border border-stone-800 rounded-3xl p-6 text-center text-xs text-stone-400">Aucun autre membre inscrit pour le moment.</div>';
+        return;
+      }
+
+      box.innerHTML = others.map(u => {
+        const isSub = following.includes(u.uid);
+        return `
+          <div class="bg-card border border-stone-800 rounded-2xl p-4 flex items-center justify-between gap-3">
+            <div>
+              <strong class="text-sm font-extrabold">${esc(u.stageName || u.email)}</strong>
+              <span class="block text-xs text-stone-400">${esc(u.genre || 'Musique')} • ${esc(u.country || '')} • ${(u.followers || []).length} abonnés</span>
+            </div>
+            <button type="button" onclick="toggleFollowUser('${u.uid}')" class="px-3.5 py-2 rounded-xl text-xs font-extrabold ${isSub ? 'bg-cardAlt text-accent border border-accent/40' : 'bg-accent text-stone-950'}">
+              ${isSub ? 'Abonné' : 'S\'abonner'}
+            </button>
+          </div>`;
+      }).join('');
+    }
+
+    function renderCollabs() {
+      const box = document.getElementById('collabs-feed-list');
+      const myUid = auth.currentUser?.uid || '';
+      if (!collabsList.length) {
+        box.innerHTML = '<div class="bg-card border border-stone-800 rounded-3xl p-6 text-center text-xs text-stone-400">Aucune annonce de collaboration.</div>';
+        return;
+      }
+      box.innerHTML = collabsList.map(c => `
+        <div class="bg-card border border-stone-800 rounded-2xl p-4 space-y-2">
+          <div class="flex items-center justify-between gap-2">
+            <div>
+              <strong class="text-sm font-extrabold text-gold">${esc(c.role)}</strong>
+              <span class="text-xs text-stone-400"> • par ${esc(c.authorName)} (${esc(c.genre)})</span>
+            </div>
+            ${c.authorId !== myUid ? `<button type="button" onclick="proposeCollab('${c.authorId}', '${esc(c.role)}')" class="px-3 py-1.5 rounded-xl bg-accent text-stone-950 text-xs font-extrabold">Inviter</button>` : ''}
+          </div>
+          <p class="text-xs text-stone-300">${esc(c.description)}</p>
+        </div>`).join('');
+    }
+
+    function renderNotifs() {
+      const box = document.getElementById('notifications-feed-list');
+      if (!notifsList.length) {
+        box.innerHTML = '<div class="bg-card border border-stone-800 rounded-3xl p-6 text-center text-xs text-stone-400">Aucune notification pour le moment.</div>';
+        return;
+      }
+      box.innerHTML = notifsList.map(n => `
+        <div class="bg-card border border-stone-800 rounded-2xl p-3.5 text-xs text-stone-200">
+          ${esc(n.text)}
+        </div>`).join('');
+    }
+
+    onAuthStateChanged(auth, async (user) => {
+      document.getElementById('auth-section').classList.toggle('hidden', !!user);
+      document.getElementById('social-workspace').classList.toggle('hidden', !user);
+      document.getElementById('header-session-box').innerHTML = user
+        ? `<button type="button" onclick="handleLogout()" class="px-3 py-1.5 rounded-xl bg-cardAlt text-xs font-bold text-crimson">Déconnexion</button>`
+        : '';
+
+      if (unsubUsers) { unsubUsers(); unsubUsers = null; }
+      if (unsubCollabs) { unsubCollabs(); unsubCollabs = null; }
+      if (unsubNotifs) { unsubNotifs(); unsubNotifs = null; }
+
+      if (user) {
+        const s = await getDoc(doc(db, 'platformUsers', user.uid));
+        me = s.exists() ? s.data() : { uid: user.uid, stageName: user.email, following: [] };
+
+        unsubUsers = onSnapshot(collection(db, 'platformUsers'), snap => {
+          usersList = [];
+          snap.forEach(d => usersList.push(d.data()));
+          renderUsers();
+        });
+
+        unsubCollabs = onSnapshot(query(collection(db, 'musicCollabs'), orderBy('createdAtMs', 'desc')), snap => {
+          collabsList = [];
+          snap.forEach(d => collabsList.push(d.data()));
+          renderCollabs();
+        });
+
+        unsubNotifs = onSnapshot(query(collection(db, 'userNotifications'), where('toUid', '==', user.uid)), snap => {
+          notifsList = [];
+          snap.forEach(d => notifsList.push(d.data()));
+          notifsList.sort((a, b) => (b.createdAtMs || 0) - (a.createdAtMs || 0));
+          renderNotifs();
+        });
+      }
+      lucide.createIcons();
+    });
+
+    lucide.createIcons();
+  </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="fr" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#0B0D10" />
+  <title>Fasso Tala — Étape 10 Messagerie</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] },
+          colors: {
+            surface: '#0B0D10',
+            card: '#13171D',
+            cardAlt: '#1A1F27',
+            accent: '#10B981',
+            gold: '#F59E0B',
+            crimson: '#EF4444',
+            om: '#FF6600'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+  </style>
+</head>
+<body class="bg-surface text-stone-100 min-h-screen flex flex-col pb-16">
+  <div id="toast-container" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-11/12 max-w-md flex flex-col gap-2 pointer-events-none"></div>
+
+  <header class="sticky top-0 z-30 bg-surface/90 backdrop-blur-md border-b border-stone-800/80 px-4 py-3">
+    <div class="max-w-3xl mx-auto flex items-center justify-between gap-3">
+      <div class="flex items-center gap-2.5">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-crimson via-gold to-accent flex items-center justify-center text-stone-950 font-black shadow">
+          <i data-lucide="message-square" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <span class="font-extrabold text-base tracking-tight block leading-none">Fasso Tala</span>
+          <span class="text-[10px] font-semibold text-gold uppercase tracking-wider">Étape 10 • Messagerie Privée</span>
+        </div>
+      </div>
+      <div id="header-session-box" class="flex items-center gap-2"></div>
+    </div>
+  </header>
+
+  <main class="flex-1 max-w-3xl w-full mx-auto px-4 pt-5 space-y-5">
+    <section id="auth
+        <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, query, where, onSnapshot, arrayUnion, arrayRemove, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+
+    const app = initializeApp({
+      apiKey: "AIzaSyCexdElr5DdD7TIHzdVyeGQqbPtoJ5yWJE",
+      authDomain: "fasorencontre-9b5a9.firebaseapp.com",
+      projectId: "fasorencontre-9b5a9",
+      storageBucket: "fasorencontre-9b5a9.firebasestorage.app",
+      messagingSenderId: "213099669353",
+      appId: "1:213099669353:web:f63143c9f8efcc978b3ff8",
+      measurementId: "G-8SPQ732YY7"
+    });
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    let me = null;
+    let peers = [];
+    let selectedPeerUid = '';
+    let messages = [];
+    let unsubPeers = null;
+    let unsubMsgs = null;
+
+    function notify(msg, kind = 'info') {
+      const box = document.getElementById('toast-container');
+      const el = document.createElement('div');
+      el.className = `${kind === 'ok' ? 'bg-accent text-stone-950' : kind === 'err' ? 'bg-crimson text-white' : 'bg-cardAlt text-white'} px-4 py-2.5 rounded-2xl text-xs font-extrabold shadow-lg`;
+      el.textContent = msg;
+      box.appendChild(el);
+      setTimeout(() => el.remove(), 3000);
+    }
+
+    function esc(s = '') {
+      return String(s).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
+    }
+
+    window.handleLogin = async (e) => {
+      e.preventDefault();
+      await signInWithEmailAndPassword(auth, document.getElementById('login-email').value.trim(), document.getElementById('login-password').value);
+      notify('Connecté.', 'ok');
+    };
+
+    window.handleLogout = async () => {
+      await signOut(auth);
+    };
+
+    function threadIdFor(uidA, uidB) {
+      return [uidA, uidB].sort().join('__');
+    }
+
+    window.selectPeer = (uid) => {
+      selectedPeerUid = uid;
+      const card = document.getElementById('chat-box-card');
+      if (!uid) {
+        card.classList.add('hidden');
+        return;
+      }
+      const peer = peers.find(p => p.uid === uid);
+      card.classList.remove('hidden');
+      document.getElementById('chat-peer-name').textContent = peer?.stageName || peer?.email || 'Membre';
+      const blocked = (me?.blockedUsers || []).includes(uid);
+      document.getElementById('btn-block-peer').textContent = blocked ? 'Débloquer' : 'Bloquer';
+      document.getElementById('chat-peer-status').textContent = blocked ? 'Utilisateur bloqué' : 'Conversation directe';
+
+      if (unsubMsgs) { unsubMsgs(); unsubMsgs = null; }
+      const tid = threadIdFor(auth.currentUser.uid, uid);
+      unsubMsgs = onSnapshot(query(collection(db, 'privateMessages'), where('threadId', '==', tid)), snap => {
+        messages = [];
+        snap.forEach(d => messages.push(d.data()));
+        messages.sort((a, b) => (a.createdAtMs || 0) - (b.createdAtMs || 0));
+        renderMessages();
+      });
+    };
+
+    window.toggleBlockPeer = async () => {
+      if (!auth.currentUser || !selectedPeerUid || !me) return;
+      const blocked = me.blockedUsers || [];
+      const isBlocked = blocked.includes(selectedPeerUid);
+      await updateDoc(doc(db, 'platformUsers', auth.currentUser.uid), {
+        blockedUsers: isBlocked ? arrayRemove(selectedPeerUid) : arrayUnion(selectedPeerUid)
+      });
+      me.blockedUsers = isBlocked ? blocked.filter(x => x !== selectedPeerUid) : [...blocked, selectedPeerUid];
+      window.selectPeer(selectedPeerUid);
+      notify(isBlocked ? 'Utilisateur débloqué.' : 'Utilisateur bloqué.', 'info');
+    };
+
+    window.reportPeer = async () => {
+      if (!auth.currentUser || !selectedPeerUid) return;
+      const peer = peers.find(p => p.uid === selectedPeerUid);
+      const id = `rep_${Date.now()}_${auth.currentUser.uid.slice(0, 6)}`;
+      await setDoc(doc(db, 'userReports', id), {
+        id,
+        reporterUid: auth.currentUser.uid,
+        reporterName: me?.stageName || auth.currentUser.email,
+        reportedUid: selectedPeerUid,
+        reportedName: peer?.stageName || peer?.email || 'Membre',
+        reason: 'Signalement depuis la messagerie privée',
+        status: 'open',
+        createdAtMs: Date.now(),
+        createdAt: serverTimestamp()
+      });
+      notify('Signalement transmis à l’administration.', 'ok');
+    };
+
+    window.sendPrivateMessage = async (e) => {
+      e.preventDefault();
+      if (!auth.currentUser || !selectedPeerUid) return;
+      if ((me?.blockedUsers || []).includes(selectedPeerUid)) {
+        notify('Débloquez ce membre pour lui envoyer un message.', 'err');
+        return;
+      }
+      const inp = document.getElementById('chat-message-input');
+      const linkInp = document.getElementById('chat-shared-link');
+      const text = inp.value.trim();
+      const sharedLink = linkInp.value.trim();
+      if (!text && !sharedLink) return;
+
+      const id = `msg_${Date.now()}_${auth.currentUser.uid.slice(0, 6)}`;
+      await setDoc(doc(db, 'privateMessages', id), {
+        id,
+        threadId: threadIdFor(auth.currentUser.uid, selectedPeerUid),
+        senderUid: auth.currentUser.uid,
+        senderName: me?.stageName || auth.currentUser.email,
+        receiverUid: selectedPeerUid,
+        text,
+        sharedLink,
+        createdAtMs: Date.now(),
+        createdAt: serverTimestamp()
+      });
+      inp.value = '';
+      linkInp.value = '';
+    };
+
+    function renderMessages() {
+      const box = document.getElementById('chat-messages-list');
+      const myUid = auth.currentUser?.uid || '';
+      if (!messages.length) {
+        box.innerHTML = '<p class="text-xs text-stone-400 text-center py-4">Aucun message dans cette conversation.</p>';
+        return;
+      }
+      box.innerHTML = messages.map(m => {
+        const mine = m.senderUid
+        <!DOCTYPE html>
+<html lang="fr" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#0B0D10" />
+  <title>Fasso Tala — Étape 11 Concours & Classements</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] },
+          colors: {
+            surface: '#0B0D10',
+            card: '#13171D',
+            cardAlt: '#1A1F27',
+            accent: '#10B981',
+            gold: '#F59E0B',
+            crimson: '#EF4444',
+            om: '#FF6600'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+  </style>
+</head>
+<body class="bg-surface text-stone-100 min-h-screen flex flex
+    <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, query, orderBy, onSnapshot, arrayUnion, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+
+    const app = initializeApp({
+      apiKey: "AIzaSyCexdElr5DdD7TIHzdVyeGQqbPtoJ5yWJE",
+      authDomain: "fasorencontre-9b5a9.firebaseapp.com",
+      projectId: "fasorencontre-9b5a9",
+      storageBucket: "fasorencontre-9b5a9.firebasestorage.app",
+      messagingSenderId: "213099669353",
+      appId: "1:213099669353:web:f63143c9f8efcc978b3ff8",
+      measurementId: "G-8SPQ732YY7"
+    });
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    let me = null;
+    let contests = [];
+    let artists = [];
+    let unsubContests = null;
+    let unsubArtists = null;
+
+    function notify(msg, kind = 'info') {
+      const box = document.getElementById('toast-container');
+      const el = document.createElement('div');
+      el.className = `${kind === 'ok' ? 'bg-accent text-stone-950' : kind === 'err' ? 'bg-crimson text-white' : 'bg-cardAlt text-white'} px-4 py-2.5 rounded-2xl text-xs font-extrabold shadow-lg`;
+      el.textContent = msg;
+      box.appendChild(el);
+      setTimeout(() => el.remove(), 3000);
+    }
+
+    function esc(s = '') {
+      return String(s).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
+    }
+
+    window.handleLogin = async (e) => {
+      e.preventDefault();
+      await signInWithEmailAndPassword(auth, document.getElementById('login-email').value.trim(), document.getElementById('login-password').value);
+      notify('Connecté.', 'ok');
+    };
+
+    window.handleLogout = async () => {
+      await signOut(auth);
+    };
+
+    window.createContest = async (e) => {
+      e.preventDefault();
+      if (!auth.currentUser) return;
+      const id = `contest_${Date.now()}_${auth.currentUser.uid.slice(0, 6)}`;
+      await setDoc(doc(db, 'musicContests', id), {
+        id,
+        creatorUid: auth.currentUser.uid,
+        title: document.getElementById('contest-title').value.trim(),
+        type: document.getElementById('contest-type').value,
+        entries: [],
+        voters: [],
+        createdAtMs: Date.now(),
+        createdAt: serverTimestamp()
+      });
+      e.target.reset();
+      notify('Concours créé.', 'ok');
+    };
+
+    window.submitEntry = async (e, contestId) => {
+      e.preventDefault();
+      if (!auth.currentUser) return;
+      const titleInp = document.getElementById(`entry-title-${contestId}`); const urlInp = document.getElementById(`entry-url-${contestId}`);
+      const trackTitle = titleInp.value.trim();
+      const audioUrl = urlInp.value.trim();
+      if (!trackTitle || !audioUrl) return;
+
+      const c = contests.find(x => x.id === contestId);
+      if (!c) return;
+      const newEntry = {
+        entryId: `en_${Date.now()}_${auth.currentUser.uid.slice(0, 5)}`,
+        artistUid: auth.currentUser.uid,
+        artistName: me?.stageName || auth.currentUser.email,
+        trackTitle,
+        audioUrl,
+        votes: 0
+      };
+      await updateDoc(doc(db, 'musicContests', contestId), {
+        entries: [...(c.entries || []), newEntry]
+      });
+      titleInp.value = '';
+      urlInp.value = '';
+      notify('Participation ajoutée.', 'ok');
+    };
+
+    window.voteForEntry = async (contestId, entryId) => {
+      if (!auth.currentUser) return;
+      const uid = auth.currentUser.uid;
+      const c = contests.find(x => x.id === contestId);
+      if (!c) return;
+      if ((c.voters || []).includes(uid)) {
+        notify('Vous avez déjà voté dans ce concours.', 'err');
+        return;
+      }
+      const updatedEntries = (c.entries || []).map(en =>
+        en.entryId === entryId ? { ...en, votes: (en.votes || 0) + 1 } : en
+      );
+      await updateDoc(doc(db, 'musicContests', contestId), {
+        entries: updatedEntries,
+        voters: arrayUnion(uid)
+      });
+      notify('Vote enregistré.', 'ok');
+    };
+
+    function renderContests() {
+      const box = document.getElementById('contests-list');
+      const uid = auth.currentUser?.uid || '';
+      if (!contests.length) {
+        box.innerHTML = '<div class="bg-card border border-stone-800 rounded-3xl p-6 text-center text-xs text-stone-400">Aucun concours pour le moment.</div>';
+        return;
+      }
+
+      box.innerHTML = contests.map(c => {
+        const alreadyVoted = uid && (c.voters || []).includes(uid);
+        const sortedEntries = [...(c.entries || [])].sort((a, b) => (b.votes || 0) - (a.votes || 0));
+        return `
+          <article class="bg-card border border-stone-800 rounded-3xl p-4 sm:p-5 space-y-4 shadow-xl">
+            <div class="flex items-center justify-between gap-2">
+              <div>
+                <span class="px-2.5 py-0.5 rounded-full bg-gold/15 text-gold text-[10px] font-black uppercase">${esc(c.type)}</span>
+                <h3 class="text-base font-extrabold mt-1">${esc(c.title)}</h3>
+              </div>
+              <span class="text-xs text-stone-400 font-bold">${sortedEntries.length} titres</span>
+            </div>
+
+            <div class="space-y-2.5">
+              ${sortedEntries.length ? sortedEntries.map((en, idx) => `
+                <div class="p-3 rounded-2xl bg-surface border border-stone-800 flex flex-wrap items-center justify-between gap-2">
+                  <div class="min-w-0">
+                    <strong class="text-xs font-extrabold text-white">#${idx + 1} • ${esc(en.trackTitle)}</strong>
+                    <span class="block text-[11px] text-stone-400">${esc(en.artistName)} • ${en.votes || 0} votes</span>
+                    ${en.audioUrl ? `<audio src="${esc(en.audioUrl)}" controls class="w-full max-w-xs h-8 mt-1.5"></audio>` : ''}
+                  </div>
+                  <button type="button" ${alreadyVoted ? 'disabled' : ''} onclick="voteForEntry('${c.id}', '${en.entryId}')" class="px-3 py-1.5 rounded-xl text-xs font-extrabold ${alreadyVoted ? 'bg-cardAlt text-stone-500' : 'bg-accent text-stone-950'}">
+                    ${alreadyVoted ? 'Voté' : 'Voter'}
+                  </button>
+                </div>`).join('') : '<p class="text-xs text-stone-400">Aucune participation encore.</p>'}
+            </div>
+
+            <form onsubmit="submitEntry(event, '${c.id}')" class="grid sm:grid-cols-3 gap-2 pt-2 border-t border-stone-800">
+              <input type="text" id="entry
+                <!DOCTYPE html>
+<html lang="fr" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#0B0D10" />
+  <title>Fasso Tala — Étape 12 Administration</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] },
+          colors: {
+            surface: '#0B0D10',
+            card: '#13171D',
+            cardAlt: '#1A1F27',
+            accent: '#10B981',
+            gold: '#F59E0B',
+            crimson: '#EF4444',
+            om: '#FF6600'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+  </style>
+</head>
+<body class="bg-surface text-stone-100 min-h-screen flex flex-col pb-16">
+  <div id="toast-container" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-11/12 max-w-md flex flex-col gap-2 pointer-events-none"></div>
+
+  <header class="sticky top-0 z-30 bg-surface/90 backdrop-blur-md border-b border-stone-800/80 px-4 py-3">
+    <div class="max-w-3xl mx-auto flex items-center justify-between gap-3">
+      <div class="flex items-center gap-2.5">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-crimson via-gold to-accent flex items-center justify-center text-stone-950 font-black shadow">
+          <i data-lucide="shield-check" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <span class="font-extrabold text-base tracking-tight block leading-none">Fasso Tala</span>
+          <span class="text-[10px] font-semibold text-gold uppercase tracking-wider">Étape 12 • Administration</span>
+        </div>
+      </div>
+      <div id="header-session-box" class="flex items-center gap-2"></div>
+    </div>
+  </header>
+
+  <main class="flex-1 max-w-3xl w-full mx-auto px-4 pt-5 space-y-5">
+    <section id="auth-section" class="bg-card border border-stone-800 rounded-3xl p-5 space-y-3">
+      <h1 class="text-base font-extrabold">Connexion Administrateur</h1>
+      <form id="form-login" onsubmit="handleLogin(event)" class="grid sm:grid-cols-3 gap-2.5">
+        <input type="email" id="login-email" required placeholder="E-mail admin *" class="px-3.5 py-2.5 rounded-xl bg-surface border border-stone-800 text-sm" />
+        <input type="password" id="login-password" required placeholder="Mot de passe *" class="px-3.5 py-2.5 rounded-xl bg-surface border border-stone-800 text-sm" />
+        <button type="submit" class="py-2.5 px-4 rounded-xl bg-accent text-stone-950 font-extrabold text-xs">Connexion</button>
+      </form>
+    </section>
+
+    <section id="admin-workspace" class="hidden space-y-5">
+      <!-- Statistiques réelles -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div class="bg-card border border-stone-800 rounded-2xl p-3.5">
+          <strong id="stat-users" class="text-xl font-extrabold text-white block">0</strong>
+          <span class="text-[11px] text-
+                  <!-- Modération des Publications & Signalements -->
+      <div class="bg-card border border-stone-800 rounded-3xl p-4 sm:p-5 space-y-3 shadow-xl">
+        <h2 class="text-base font-extrabold">Modération des chansons publiées</h2>
+        <div id="admin-posts-list" class="space-y-2.5"></div>
+      </div>
+
+      <div class="bg-card border border-stone-800 rounded-3xl p-4 sm:p-5 space-y-3 shadow-xl">
+        <h2 class="text-base font-extrabold text-crimson">Signalements reçus</h2>
+        <div id="admin-reports-list" class="space-y-2.5"></div>
+      </div>
+    </section>
+  </main>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+    import { getFirestore, doc, updateDoc, deleteDoc, collection, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+
+    const app = initializeApp({
+      apiKey: "AIzaSyCexdElr5DdD7TIHzdVyeGQqbPtoJ5yWJE",
+      authDomain: "fasorencontre-9b5a9.firebaseapp.com",
+      projectId: "fasorencontre-9b5a9",
+      storageBucket: "fasorencontre-9b5a9.firebasestorage.app",
+      messagingSenderId: "213099669353",
+      appId: "1:213099669353:web:f63143c9f8efcc978b3ff8",
+      measurementId: "G-8SPQ732YY7"
+    });
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    let users = [], posts = [], beats = [], omReqs = [], reports = [];
+    let unsubs = [];
+
+    function notify(msg, kind = 'info') {
+      const box = document.getElementById('toast-container');
+      const el = document.createElement('div');
+      el.className = `${kind === 'ok' ? 'bg-accent text-stone-950' : kind === 'err' ? 'bg-crimson text-white' : 'bg-cardAlt text-white'} px-4 py-2.5 rounded-2xl text-xs font-extrabold shadow-lg`;
+      el.textContent = msg;
+      box.appendChild(el);
+      setTimeout(() => el.remove(), 3000);
+    }
+
+    function esc(s = '') {
+      return String(s).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
+    }
+
+    window.handleLogin = async (e) => {
+      e.preventDefault();
+      await signInWithEmailAndPassword(auth, document.getElementById('login-email').value.trim(), document.getElementById('login-password').value);
+      notify('Connecté.', 'ok');
+    };
+
+    window.handleLogout = async () => {
+      await signOut(auth);
+    };
+
+    function refreshStats() {
+      document.getElementById('stat-users').textContent = String(users.length);
+      document.getElementById('stat-posts').textContent = String(posts.length);
+      document.getElementById('stat-beats').textContent = String(beats.length);
+      document.getElementById('stat-om').textContent = String(omReqs.length);
+    }
+
+    window.decideOmRequest = async (reqId, status) => {
+      const req = omReqs.find(r => r.id === reqId);
+      if (!req) return;
+      await updateDoc(doc(db, 'orangeMoneyRequests', reqId), { status });
+
+      if (status === 'approved' && req.uid) {
+        if (req.offerCode === 'premium') {
+          await updateDoc(doc(db, 'platformUsers', req.uid), { isPremium: true }).catch(() => {});
+        } else if (req.offerCode === 'monthly_visibility') {
+          await updateDoc(doc(db, 'platformUsers', req.uid), { hasMonthlyVisibility: true }).catch(() => {});
+        } else if (req.offerCode === 'top_post' && req.targetPostId) {
+          await updateDoc(doc(db, 'musicPosts', req.targetPostId), { isPinnedTop: true }).catch(() => {});
+        }
+      }
+      notify(`Demande marquée : ${status}.`, 'ok');
+    };
+
+    window.toggleSuspendUser = async (uid, currentSuspended) => {
+      await updateDoc(doc(db, 'platformUsers', uid), { isSuspended: !currentSuspended });
+      notify(!currentSuspended ? 'Compte suspendu.' : 'Compte réactivé.', 'ok');
+    };
+
+    window.deleteUserDoc = async (uid) => {
+      await deleteDoc(doc(db, 'platformUsers', uid));
+      notify('Profil supprimé.', 'ok');
+    };
+
+    window.deleteMusicPost = async (postId) => {
+      await deleteDoc(doc(db, 'musicPosts', postId));
+      notify('Publication supprimée.', 'ok');
+    };
+
+    window.closeReport = async (repId) => {
+      await updateDoc(doc(db, 'userReports', repId), { status: 'resolved' });
+      notify('Signalement traité.', 'ok');
+    };
+
+    function renderOm() {
+      const box = document.getElementById('admin-om-list');
+      if (!omReqs.length) {
+        box.innerHTML = '<p class="text-xs text-stone-400">Aucune demande Orange Money.</p>';
+        return;
+      }
+      box.innerHTML = omReqs.map(r => `
+        <div class="p-3 rounded-2xl bg-surface border border-stone-800 flex flex-wrap items-center justify-between gap-2 text-xs">
+          <div>
+            <strong class="text-white font-extrabold">${esc(r.stageName || r.uid)}</strong>
+            <span class="text-om font-bold"> • ${esc(r.offerLabel)} (${r.amount} F)</span>
+            <span class="block text-[11px] text-stone-400">De: ${esc(r.senderPhone || '')} • Réf: ${esc(r.txRef \vert{}\vert{} '')} • État: ${esc(r.status || 'pending')}</span>
+          </div>
+          <div class="flex gap-1.5">
+            <button type="button" onclick="decideOmRequest('${r.id}', 'approved')" class="px-2.5 py-1.5 rounded-xl bg-accent text-stone-950 font-extrabold">Valider</button>
+            <button type="button" onclick="decideOmRequest('${r.id}', 'rejected')" class="px-2.5 py-1.5 rounded-xl bg-crimson/20 text-crimson font-extrabold">Refuser</button>
+          </div>
+        </div>`).join('');
+    }
+
+    function renderUsers() {
+      const box = document.getElementById('admin-users-list');
+      if (!users.length) {
+        box.innerHTML = '<p class="text-xs text-stone-400">Aucun utilisateur.</p>';
+        return;
+      }
+      box.innerHTML = users.map(u => `
+        <div class="p-3 rounded-2xl bg
+    {
+  "name": "Fasso Tala & FasoRencontre",
+  "short_name": "Fasso Tala",
+  "description": "Studio musical, réseau social artistes et rencontres locales au Faso — disponible 24h/24.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0B0D10",
+  "theme_color": "#0B0D10",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/727/727245.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/727/727245.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+  }
+    const CACHE_NAME = 'fasso-tala-rencontre-v1';
+const ASSETS_TO_CACHE = [
+  './',
+  './index.html',
+  './manifest.json'
+];
+
+self.addEventListener('install', (event) => {
+  event.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS_TO_CACHE))
+  );
+  self.skipWaiting();
+});
+
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    caches.keys().then((keys) =>
+      Promise.all(keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k)))
+    )
+  );
+  self.clients.claim();
+});
+
+self.addEventListener('fetch', (event) => {
+  if (event.request.method !== 'GET') return;
+  event.respondWith(
+    fetch(event.request)
+      .then((response) => {
+        const clone = response.clone();
+        caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone)).catch(() => {});
+        return response;
+      })
+      .catch(() => caches.match(event.request))
+  );
+});
+    <!DOCTYPE html>
+<html lang="fr" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#0B0D10" />
+  <title>Fasso Tala & FasoRencontre — Appli 24h/24</title>
+  <link rel="manifest" href="./manifest.json" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] },
+          colors: {
+            surface: '#0B0D10',
+            card: '#13171D',
+            cardAlt: '#1A1F27',
+            accent: '#10B981',
+            gold: '#F59E0B',
+            crimson: '#EF4444',
+            om: '#FF6600'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+  </style>
+</head>
+<body class="bg-surface text-stone-100 min-h-screen flex flex-col pb-24">
+  <div id="toast-container" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-11/12 max-w-md flex flex-col gap-2 pointer-events-none"></div>
+
+  <!-- En-tête + Bouton Télécharger / Installer l'appli -->
+  <header class="sticky top-0 z-30 bg-surface/90 backdrop-blur-md border-b border-stone-800/80 px-4 py-3">
+    <div class="max-w-3xl mx-auto flex items-center justify-between gap-2">
+      <div class="flex items-center gap-2.5">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-crimson via-gold to-accent flex items-center justify-center text-stone-950 font-black shadow">
+          <i data-lucide="smartphone" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <span class="font-extrabold text-sm sm:text-base tracking-tight block leading-none">Fasso Tala × FasoRencontre</span>
+          <span class="text-[10px] font-semibold text-accent uppercase tracking-wider">En ligne 24h/24 • Appli Installable</span>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button type="button" id="btn-install-app" onclick="triggerInstallApp()" class="hidden px-3 py-1.5 rounded-xl bg-gold text-stone-950 text-xs font-extrabold flex items-center gap-1 shadow">
+          <i data-lucide="download" class="w-3.5 h-3.5"></i> Télécharger
+        </button>
+        <div id="header-session-box"></div>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-1 max-w-3xl w-full mx-auto px-4 pt-5 space-y-5">
+    <!-- Connexion / Inscription -->
+    <section id="auth-section" class="bg-card border border-stone-800 rounded-3xl p-5 space-y-4 shadow-xl">
+      <h1 class="text-lg font-extrabold">Connexion ou Inscription</h1>
+      <form id="form-login" onsubmit="handleLogin(event)" class="space-y-3">
+        <input type="email" id="login-email" required placeholder="Adresse e-mail *" class="w-full px-3.5 py-2.5 rounded-xl bg-surface border border-stone-800 text-sm outline-none focus:border-accent" />
+        <input type="password" id="login-password" required placeholder="Mot de passe *" class="w-full px-3.5 py-2.5 rounded-xl bg-surface border border-stone-800 text-sm outline-none focus:border-accent" />
+        <button type="submit" class="w-full py-3 rounded-xl bg-accent text-stone-950 font-extrabold text-sm">Se connecter</button>
+      </form>
+      <button type="button" onclick="toggleRegForm()" class="text-xs font-bold text-gold underline">Créer un compte (Musique & FasoRencontre)</button>
+      <form id="form-register" onsubmit="handleRegister(event)" class="hidden space-y-3 pt-2 border-t border-stone-800">
+        <div class="grid sm:grid-cols-2 gap-2.5">
+          <input type="text" id="reg-stagename" required placeholder="Nom / Pseudo *" class="px-3.5 py-2.5 rounded-xl bg-surface border border-stone-800 text-sm" />
+          <input type="text" id="reg-city" required placeholder="Ville (Ex. Bobo-Dioulasso) *" class="px-3.5 py-2.5 rounded-xl bg-surface border border-stone-800 text-sm" />
+        </div>
+        <div class="grid sm:grid-cols-2 gap-2.5">
+          <input type="tel" id="reg-om" required placeholder="Numéro Orange Money *" class="px-3.5 py-2.5 rounded-xl bg-surface border border-stone-800 text-sm" />
+          <input type="text" id="reg-interest" placeholder="Intérêt (Ex. Afrobeat, Rencontre locale)" class="px-3.5 py-2.5 rounded-xl bg-surface border border-stone-800 text-sm" />
+        </div>
+        <input type="email" id="reg-email" required placeholder="E-mail *" class="w-full px-3.5 py-2.5 rounded-xl bg-surface border border-stone-800 text-sm" />
+        <input type="password" id="reg-password" required minlength="6" placeholder="Mot de passe (6 car. min) *" class="w-full px-3.5 py-2.5 rounded-xl bg-surface border border-stone-800 text-sm" />
+        <button type="submit" class="w-full py-3 rounded-xl bg-gold text-stone-950 font-extrabold text-sm">Créer mon compte</button>
+      </form>
+    </section>
+
+    <!-- Espace Connecté -->
+    <section id="app-body" class="hidden space-y-5">
+      <!-- Onglets : Musique & FasoRencontre -->
+      <div class="grid grid-cols-3 gap-2 p-1 rounded-2xl bg-card border border-stone-800">
+        <button type="button" id="tab-rencontre" onclick="switchTab('rencontre')" class="py-2 rounded-xl text-xs font-extrabold bg-accent text-stone-950">FasoRencontre</button>
+        <button type="button" id="tab-musique" onclick="switchTab('musique')" class="py-2 rounded-xl text-xs font-bold text-stone-400">Musique</button>
+        <button type="button" id="tab-om" onclick="switchTab('om')" class="py-2 rounded-xl text-xs font-bold text-stone-400">Orange Money</button>
+      </div>
+
+      <!-- 1. FASORENCONTRE (Découverte par ville + Vidéos communautaires) -->
+      <div id="panel-rencontre" class="space-y-4">
+        <div class="bg-card border border-stone-800 rounded-3xl p-4 sm:p-5 space-y-3 shadow-xl">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <span class="px-2.5 py-0.5 rounded-full bg-accent/15 text-accent text-[10px] font-black uppercase">FasoRencontre</span>
+              <h2 class="text-base font-extrabold mt-1">Découverte locale par ville</h2>
+            </div>
+            <input type="search" id="rencontre-city-filter" oninput="renderMembers()" placeholder="Filtrer par ville (Ex. Bobo-Dioulasso)..." class="px-3.5 py-2 rounded-xl bg-surface border border-stone-800 text-xs outline-none focus:border-accent" />
+          </div>
+          <div id="rencontre-members-list" class="space-y-2.5"></div>
+        </div>
+
+        <form onsubmit="addCommunityVideo(event)" class="bg-card border border-stone-800 rounded-3xl p-4 sm:p-5 space-y-3 shadow-xl">
+          <h3 class="text-sm font-extrabold">Publier une vidéo communautaire</h3>
+          <div class="grid sm:grid-cols-2 gap-2.5">
+            <input type="text" id="vid-comm-title" required placeholder="Titre de la vidéo *" class="px-3.5 py-2 rounded-xl bg-surface border border-stone-800 text-sm" />
+            <input type="url" id="vid-comm-url" required placeholder="Lien vidéo (https://...) *" class="px-3.5 py-2 rounded-xl bg-surface border border-stone-800 text-sm" />
+          </div>
+          <button type="submit" class="w-full py-2.5 rounded-xl bg-accent text-stone-950 font-extrabold text-xs">Publier la vidéo</button>
+        </form>
+        <div id="community-videos-list" class="space-y-3"></div>
+      </div>
+
+      <!-- 2. MUSIQUE (Publication rapide de titre) -->
+      <div id="panel-musique" class="hidden space-y-4">
+        <form onsubmit="addTrackPost(event)" class="bg-card border border-stone-800 rounded-3xl p-4 sm:p-5 space-y-3 shadow-xl">
+          <h2 class="text-base font-extrabold">Publier un morceau audio</h2>
+          <div class="grid sm:grid-cols-2 gap-2.5">
+            <input type="text" id="track-title" required placeholder="Titre du son *" class="px-3.5 py-2 rounded-xl bg-surface border border-stone-800 text-sm" />
+            <input type="url" id="track-url" required placeholder="Lien audio MP3 / WAV *" class="px-3.5 py-2 rounded-xl bg-surface border border-stone-800 text-sm" />
+          </div>
+          <button type="submit" class="w-full py-2.5 rounded-xl bg-gold text-stone-950 font-extrabold text-xs">Publier le morceau</button>
+        </form>
+        <div id="music-tracks-list" class="space-y-3"></div>
+      </div>
+
+      <!-- 3. OFFRES ORANGE MONEY (66 93 11 74 — SANS PASSEPORT) -->
+      <div id="panel-om" class="hidden bg-card border border-om/40 rounded-3xl p-5 space-y-4 shadow-xl">
+        <div>
+          <span class="px-2.5 py-0.5 rounded-full bg-om/20 text-om text-[10px] font-black uppercase">Orange Money • Sans passeport</span>
+          <h2 class="text-base font-extrabold mt-1">Numéro de réception : 66 93 11 74</h2>
+          <p class="text-xs text-stone-400">Envoyez le montant puis enregistrez votre référence SMS pour validation.</p>
+        </div>
+
+        <form onsubmit="sendOmRef(event)" class="space-y-3">
+          <select id="om-offer-select" class="w-full px-3.5 py-2.5 rounded-xl bg-surface border border-stone-800 text-sm">
+            <option value="Publier en haut|500">Publier en haut — 500 F CFA</option>
+            <option value="Visibilité mensuelle|500">Visibilité — 500 F / mois</option>
+            <option value="Passer en Premium|250">Passer en Premium — 250 F CFA</option>
+          </select>
+          <input type="tel" id="om-from-phone" required placeholder="Votre numéro Orange Money *" class="w-full px-3.5 py-2.5 rounded-xl bg-surface border border-stone-800 text-sm" />
+          <input type="text" id="om-tx-code" required placeholder="Référence SMS Orange Money *" class="w-full px-3.5 py-2.5 rounded-xl bg-surface border border-stone-800 text-sm" />
+          <button type="submit" class="w-full py-3 rounded-xl bg-om text-white font-extrabold text-xs">Envoyer la référence</button>
+        </form>
+        <div id="om-history-list" class="space-y-2"></div>
+      </div>
+    </section>
+  </main>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDoc, collection, query, where, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+
+    const app = initializeApp({
+      apiKey: "AIzaSyCexdElr5DdD7TIHzdVyeGQqbPtoJ5yWJE",
+      authDomain: "fasorencontre-9b5a9.firebaseapp.com",
+      projectId: "fasorencontre-9b5a9",
+      storageBucket: "fasorencontre-9b5a9.firebasestorage.app",
+      messagingSenderId: "213099669353",
+      appId: "1:213099669353:web:f63143c9f8efcc978b3ff8",
+      measurementId: "G-8SPQ732YY7"
+    });
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    let deferredInstallPrompt = null;
+    let me = null, members = [], videos = [], tracks = [], omList = [];
+    let unsubs = [];
+
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(() => {});
+      });
+    }
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredInstallPrompt = e;
+      document.getElementById('btn-install-app').classList.remove('hidden');
+      lucide.createIcons();
+    });
+
+    window.triggerInstallApp = async () => {
+      if (!deferredInstallPrompt) return;
+      deferredInstallPrompt.prompt();
+      await deferredInstallPrompt.userChoice;
+      deferredInstallPrompt = null;
+      document.getElementById('btn-install-app').classList.add('hidden');
+    };
+
+    function notify(msg, kind = 'info') {
+      const box = document.getElementById('toast-container');
+      const el = document.createElement('div');
+      el.className = `${kind === 'ok' ? 'bg-accent text-stone-950' : 'bg-cardAlt text-white'} px-4 py-2.5 rounded-2xl text-xs font-extrabold shadow-lg`;
+      el.textContent = msg;
+      box.appendChild(el);
+      setTimeout(() => el.remove(), 3000);
+    }
+
+    function esc(s = '') {
+      return String(s).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
+    }
+
+    window.toggleRegForm = () => document.getElementById('form-register').classList.toggle('hidden');
+    window.handleLogout = async () => { await signOut(auth); };
+
+    window.switchTab = (tab) => {
+      ['rencontre', 'musique', 'om'].forEach(t => {
+        document.getElementById(`panel-${t}`).classList.toggle('hidden', t !== tab);
+        document.getElementById(`tab-${t}`).className = t === tab
+          ? 'py-2 rounded-xl text-xs font-extrabold bg-accent text-stone-950'
+          : 'py-2 rounded-xl text-xs font-bold text-stone-400';
+      });
+    };
+
+    window.handleLogin = async (e) => {
+      e.preventDefault();
+      await signInWithEmailAndPassword(auth, document.getElementById('login-email').value.trim(), document.getElementById('login-password').value);
+      notify('Connecté.', 'ok');
+    };
+
+    window.handleRegister = async (e) => {
+      e.preventDefault();
+      const cred = await createUserWithEmailAndPassword(auth, document.getElementById('reg-email').value.trim(), document.getElementById('reg-password').value);
+      await setDoc(doc(db, 'platformUsers', cred.user.uid), {
+        uid: cred.user.uid,
+        stageName: document.getElementById('reg-stagename').value.trim(),
+        city: document.getElementById('reg-city').value.trim(),
+        orangeMoneyPhone: document.getElementById('reg-om').value.trim(),
+        interest: document.getElementById('reg-interest').value.trim(),
+        email: cred.user.email,
+        createdAt: serverTimestamp()
+      });
+      notify('Compte créé.', 'ok');
+    };
+
+    window.renderMembers = function () {
+      const box = document.getElementById('rencontre-members-list');
+      const cityQ = (document.getElementById('rencontre-city-filter')?.value || '').trim().toLowerCase();
+      const myUid = auth.currentUser?.uid || '';
+      const list = members.filter(m => m.uid !== myUid && (!cityQ || (m.city || '').toLowerCase().includes(cityQ)));
+      if (!list.length) {
+        box.innerHTML = '<p class="text-xs text-stone-400">Aucun profil trouvé pour ce filtre.</p>';
+        return;
+      }
+      box.innerHTML = list.map(m => `
+        <div class="p-3 rounded-2xl bg-surface border border-stone-800 flex items-center justify-between gap-2 text-xs">
+          <div>
+            <strong class="text-white font-extrabold">${esc(m.stageName || m.email)}</strong>
+            <span class="text-gold font-semibold"> • ${esc(m.city || 'Burkina Faso')}</span>
+            ${m.interest ? `<span class="block text-[11px] text-stone-400">${esc(m.interest)}</span>` : ''}
+          </div>
+          <span class="px-2.5 py-1 rounded-xl bg-accent/15 text-accent font-extrabold">Profil actif</span>
+        </div>`).join('');
+    };
+
+    window.addCommunityVideo = async (e) => {
+      e.preventDefault();
+      if (!auth.currentUser) return;
+      const id = `cvideo_${Date.now()}_${auth.currentUser.uid.slice(0, 6)}`;
+      await setDoc(doc(db, 'videoClips', id), {
+        id, authorId: auth.currentUser.uid, authorName: me?.stageName || auth.currentUser.email,
+        title: document.getElementById('vid-comm-title').value.trim(),
+        videoUrl: document.getElementById('vid-comm-url').value.trim(),
+        createdAtMs: Date.now(), createdAt: serverTimestamp()
+      });
+      e.target.reset();
+      notify('Vidéo publiée.', 'ok');
+    };
+
+    function renderVideos() {
+      const box = document.getElementById('community-videos-list');
+      box.innerHTML = videos.slice(0, 8).map(v => `
+        <div class="bg-card border border-stone-800 rounded-2xl p-3.5 space-y-2">
+          <strong class="text-xs font-extrabold text-white block">${esc(v.title)} <span class="text-stone-400 font-normal">• ${esc(v.authorName)}</span></strong>
+          <video src="${esc(v.videoUrl)}" controls playsinline class="w-full max-h-60 rounded-xl bg-black"></video>
+        </div>`).join('') || '';
+    }
+
+    window.addTrackPost = async (e) => {
+      e.preventDefault();
+      if (!auth.currentUser) return;
+      const id = `track_${Date.now()}_${auth.currentUser.uid.slice(0, 6)}`;
+      await setDoc(doc(db, 'musicPosts', id), {
+        id, authorId: auth.currentUser.uid, authorName: me?.stageName || auth.currentUser.email,
+        title: document.getElementById('track-title').value.trim(),
+        mediaUrl: document.getElementById('track-url').value.trim(),
+        mediaType: 'audio', createdAtMs: Date.now(), createdAt: serverTimestamp()
+      });
+      e.target.reset();
+      notify('Morceau publié.', 'ok');
+    };
+
+    function renderTracks() {
+      const box = document.getElementById('music-tracks-list');
+      box.innerHTML = tracks.slice(0, 8).map(t => `
+        <div class="bg-card border border-stone-800 rounded-2xl p-3.5 space-y-2">
+          <strong class="text-xs font-extrabold text-white block">${esc(t.title)} <span class="text-accent font-normal">• ${esc(t.authorName)}</span></strong>
+          <audio src="${esc(t.mediaUrl)}" controls class="w-full h-9"></audio>
+        </div>`).join('') || '';
+    }
+
+    window.sendOmRef = async (e) => {
+      e.preventDefault();
+      if (!auth.currentUser) return;
+      const [offerLabel, amtStr] = document.getElementById('om-offer-select').value.split('|');
+      const id = `om_${Date.now()}_${auth.currentUser.uid.slice(0, 6)}`;
+      await setDoc(doc(db, 'orangeMoneyRequests', id), {
+        id, uid: auth.currentUser.uid, stageName: me?.stageName || auth.currentUser.email,
+        offerLabel, amount: Number(amtStr), receiverPhone: '66 93 11 74',
+        senderPhone: document.getElementById('om-from-phone').value.trim(),
+        txRef: document.getElementById('om-tx-code').value.trim(),
+        status: 'pending', createdAtMs: Date.now(), createdAt: serverTimestamp()
+      });
+      e.target.reset();
+      notify('Référence enregistrée.', 'ok');
+    };
+
+    function renderOmHistory() {
+      const box = document.getElementById('om-history-list');
+      box.innerHTML = omList.map(r => `
+        <div class="p-2.5 rounded-xl bg-surface text-xs flex justify-between">
+          <span><strong>${esc(r.offerLabel)}</strong> (${r.amount} F) • Réf: ${esc(r.txRef)}</span>
+          <span class="text-om font-bold">${esc(r.status)}</span>
+        </div>`).join('') || '';
+    }
+
+    onAuthStateChanged(auth, async (user) => {
+      document.getElementById('auth-section').classList.toggle('hidden', !!user);
+      document.getElementById('app-body').classList.toggle('hidden', !user);
+      document.getElementById('header-session-box').innerHTML = user
+        ? `<button type="button" onclick="handleLogout()" class="px-3 py-1.5 rounded-xl bg-cardAlt text-xs font-bold text-crimson">Quitter</button>`
+        : '';
+
+      unsubs.forEach(fn => fn());
+      unsubs = [];
+
+      if (user) {
+        const s = await getDoc(doc(db, 'platformUsers', user.uid));
+        me = s.exists() ? s.data() : { uid: user.uid, stageName: user.email };
+
+        unsubs.push(onSnapshot(collection(db, 'platformUsers'), snap => {
+          members = []; snap.forEach(d => members.push(d.data()));
+          renderMembers();
+        }));
+        unsubs.push(onSnapshot(query(collection(db, 'videoClips'), orderBy('createdAtMs', 'desc')), snap => {
+          videos = []; snap.forEach(d => videos.push(d.data()));
+          renderVideos();
+        }));
+        unsubs.push(onSnap
