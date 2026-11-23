@@ -1007,5 +1007,360 @@ onAuthStateChanged(auth, user => {
 });
 
 </script>
+
+<style>
+.feed-card {
+  background: #202020;
+  border: 1px solid #383838;
+  border-radius: 14px;
+  padding: 16px;
+  margin: 15px 0;
+}
+
+.feed-card h3 {
+  color: #ffb000;
+  margin-bottom: 8px;
+}
+
+.feed-card p {
+  color: #bbb;
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+
+.feed-card audio {
+  width: 100%;
+  margin: 10px 0;
+}
+
+.feed-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.feed-actions button {
+  background: #303030;
+  color: white;
+  border: 1px solid #444;
+  padding: 9px 13px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.feed-actions button.liked {
+  color: #ffb000;
+}
+
+.publish-box {
+  background: #202020;
+  border: 1px solid #444;
+  border-radius: 14px;
+  padding: 16px;
+  margin: 15px 0;
+}
+
+.publish-box input,
+.publish-box textarea {
+  width: 100%;
+  background: #111;
+  color: white;
+  border: 1px solid #444;
+  padding: 12px;
+  border-radius: 8px;
+  margin: 7px 0 12px;
+}
+
+.publish-box textarea {
+  min-height: 75px;
+}
+
+.publish-box button {
+  width: 100%;
+  background: #ffb000;
+  border: none;
+  padding: 13px;
+  border-radius: 8px;
+  font-weight: bold;
+}
+
+.feed-status {
+  color: #ffb000;
+  font-size: 13px;
+  margin-top: 10px;
+}
+</style>
+
+<script type="module">
+import { getApp } from
+"https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+
+import {
+  getAuth,
+  onAuthStateChanged
+} from
+"https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  doc,
+  getDoc,
+  updateDoc,
+  deleteDoc,
+  query,
+  orderBy,
+  onSnapshot,
+  arrayUnion,
+  arrayRemove,
+  serverTimestamp
+} from
+"https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+
+import {
+  getStorage,
+  ref,
+  uploadBytes,
+  getDownloadURL
+} from
+"https://www.gstatic.com/firebasejs/11.6.0/firebase-storage.js";
+
+const app = getApp();
+const auth = getAuth(app);
+const db = getFirestore(app);
+const storage = getStorage(app);
+
+const feedPage = document.getElementById("home");
+
+feedPage.innerHTML = `
+  <h2>Communauté musicale</h2>
+  <p class="subtitle">
+    Découvre et partage les talents de Faso Talent.
+  </p>
+
+  <div class="publish-box">
+    <h3>🎵 Publier un morceau</h3>
+
+    <input id="trackTitle"
+      placeholder="Titre de ton morceau">
+
+    <textarea id="trackDescription"
+      placeholder="Présente ta musique..."></textarea>
+
+    <label>Choisir ton fichier audio</label>
+    <input id="trackFile" type="file" accept="audio/*">
+
+    <button id="publishTrack">
+      Publier mon morceau
+    </button>
+
+    <p id="publishStatus" class="feed-status"></p>
+  </div>
+
+  <h3 style="margin-top:25px">🎧 Publications récentes</h3>
+  <div id="musicFeed"></div>
+`;
+
+const musicFeed = document.getElementById("musicFeed");
+const publishStatus = document.getElementById("publishStatus");
+
+let currentArtist = null;
+let unsubscribeFeed = null;
+
+onAuthStateChanged(auth, user => {
+  currentArtist = user;
+
+  if (unsubscribeFeed) {
+    unsubscribeFeed();
+    unsubscribeFeed = null;
+  }
+
+  if (!user) {
+    musicFeed.innerHTML =
+      '<p class="coming">Connecte-toi pour découvrir les publications.</p>';
+    return;
+  }
+
+  const postsQuery = query(
+    collection(db, "musicPosts"),
+    orderBy("createdAt", "desc")
+  );
+
+  unsubscribeFeed = onSnapshot(postsQuery, snapshot => {
+    musicFeed.innerHTML = "";
+
+    if (snapshot.empty) {
+      musicFeed.innerHTML =
+        '<p class="coming">Aucun morceau publié pour le moment.</p>';
+      return;
+    }
+
+    snapshot.forEach(postDoc => {
+      const post = postDoc.data();
+      const postId = postDoc.id;
+
+      const likes = Array.isArray(post.likes) ? post.likes : [];
+      const liked = likes.includes(user.uid);
+
+      const card = document.createElement("div");
+      card.className = "feed-card";
+
+      const title = document.createElement("h3");
+      title.textContent = post.title || "Morceau sans titre";
+
+      const artist = document.createElement("p");
+      artist.textContent = "Artiste : " + (post.username || "Artiste");
+
+      const description = document.createElement("p");
+      description.textContent = post.description || "";
+
+      card.append(title, artist, description);
+
+      if (post.audioUrl) {
+        const audio = document.createElement("audio");
+        audio.controls = true;
+        audio.preload = "none";
+        audio.src = post.audioUrl;
+        card.appendChild(audio);
+      }
+
+      const actions = document.createElement("div");
+      actions.className = "feed-actions";
+
+      const likeButton = document.createElement("button");
+      likeButton.textContent =
+        (liked ? "❤️ " : "🤍 ") + likes.length + " J'aime";
+
+      if (liked) likeButton.classList.add("liked");
+
+      likeButton.onclick = async () => {
+        try {
+          const postRef = doc(db, "musicPosts", postId);
+
+          if (liked) {
+            await updateDoc(postRef, {
+              likes: arrayRemove(user.uid)
+            });
+          } else {
+            await updateDoc(postRef, {
+              likes: arrayUnion(user.uid)
+            });
+          }
+        } catch (error) {
+          alert("Impossible de modifier le like : " + error.message);
+        }
+      };
+
+      actions.appendChild(likeButton);
+
+      if (post.uid === user.uid) {
+        const deleteButton = document.createElement("button");
+        deleteButton.textContent = "🗑 Supprimer";
+
+        deleteButton.onclick = async () => {
+          if (!confirm("Supprimer cette publication ?")) return;
+
+          try {
+            await deleteDoc(doc(db, "musicPosts", postId));
+          } catch (error) {
+            alert("Erreur : " + error.message);
+          }
+        };
+
+        actions.appendChild(deleteButton);
+      }
+
+      card.appendChild(actions);
+      musicFeed.appendChild(card);
+    });
+  }, error => {
+    console.error(error);
+    musicFeed.textContent =
+      "Impossible de charger les publications : " + error.message;
+  });
+});
+
+// PUBLICATION AUDIO
+document.getElementById("publishTrack")
+.addEventListener("click", async () => {
+  if (!currentArtist) {
+    publishStatus.textContent =
+      "Connecte-toi avant de publier.";
+    return;
+  }
+
+  const title = document.getElementById("trackTitle").value.trim();
+  const description =
+    document.getElementById("trackDescription").value.trim();
+  const file = document.getElementById("trackFile").files[0];
+
+  if (!title || !file) {
+    publishStatus.textContent =
+      "Ajoute un titre et sélectionne un fichier audio.";
+    return;
+  }
+
+  if (!file.type.startsWith("audio/")) {
+    publishStatus.textContent = "Le fichier doit être un fichier audio.";
+    return;
+  }
+
+  if (file.size > 20 * 1024 * 1024) {
+    publishStatus.textContent =
+      "Le fichier ne doit pas dépasser 20 Mo.";
+    return;
+  }
+
+  const button = document.getElementById("publishTrack");
+  button.disabled = true;
+  publishStatus.textContent = "Envoi de ton morceau...";
+
+  try {
+    const userRef = doc(db, "platformUsers", currentArtist.uid);
+    const userSnap = await getDoc(userRef);
+
+    const profile = userSnap.exists() ? userSnap.data() : {};
+
+    const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+    const audioRef = ref(
+      storage,
+      "musicPosts/" + currentArtist.uid + "/" +
+      Date.now() + "_" + safeName
+    );
+
+    await uploadBytes(audioRef, file);
+    const audioUrl = await getDownloadURL(audioRef);
+
+    await addDoc(collection(db, "musicPosts"), {
+      uid: currentArtist.uid,
+      username: profile.username || "Artiste",
+      title: title,
+      description: description,
+      audioUrl: audioUrl,
+      likes: [],
+      createdAt: serverTimestamp()
+    });
+
+    document.getElementById("trackTitle").value = "";
+    document.getElementById("trackDescription").value = "";
+    document.getElementById("trackFile").value = "";
+
+    publishStatus.textContent =
+      "Ton morceau a été publié avec succès !";
+
+  } catch (error) {
+    console.error(error);
+    publishStatus.textContent =
+      "Erreur de publication : " + error.message;
+
+  } finally {
+    button.disabled = false;
+  }
+});
+</script>
+</body>
+
 </body>
 </html>
