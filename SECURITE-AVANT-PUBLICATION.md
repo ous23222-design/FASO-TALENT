@@ -1,0 +1,13 @@
+# Liste obligatoire avant ouverture publique
+- [ ] Authentification réelle et récupération de compte.
+- [ ] Rôle administrateur géré côté serveur, jamais par une variable JavaScript.
+- [ ] Supabase RLS vérifiée avec comptes de test non-admin et admin.
+- [ ] Stockage privé des brouillons et des médias non publiés.
+- [ ] Upload audio/vidéo limité en taille, type et durée.
+- [ ] Edge Function admin pour validation Wave ; pas d'approbation depuis le navigateur seul.
+- [ ] Abonnement expirant après 30 jours, contrôlé côté serveur.
+- [ ] Droits/licences des instrumentales et autorisation des utilisateurs pour leurs contenus.
+- [ ] Signalement, modération, blocage et suppression de contenu.
+- [ ] Politique de confidentialité, conditions d'utilisation et contact support.
+- [ ] Tests de sécurité, sauvegardes et tests sur Android bas de gamme.
+- [ ] Vérifier que le QR code Wave peut être affiché publiquement et que le nom du bénéficiaire est correct.

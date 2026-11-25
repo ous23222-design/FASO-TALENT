@@ -1,0 +1,23 @@
+FASO-TALENT/
+├── index.html
+├── manifest.json
+├── service-worker.js
+├── README.md
+├── STRUCTURE.txt
+├── css/
+│   └── style.css
+├── js/
+│   ├── storage.js
+│   ├── app.js
+│   ├── studio.js
+│   ├── beats.js
+│   ├── feed.js
+│   ├── video.js
+│   ├── profile.js
+│   ├── payments.js
+│   └── admin.js
+├── assets/
+│   ├── icon.svg
+│   └── wave-qr.jpg
+└── supabase/
+    └── schema.sql
